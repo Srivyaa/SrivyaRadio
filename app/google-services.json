@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "890686890495",
+    "project_id": "radiotime-test",
+    "storage_bucket": "radiotime-test.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890686890495:android:9d024837bfed8dd84007ca",
+        "android_client_info": {
+          "package_name": "com.radiotime.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbXYKSiqkJLLRfPzNKkfTD1v7dUMFHLaA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

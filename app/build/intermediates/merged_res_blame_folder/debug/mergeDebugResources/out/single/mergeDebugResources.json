@@ -1,0 +1,130 @@
+[
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_instagram.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_instagram.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_radio_filled.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_radio_filled.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_radio_outlined.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_radio_outlined.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-ldpi_ic_launcher.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-ldpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/xml_automotive_app_desc.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/xml/automotive_app_desc.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_more_horizontal.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_more_horizontal.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_favorite_outlined.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_favorite_outlined.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-hdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_pause.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_pause.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-mdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_favorite_filled.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_favorite_filled.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_play_circle.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_play_circle.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/xml_backup_rules.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/xml_data_extraction_rules.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/drawable_icon_launcher.xml.flat",
+        "source": "com.app.radiotime.app-main-120:/drawable/icon_launcher.xml"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.app.radiotime.app-debug-118:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.app.radiotime.app-main-120:/mipmap-xhdpi/ic_launcher_round.png"
+    }
+]

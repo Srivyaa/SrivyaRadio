@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="black">#FF000000</color>
+    <color name="ic_launcher_background">#249bfa</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="app_name">RadioTime</string>
+    <string name="com.google.firebase.crashlytics.mapping_file_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">00000000000000000000000000000000</string>
+    <string name="com.google.firebase.crashlytics.version_control_info">""</string>
+    <string name="gcm_defaultSenderId" translatable="false">890686890495</string>
+    <string name="google_api_key" translatable="false">AIzaSyCbXYKSiqkJLLRfPzNKkfTD1v7dUMFHLaA</string>
+    <string name="google_app_id" translatable="false">1:890686890495:android:9d024837bfed8dd84007ca</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCbXYKSiqkJLLRfPzNKkfTD1v7dUMFHLaA</string>
+    <string name="google_storage_bucket" translatable="false">radiotime-test.firebasestorage.app</string>
+    <string name="interstitial_ad_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="project_id" translatable="false">radiotime-test</string>
+    <string name="revcat_key" translatable="false">REVENUECAT_KEY</string>
+    <style name="Theme.RadioTimeV3" parent="android:Theme.Material.Light.NoActionBar"/>
+</resources>
