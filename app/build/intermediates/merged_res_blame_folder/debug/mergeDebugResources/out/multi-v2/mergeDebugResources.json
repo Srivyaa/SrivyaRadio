@@ -24549,23 +24549,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Srivya\\Documents\\RadioTime\\app\\build\\generated\\res\\resValues\\debug\\values\\gradleResValues.xml",
-                    "from": {
-                        "startLines": "6,8,10",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "159,296,445",
-                        "endColumns": "94,106,74",
-                        "endOffsets": "249,398,515"
-                    },
-                    "to": {
-                        "startLines": "2610,2798,3087",
-                        "startColumns": "4,4,4",
-                        "startOffsets": "167934,184796,215117",
-                        "endColumns": "94,106,74",
-                        "endOffsets": "168024,184898,215187"
-                    }
-                },
-                {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\1c0f1b3168ce151bfeba3387a425ed2a\\transformed\\jetified-play-services-basement-18.5.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "4,7",
@@ -24653,20 +24636,20 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Srivya\\Documents\\RadioTime\\app\\src\\main\\res\\values\\ic_launcher_background.xml",
+                    "source": "C:\\Users\\Srivya\\StudioProjects\\RadioTime\\app\\build\\generated\\res\\injectCrashlyticsMappingFileIdDebug\\values\\com_google_firebase_crashlytics_mappingfileid.xml",
                     "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "56",
-                        "endOffsets": "107"
+                        "startLines": "8",
+                        "startColumns": "0",
+                        "startOffsets": "286",
+                        "endColumns": "173",
+                        "endOffsets": "459"
                     },
                     "to": {
-                        "startLines": "849",
+                        "startLines": "2678",
                         "startColumns": "4",
-                        "startOffsets": "45058",
-                        "endColumns": "56",
-                        "endOffsets": "45110"
+                        "startOffsets": "174026",
+                        "endColumns": "175",
+                        "endOffsets": "174197"
                     }
                 },
                 {
@@ -24761,23 +24744,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Srivya\\Documents\\RadioTime\\app\\src\\main\\res\\values\\themes.xml",
-                    "from": {
-                        "startLines": "3",
-                        "startColumns": "4",
-                        "startOffsets": "56",
-                        "endColumns": "88",
-                        "endOffsets": "140"
-                    },
-                    "to": {
-                        "startLines": "8227",
-                        "startColumns": "4",
-                        "startOffsets": "564794",
-                        "endColumns": "87",
-                        "endOffsets": "564877"
-                    }
-                },
-                {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\74932729c5b644416ba7a4e6c711c67e\\transformed\\jetified-coil-base-2.7.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -24867,37 +24833,20 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Srivya\\Documents\\RadioTime\\app\\build\\generated\\res\\processDebugGoogleServices\\values\\values.xml",
+                    "source": "C:\\Users\\Srivya\\StudioProjects\\RadioTime\\app\\src\\main\\res\\values\\ic_launcher_background.xml",
                     "from": {
-                        "startLines": "2,3,4,5,6,7",
-                        "startColumns": "4,4,4,4,4,4",
-                        "startOffsets": "55,137,241,350,470,576",
-                        "endColumns": "81,103,108,119,105,74",
-                        "endOffsets": "132,236,345,465,571,646"
-                    },
-                    "to": {
-                        "startLines": "2787,2789,2790,2791,2792,3084",
-                        "startColumns": "4,4,4,4,4,4",
-                        "startOffsets": "183688,183852,183956,184065,184185,214938",
-                        "endColumns": "81,103,108,119,105,74",
-                        "endOffsets": "183765,183951,184060,184180,184286,215008"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Srivya\\Documents\\RadioTime\\app\\build\\generated\\res\\injectCrashlyticsVersionControlInfoDebug\\values\\com_google_firebase_crashlytics_versioncontrolinfo.xml",
-                    "from": {
-                        "startLines": "1",
-                        "startColumns": "2",
-                        "startOffsets": "14",
-                        "endColumns": "81",
-                        "endOffsets": "93"
-                    },
-                    "to": {
-                        "startLines": "2679",
+                        "startLines": "2",
                         "startColumns": "4",
-                        "startOffsets": "174202",
-                        "endColumns": "83",
-                        "endOffsets": "174281"
+                        "startOffsets": "55",
+                        "endColumns": "56",
+                        "endOffsets": "107"
+                    },
+                    "to": {
+                        "startLines": "849",
+                        "startColumns": "4",
+                        "startOffsets": "45058",
+                        "endColumns": "56",
+                        "endOffsets": "45110"
                     }
                 },
                 {
@@ -24936,6 +24885,23 @@
                         "endLines": "456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,733,1085,1086,1087,1088,1089,1090,1091,1092,1093,1094,1095,1096,1097,1098,1099,1100,1101,1944,1945,1946,1947,1948,1949,1950,1951,1952,1953,1954,1955,1956,1957,1958,1959,1960,1961,1962,1963,2539,2540,2541,2542,2543,2794,2939,2940,2941,2942,2943,2944,2945,2946,2947,2948,2949,2950,2951,2952,2953,2954,2955,2956,2957,2958,2959,2960,2961,2962,2963,2964,2965,2966,2967,2968,2969,2970,2971,2972,7773,7776,7782,7785,7788,7791,7792,7793,7794,8192,8212,8215,8218,8735,8742,11297,11301,14706",
                         "endColumns": "66,66,59,61,72,67,56,68,61,60,72,67,60,53,62,64,39,60,65,65,69,70,77,78,62,63,67,68,74,75,61,62,73,74,75,72,74,72,65,52,62,65,56,74,77,74,74,59,59,59,65,64,59,71,84,87,85,86,59,85,62,68,70,74,83,81,64,52,144,135,139,141,133,142,139,83,61,71,65,65,63,61,77,77,53,51,51,67,69,62,67,73,55,63,12,12,12,12,12,12,100,100,92,12,12,12,12,12,12,12,12,24",
                         "endOffsets": "22607,22674,22734,22796,22869,22937,22994,23063,23125,23186,23259,23327,23388,23442,23505,23570,36717,61980,62046,62112,62182,62253,62331,62410,62473,62537,62605,62674,62749,62825,62887,62950,63024,63099,124998,125071,125146,125219,125285,125338,125401,125467,125524,125599,125677,125752,125827,125887,125947,126007,126073,126138,126198,126270,162950,163038,163124,163211,163271,184525,197531,197600,197671,197746,197830,197912,197977,198030,198175,198311,198451,198593,198727,198870,199010,199094,199156,199228,199294,199360,199424,199486,199564,199642,199696,199748,199800,199868,199938,200001,200069,200143,200199,200263,531372,531544,531944,532119,532332,532546,532647,532748,532841,562538,564037,564210,564379,601258,601786,764481,764765,889743"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Srivya\\StudioProjects\\RadioTime\\app\\src\\main\\res\\values\\themes.xml",
+                    "from": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "56",
+                        "endColumns": "88",
+                        "endOffsets": "140"
+                    },
+                    "to": {
+                        "startLines": "8227",
+                        "startColumns": "4",
+                        "startOffsets": "564794",
+                        "endColumns": "87",
+                        "endOffsets": "564877"
                     }
                 },
                 {
@@ -25030,23 +24996,6 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Srivya\\Documents\\RadioTime\\app\\src\\main\\res\\values\\strings.xml",
-                    "from": {
-                        "startLines": "1",
-                        "startColumns": "4",
-                        "startOffsets": "16",
-                        "endColumns": "46",
-                        "endOffsets": "58"
-                    },
-                    "to": {
-                        "startLines": "2611",
-                        "startColumns": "4",
-                        "startOffsets": "168029",
-                        "endColumns": "46",
-                        "endOffsets": "168071"
-                    }
-                },
-                {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\2e4a125cb1298708b27a5563e59e0a85\\transformed\\jetified-play-services-cast-framework-21.5.0\\res\\values\\values.xml",
                     "from": {
                         "startLines": "4,9,16,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,81,83,85,87,89,91,93,95,97,99,101,103,106,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,152,181,189,211,216,218,220,223,226,228,232,287,300,341",
@@ -25085,6 +25034,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\Srivya\\StudioProjects\\RadioTime\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "4",
+                        "startOffsets": "16",
+                        "endColumns": "46",
+                        "endOffsets": "58"
+                    },
+                    "to": {
+                        "startLines": "2611",
+                        "startColumns": "4",
+                        "startOffsets": "168029",
+                        "endColumns": "46",
+                        "endOffsets": "168071"
+                    }
+                },
+                {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\9ac32e1d3651d6b4e68271d499ed19d5\\transformed\\jetified-foundation-release\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,3",
@@ -25099,6 +25065,23 @@
                         "startOffsets": "217014,217070",
                         "endColumns": "55,54",
                         "endOffsets": "217065,217120"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Srivya\\StudioProjects\\RadioTime\\app\\build\\generated\\res\\injectCrashlyticsVersionControlInfoDebug\\values\\com_google_firebase_crashlytics_versioncontrolinfo.xml",
+                    "from": {
+                        "startLines": "1",
+                        "startColumns": "2",
+                        "startOffsets": "14",
+                        "endColumns": "81",
+                        "endOffsets": "93"
+                    },
+                    "to": {
+                        "startLines": "2679",
+                        "startColumns": "4",
+                        "startOffsets": "174202",
+                        "endColumns": "83",
+                        "endOffsets": "174281"
                     }
                 },
                 {
@@ -25250,6 +25233,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\Srivya\\StudioProjects\\RadioTime\\app\\src\\main\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "7,2,3,4,5,6,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "286,55,102,149,196,241,328",
+                        "endColumns": "41,46,46,46,44,44,41",
+                        "endOffsets": "323,97,144,191,236,281,365"
+                    },
+                    "to": {
+                        "startLines": "749,1122,1123,1124,1139,1140,1144",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "37825,64547,64594,64641,65660,65705,65936",
+                        "endColumns": "41,46,46,46,44,44,41",
+                        "endOffsets": "37862,64589,64636,64683,65700,65745,65973"
+                    }
+                },
+                {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\d883d03ea1d9b0958400425626b1b86d\\transformed\\jetified-navigation-common-release\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2,15,21,27,30",
@@ -25283,23 +25283,6 @@
                         "startOffsets": "36425",
                         "endColumns": "57",
                         "endOffsets": "36478"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Srivya\\Documents\\RadioTime\\app\\src\\main\\res\\values\\colors.xml",
-                    "from": {
-                        "startLines": "7,2,3,4,5,6,8",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "286,55,102,149,196,241,328",
-                        "endColumns": "41,46,46,46,44,44,41",
-                        "endOffsets": "323,97,144,191,236,281,365"
-                    },
-                    "to": {
-                        "startLines": "749,1122,1123,1124,1139,1140,1144",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "37825,64547,64594,64641,65660,65705,65936",
-                        "endColumns": "41,46,46,46,44,44,41",
-                        "endOffsets": "37862,64589,64636,64683,65700,65745,65973"
                     }
                 },
                 {
@@ -25445,6 +25428,23 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\Srivya\\StudioProjects\\RadioTime\\app\\build\\generated\\res\\processDebugGoogleServices\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "55,137,241,350,470,576",
+                        "endColumns": "81,103,108,119,105,74",
+                        "endOffsets": "132,236,345,465,571,646"
+                    },
+                    "to": {
+                        "startLines": "2787,2789,2790,2791,2792,3084",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "183688,183852,183956,184065,184185,214938",
+                        "endColumns": "81,103,108,119,105,74",
+                        "endOffsets": "183765,183951,184060,184180,184286,215008"
+                    }
+                },
+                {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\17817f497f98064d38b529d32818d2fe\\transformed\\jetified-lifecycle-viewmodel-release\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -25481,20 +25481,20 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Srivya\\Documents\\RadioTime\\app\\build\\generated\\res\\injectCrashlyticsMappingFileIdDebug\\values\\com_google_firebase_crashlytics_mappingfileid.xml",
+                    "source": "C:\\Users\\Srivya\\StudioProjects\\RadioTime\\app\\build\\generated\\res\\resValues\\debug\\values\\gradleResValues.xml",
                     "from": {
-                        "startLines": "8",
-                        "startColumns": "0",
-                        "startOffsets": "286",
-                        "endColumns": "173",
-                        "endOffsets": "459"
+                        "startLines": "6,8,10",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "159,296,445",
+                        "endColumns": "94,106,74",
+                        "endOffsets": "249,398,515"
                     },
                     "to": {
-                        "startLines": "2678",
-                        "startColumns": "4",
-                        "startOffsets": "174026",
-                        "endColumns": "175",
-                        "endOffsets": "174197"
+                        "startLines": "2610,2798,3087",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "167934,184796,215117",
+                        "endColumns": "94,106,74",
+                        "endOffsets": "168024,184898,215187"
                     }
                 },
                 {
