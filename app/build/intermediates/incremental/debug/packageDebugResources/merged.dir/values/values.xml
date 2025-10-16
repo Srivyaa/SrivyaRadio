@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="http://schemas.android.com/tools">
     <color name="black">#FF000000</color>
-    <color name="ic_launcher_background">#232b33</color>
+    <color name="ic_launcher_background">#ffffff</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -21,4 +21,11 @@
     <string name="project_id" translatable="false">test-radio-time-app</string>
     <string name="revcat_key" translatable="false">REVENUECAT_KEY</string>
     <style name="Theme.RadioTimeV3" parent="android:Theme.Material.Light.NoActionBar"/>
+    <style name="Theme.RadioTimeV3.FullScreen" parent="Theme.RadioTimeV3">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
 </resources>

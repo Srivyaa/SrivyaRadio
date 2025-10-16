@@ -111,14 +111,20 @@
             android:value="@string/app_id" />
 
         <activity
-            android:name="com.app.srivyaradio.MainActivity"
+            android:name="com.app.srivyaradio.ui.splash.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.RadioTimeV3" >
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.RadioTimeV3.FullScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.app.srivyaradio.MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RadioTimeV3" >
             <intent-filter>
                 <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
 
@@ -144,6 +150,20 @@
                 <action android:name="androidx.media3.session.MediaLibraryService" />
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
+
+            <!-- Android Auto metadata -->
+            <meta-data
+                android:name="android.media.browse.CONTENT_STYLE_SUPPORTED"
+                android:value="true" />
+            <meta-data
+                android:name="android.media.browse.CONTENT_STYLE_PLAYABLE_HINT"
+                android:value="1" />
+            <meta-data
+                android:name="android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
+                android:value="2" />
+            <meta-data
+                android:name="android.media.browse.CAR_ROOT"
+                android:value="@xml/automotive_app_desc" />
         </service>
 
         <meta-data

@@ -5155,6 +5155,7 @@ id unlabeled
 id up
 id useLogo
 id vertical_only
+id videoView
 id video_decoder_gl_surface_view
 id video_surface
 id video_surface_container
@@ -5337,6 +5338,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_splash
 layout admob_empty_layout
 layout browser_actions_context_menu_page
 layout browser_actions_context_menu_row
@@ -5561,6 +5563,7 @@ raw lb_voice_failure
 raw lb_voice_no_input
 raw lb_voice_open
 raw lb_voice_success
+raw splash_video
 string CronetProviderClassName
 string abc_action_bar_home_description
 string abc_action_bar_up_description
@@ -6816,6 +6819,7 @@ style Theme_MediaRouter_Light_DarkControlPanel
 style Theme_MediaRouter_LightControlPanel
 style Theme_PlayCore_Transparent
 style Theme_RadioTimeV3
+style Theme_RadioTimeV3_FullScreen
 style ThemeOverlay_AppCompat
 style ThemeOverlay_AppCompat_ActionBar
 style ThemeOverlay_AppCompat_Dark
