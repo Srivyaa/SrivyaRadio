@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:2:1-66:12
-INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:2:1-66:12
-INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:2:1-66:12
-INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:2:1-66:12
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:2:1-66:12
+INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:2:1-66:12
 MERGED from [com.google.accompanist:accompanist-permissions:0.37.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\f852d75a1044a3843e06bfe1bb2ccf67\transformed\jetified-accompanist-permissions-0.37.3\AndroidManifest.xml:17:1-23:12
 MERGED from [com.google.dagger:hilt-android:2.57] C:\Users\Srivya\.gradle\caches\8.13\transforms\2822b0b932637451535c6a1ff2a58255\transformed\jetified-hilt-android-2.57\AndroidManifest.xml:16:1-19:12
 MERGED from [androidx.navigation:navigation-runtime-android:2.9.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\699f53d83d2095fad8a2fce8a6bf1dc7\transformed\jetified-navigation-runtime-release\AndroidManifest.xml:17:1-22:12
@@ -205,17 +205,17 @@ MERGED from [io.antmedia:rtmp-client:3.2.0] C:\Users\Srivya\.gradle\caches\8.13\
 MERGED from [com.google.android.play:core-common:2.0.4] C:\Users\Srivya\.gradle\caches\8.13\transforms\ceb1a87590dbd622fc095d834f2e1f67\transformed\jetified-core-common-2.0.4\AndroidManifest.xml:2:1-21:12
 MERGED from [org.chromium.net:cronet-api:72.3626.96] C:\Users\Srivya\.gradle\caches\8.13\transforms\256985170743454b1dea29718f72c04f\transformed\jetified-cronet-api-72.3626.96\AndroidManifest.xml:15:1-22:12
 	package
-		INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml
 	xmlns:tools
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:3:5-51
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:3:5-51
 	android:versionCode
-		INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:4:5-67
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:4:5-67
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:12:5-67
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:12:5-67
 MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:18:5-67
@@ -249,9 +249,9 @@ MERGED from [io.antmedia:rtmp-client:3.2.0] C:\Users\Srivya\.gradle\caches\8.13\
 MERGED from [org.chromium.net:cronet-api:72.3626.96] C:\Users\Srivya\.gradle\caches\8.13\transforms\256985170743454b1dea29718f72c04f\transformed\jetified-cronet-api-72.3626.96\AndroidManifest.xml:19:5-66
 MERGED from [org.chromium.net:cronet-api:72.3626.96] C:\Users\Srivya\.gradle\caches\8.13\transforms\256985170743454b1dea29718f72c04f\transformed\jetified-cronet-api-72.3626.96\AndroidManifest.xml:19:5-66
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:4:22-64
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:4:22-64
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:5:5-79
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:5:5-79
 MERGED from [androidx.media3:media3-test-utils:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5968bc9e27d906731795ad6ffa2ef799\transformed\jetified-media3-test-utils-1.8.0\AndroidManifest.xml:22:5-79
 MERGED from [androidx.media3:media3-test-utils:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5968bc9e27d906731795ad6ffa2ef799\transformed\jetified-media3-test-utils-1.8.0\AndroidManifest.xml:22:5-79
 MERGED from [androidx.media3:media3-exoplayer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2c62adfe5d77e1e512a2431be178bc88\transformed\jetified-media3-exoplayer-1.8.0\AndroidManifest.xml:22:5-79
@@ -285,43 +285,43 @@ MERGED from [com.google.android.datatransport:transport-runtime:3.3.0] C:\Users\
 MERGED from [org.chromium.net:cronet-api:72.3626.96] C:\Users\Srivya\.gradle\caches\8.13\transforms\256985170743454b1dea29718f72c04f\transformed\jetified-cronet-api-72.3626.96\AndroidManifest.xml:20:5-78
 MERGED from [org.chromium.net:cronet-api:72.3626.96] C:\Users\Srivya\.gradle\caches\8.13\transforms\256985170743454b1dea29718f72c04f\transformed\jetified-cronet-api-72.3626.96\AndroidManifest.xml:20:5-78
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:5:22-76
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:5:22-76
 uses-permission#android.permission.FOREGROUND_SERVICE
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:6:5-77
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:6:5-77
 MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:8:5-77
 MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:8:5-77
 MERGED from [androidx.work:work-runtime:2.10.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\fa03afdda4a7e47b741a1c66ca506fa8\transformed\work-runtime-2.10.3\AndroidManifest.xml:26:5-77
 MERGED from [androidx.work:work-runtime:2.10.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\fa03afdda4a7e47b741a1c66ca506fa8\transformed\work-runtime-2.10.3\AndroidManifest.xml:26:5-77
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:6:22-74
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:6:22-74
 uses-permission#android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:7:5-92
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:7:5-92
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:7:22-89
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:7:22-89
 uses-permission#android.permission.POST_NOTIFICATIONS
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:8:5-77
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:8:5-77
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:8:22-74
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:8:22-74
 uses-permission#com.android.vending.BILLING
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:9:5-67
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:9:5-67
 MERGED from [com.android.billingclient:billing:6.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d5acc6fdec41e20ca6b85ea7623ce84\transformed\jetified-billing-6.0.1\AndroidManifest.xml:10:5-67
 MERGED from [com.android.billingclient:billing:6.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d5acc6fdec41e20ca6b85ea7623ce84\transformed\jetified-billing-6.0.1\AndroidManifest.xml:10:5-67
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:9:22-64
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:9:22-64
 uses-permission#com.android.launcher.permission.INSTALL_SHORTCUT
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:10:5-88
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:10:5-88
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:10:22-85
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:10:22-85
 uses-permission#android.permission.MANAGE_SHORTCUTS
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:11:5-75
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:11:5-75
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:11:22-72
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:11:22-72
 uses-permission#android.permission.MANAGE_PIN_SHORTCUTS
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:12:5-79
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:12:5-79
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:12:22-76
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:12:22-76
 uses-permission#com.google.android.gms.permission.AD_ID
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:13:5-79
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:13:5-79
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:13:5-79
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:13:5-79
 MERGED from [com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:26:5-79
@@ -337,10 +337,10 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:23.0.0] C:
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\6ae2d048008cd274a1cbe9d8e9653ddb\transformed\jetified-play-services-ads-identifier-18.0.1\AndroidManifest.xml:23:5-79
 MERGED from [com.google.android.gms:play-services-ads-identifier:18.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\6ae2d048008cd274a1cbe9d8e9653ddb\transformed\jetified-play-services-ads-identifier-18.0.1\AndroidManifest.xml:23:5-79
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:13:22-76
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:13:22-76
 application
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:14:5-64:19
-INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:14:5-64:19
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:14:5-64:19
+INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:14:5-64:19
 MERGED from [com.google.android.material:material:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b035168507b9cf3658360fcf1b46eb05\transformed\material-1.8.0\AndroidManifest.xml:24:5-20
 MERGED from [com.google.android.material:material:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b035168507b9cf3658360fcf1b46eb05\transformed\material-1.8.0\AndroidManifest.xml:24:5-20
 MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:22:5-29:19
@@ -448,111 +448,111 @@ MERGED from [com.github.bumptech.glide:gifdecoder:4.11.0] C:\Users\Srivya\.gradl
 MERGED from [com.google.android.play:core-common:2.0.4] C:\Users\Srivya\.gradle\caches\8.13\transforms\ceb1a87590dbd622fc095d834f2e1f67\transformed\jetified-core-common-2.0.4\AndroidManifest.xml:11:5-19:19
 MERGED from [com.google.android.play:core-common:2.0.4] C:\Users\Srivya\.gradle\caches\8.13\transforms\ceb1a87590dbd622fc095d834f2e1f67\transformed\jetified-core-common-2.0.4\AndroidManifest.xml:11:5-19:19
 	android:extractNativeLibs
-		INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:23:9-35
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:23:9-35
 	android:label
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:21:9-41
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:21:9-41
 	android:fullBackupContent
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:17:9-54
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:17:9-54
 	tools:ignore
 		ADDED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:31:18-55
 	android:roundIcon
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:22:9-54
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:22:9-54
 	android:icon
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:20:9-43
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:20:9-43
 	android:allowBackup
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:15:9-35
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:15:9-35
 	android:theme
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:24:9-49
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:24:9-49
 	android:enableOnBackInvokedCallback
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:19:9-51
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:19:9-51
 	android:dataExtractionRules
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:16:9-65
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:16:9-65
 	android:usesCleartextTraffic
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:18:9-44
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:18:9-44
 meta-data#com.google.android.gms.ads.APPLICATION_ID
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:25:9-27:46
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:25:9-27:46
 	android:value
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:27:13-43
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:27:13-43
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:26:13-69
-activity#com.app.radiotime.MainActivity
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:29:9-50:20
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:26:13-69
+activity#com.app.srivyaradio.MainActivity
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:29:9-50:20
 	android:exported
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:31:13-36
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:31:13-36
 	android:theme
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:32:13-53
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:32:13-53
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:30:13-41
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:30:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:33:13-37:29
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:33:13-37:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:34:17-69
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:34:17-69
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:34:25-66
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:34:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:17-77
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:17-77
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:27-74
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:27-74
 intent-filter#action:name:android.media.action.MEDIA_PLAY_FROM_SEARCH+category:name:android.intent.category.DEFAULT
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:38:13-41:29
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:38:13-41:29
 action#android.media.action.MEDIA_PLAY_FROM_SEARCH
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:39:17-86
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:39:17-86
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:39:25-83
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:39:25-83
 category#android.intent.category.DEFAULT
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:40:17-76
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:40:17-76
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:40:27-73
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:40:27-73
 intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:shortcut+data:scheme:radiotime
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:42:13-49:29
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:42:13-49:29
 	android:autoVerify
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:42:28-53
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:42:28-53
 action#android.intent.action.VIEW
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:17-69
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:17-69
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:25-66
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:25-66
 category#android.intent.category.BROWSABLE
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:45:17-78
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:45:17-78
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:45:27-75
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:45:27-75
 data
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:17-48:47
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:17-48:47
 	android:host
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:48:21-44
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:48:21-44
 	android:scheme
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:23-49
-service#com.app.radiotime.media.PlayerService
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:51:9-59:19
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:23-49
+service#com.app.srivyaradio.media.PlayerService
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:51:9-59:19
 	android:exported
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:53:13-36
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:53:13-36
 	android:foregroundServiceType
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:54:13-58
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:54:13-58
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:52:13-48
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:52:13-48
 intent-filter#action:name:android.media.browse.MediaBrowserService+action:name:androidx.media3.session.MediaLibraryService
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:55:13-58:29
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:55:13-58:29
 action#androidx.media3.session.MediaLibraryService
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:56:17-86
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:56:17-86
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:56:25-83
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:56:25-83
 action#android.media.browse.MediaBrowserService
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:57:17-83
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:57:17-83
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:57:25-80
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:57:25-80
 meta-data#com.google.android.gms.car.application
-ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:61:9-63:59
+ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:61:9-63:59
 	android:resource
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:63:13-56
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:63:13-56
 	android:name
-		ADDED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:62:13-66
+		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:62:13-66
 uses-sdk
-INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml
-INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml
 MERGED from [com.google.accompanist:accompanist-permissions:0.37.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\f852d75a1044a3843e06bfe1bb2ccf67\transformed\jetified-accompanist-permissions-0.37.3\AndroidManifest.xml:21:5-44
 MERGED from [com.google.accompanist:accompanist-permissions:0.37.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\f852d75a1044a3843e06bfe1bb2ccf67\transformed\jetified-accompanist-permissions-0.37.3\AndroidManifest.xml:21:5-44
 MERGED from [com.google.dagger:hilt-android:2.57] C:\Users\Srivya\.gradle\caches\8.13\transforms\2822b0b932637451535c6a1ff2a58255\transformed\jetified-hilt-android-2.57\AndroidManifest.xml:18:3-42
@@ -956,9 +956,9 @@ MERGED from [org.chromium.net:cronet-api:72.3626.96] C:\Users\Srivya\.gradle\cac
 	tools:overrideLibrary
 		ADDED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:10:9-58
 	android:targetSdkVersion
-		INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml
 meta-data#com.google.android.gms.ads.AD_MANAGER_APP
 ADDED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:23:9-25:36
 	android:value
@@ -1600,7 +1600,7 @@ ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\trans
 		ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:24:9-44
 	android:name
 		ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:23:9-81
-permission#com.radiotime.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+permission#com.srivyaradio.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:22:5-24:47
 	android:protectionLevel
 		ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:24:9-44
@@ -1610,7 +1610,7 @@ uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:26:22-94
-uses-permission#com.radiotime.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission#com.srivyaradio.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:26:22-94

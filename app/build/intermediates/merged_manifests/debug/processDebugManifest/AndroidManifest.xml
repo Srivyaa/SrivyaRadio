@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.radiotime.app"
+    package="com.srivyaradio.app"
     android:versionCode="53"
     android:versionName="3.0-prod" >
 
@@ -85,10 +85,10 @@
     <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
 
     <permission
-        android:name="com.radiotime.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:name="com.srivyaradio.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.radiotime.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+    <uses-permission android:name="com.srivyaradio.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
 
     <application
@@ -111,7 +111,7 @@
             android:value="@string/app_id" />
 
         <activity
-            android:name="com.app.radiotime.MainActivity"
+            android:name="com.app.srivyaradio.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.RadioTimeV3" >
             <intent-filter>
@@ -137,7 +137,7 @@
         </activity>
 
         <service
-            android:name="com.app.radiotime.media.PlayerService"
+            android:name="com.app.srivyaradio.media.PlayerService"
             android:exported="true"
             android:foregroundServiceType="mediaPlayback" >
             <intent-filter>
@@ -177,7 +177,7 @@
 
         <provider
             android:name="com.google.android.gms.ads.MobileAdsInitProvider"
-            android:authorities="com.radiotime.app.mobileadsinitprovider"
+            android:authorities="com.srivyaradio.app.mobileadsinitprovider"
             android:exported="false"
             android:initOrder="100" />
 
@@ -240,7 +240,7 @@
 
         <provider
             android:name="com.google.firebase.provider.FirebaseInitProvider"
-            android:authorities="com.radiotime.app.firebaseinitprovider"
+            android:authorities="com.srivyaradio.app.firebaseinitprovider"
             android:directBootAware="true"
             android:exported="false"
             android:initOrder="100" />
@@ -251,7 +251,7 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="com.radiotime.app.androidx-startup"
+            android:authorities="com.srivyaradio.app.androidx-startup"
             android:exported="false" >
             <meta-data
                 android:name="androidx.work.WorkManagerInitializer"

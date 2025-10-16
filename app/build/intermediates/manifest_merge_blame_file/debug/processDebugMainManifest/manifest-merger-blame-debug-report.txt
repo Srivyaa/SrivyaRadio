@@ -1,6 +1,6 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="com.radiotime.app"
+3    package="com.srivyaradio.app"
 4    android:versionCode="53"
 5    android:versionName="3.0-prod" >
 6
@@ -9,35 +9,35 @@
 9        android:targetSdkVersion="36" />
 10
 11    <uses-permission android:name="android.permission.INTERNET" />
-11-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:4:5-67
-11-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:4:22-64
+11-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:4:5-67
+11-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:4:22-64
 12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-12-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:5:5-79
-12-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:5:22-76
+12-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:5:5-79
+12-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:5:22-76
 13    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-13-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:6:5-77
-13-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:6:22-74
+13-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:6:5-77
+13-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:6:22-74
 14    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-14-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:7:5-92
-14-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:7:22-89
+14-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:7:5-92
+14-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:7:22-89
 15    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-15-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:8:5-77
-15-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:8:22-74
+15-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:8:5-77
+15-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:8:22-74
 16    <uses-permission android:name="com.android.vending.BILLING" />
-16-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:9:5-67
-16-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:9:22-64
+16-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:9:5-67
+16-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:9:22-64
 17    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-17-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:10:5-88
-17-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:10:22-85
+17-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:10:5-88
+17-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:10:22-85
 18    <uses-permission android:name="android.permission.MANAGE_SHORTCUTS" />
-18-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:11:5-75
-18-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:11:22-72
+18-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:11:5-75
+18-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:11:22-72
 19    <uses-permission android:name="android.permission.MANAGE_PIN_SHORTCUTS" />
-19-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:12:5-79
-19-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:12:22-76
+19-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:12:5-79
+19-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:12:22-76
 20    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-20-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:13:5-79
-20-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:13:22-76
+20-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:13:5-79
+20-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:13:22-76
 21
 22    <queries>
 22-->[com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:10:5-12:15
@@ -48,22 +48,22 @@
 25        <intent>
 25-->[com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:19:9-23:18
 26            <action android:name="android.intent.action.VIEW" />
-26-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:17-69
-26-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:25-66
+26-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:17-69
+26-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:25-66
 27
 28            <data android:scheme="https" />
-28-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:17-48:47
-28-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:23-49
+28-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:17-48:47
+28-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:23-49
 29        </intent>
 30        <intent>
 30-->[com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:24:9-28:18
 31            <action android:name="android.intent.action.VIEW" />
-31-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:17-69
-31-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:25-66
+31-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:17-69
+31-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:25-66
 32
 33            <data android:scheme="http" />
-33-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:17-48:47
-33-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:23-49
+33-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:17-48:47
+33-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:23-49
 34        </intent>
 35
 36        <package android:name="com.google.android.apps.tv.launcherx" />
@@ -78,16 +78,16 @@
 39        <intent>
 39-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:38:9-44:18
 40            <action android:name="android.intent.action.VIEW" />
-40-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:17-69
-40-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:25-66
+40-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:17-69
+40-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:25-66
 41
 42            <category android:name="android.intent.category.BROWSABLE" />
-42-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:45:17-78
-42-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:45:27-75
+42-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:45:17-78
+42-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:45:27-75
 43
 44            <data android:scheme="https" />
-44-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:17-48:47
-44-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:23-49
+44-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:17-48:47
+44-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:23-49
 45        </intent> <!-- End of browser content -->
 46        <!-- For CustomTabsService -->
 47        <intent>
@@ -104,17 +104,17 @@
 52-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:53:21-64
 53
 54            <data android:mimeType="vnd.android.cursor.dir/event" />
-54-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:17-48:47
+54-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:17-48:47
 55        </intent>
 56        <intent>
 56-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:57:9-61:18
 57            <action android:name="android.intent.action.VIEW" />
-57-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:17-69
-57-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:25-66
+57-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:17-69
+57-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:25-66
 58
 59            <data android:scheme="sms" />
-59-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:17-48:47
-59-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:23-49
+59-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:17-48:47
+59-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:23-49
 60        </intent>
 61        <intent>
 61-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:62:9-66:18
@@ -123,7 +123,7 @@
 62-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:63:21-62
 63
 64            <data android:path="tel:" />
-64-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:17-48:47
+64-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:17-48:47
 65        </intent>
 66        <intent>
 66-->[com.android.billingclient:billing:6.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d5acc6fdec41e20ca6b85ea7623ce84\transformed\jetified-billing-6.0.1\AndroidManifest.xml:13:9-15:18
@@ -171,12 +171,12 @@
 86
 87    <permission
 87-->[androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:22:5-24:47
-88        android:name="com.radiotime.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+88        android:name="com.srivyaradio.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
 88-->[androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:23:9-81
 89        android:protectionLevel="signature" />
 89-->[androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:24:9-44
 90
-91    <uses-permission android:name="com.radiotime.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+91    <uses-permission android:name="com.srivyaradio.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 91-->[androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:26:5-97
 91-->[androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:26:22-94
 92    <uses-permission android:name="android.permission.REORDER_TASKS" />
@@ -184,115 +184,115 @@
 92-->[androidx.test:core:1.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d176ae44091ba4c6e1424d573933d1b\transformed\jetified-core-1.5.0\AndroidManifest.xml:24:22-69
 93
 94    <application
-94-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:14:5-64:19
+94-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:14:5-64:19
 95        android:allowBackup="true"
-95-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:15:9-35
+95-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:15:9-35
 96        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 96-->[androidx.core:core:1.16.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08cc2322a8c9d0d69ab782e879bd4862\transformed\core-1.16.0\AndroidManifest.xml:28:18-86
 97        android:dataExtractionRules="@xml/data_extraction_rules"
-97-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:16:9-65
+97-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:16:9-65
 98        android:debuggable="true"
 99        android:enableOnBackInvokedCallback="true"
-99-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:19:9-51
+99-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:19:9-51
 100        android:extractNativeLibs="false"
 101        android:fullBackupContent="@xml/backup_rules"
-101-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:17:9-54
+101-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:17:9-54
 102        android:icon="@mipmap/ic_launcher"
-102-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:20:9-43
+102-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:20:9-43
 103        android:label="@string/app_name"
-103-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:21:9-41
+103-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:21:9-41
 104        android:roundIcon="@mipmap/ic_launcher_round"
-104-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:22:9-54
+104-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:22:9-54
 105        android:supportsRtl="true"
-105-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:23:9-35
+105-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:23:9-35
 106        android:testOnly="true"
 107        android:theme="@style/Theme.RadioTimeV3"
-107-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:24:9-49
+107-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:24:9-49
 108        android:usesCleartextTraffic="true" >
-108-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:18:9-44
+108-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:18:9-44
 109        <meta-data
-109-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:25:9-27:46
+109-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:25:9-27:46
 110            android:name="com.google.android.gms.ads.APPLICATION_ID"
-110-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:26:13-69
+110-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:26:13-69
 111            android:value="@string/app_id" />
-111-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:27:13-43
+111-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:27:13-43
 112
 113        <activity
-113-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:29:9-50:20
-114            android:name="com.app.radiotime.MainActivity"
-114-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:30:13-41
+113-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:29:9-50:20
+114            android:name="com.app.srivyaradio.MainActivity"
+114-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:30:13-41
 115            android:exported="true"
-115-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:31:13-36
+115-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:31:13-36
 116            android:theme="@style/Theme.RadioTimeV3" >
-116-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:32:13-53
+116-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:32:13-53
 117            <intent-filter>
-117-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:33:13-37:29
+117-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:33:13-37:29
 118                <action android:name="android.intent.action.MAIN" />
-118-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:34:17-69
-118-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:34:25-66
+118-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:34:17-69
+118-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:34:25-66
 119
 120                <category android:name="android.intent.category.LAUNCHER" />
-120-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:17-77
-120-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:27-74
+120-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:17-77
+120-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:27-74
 121            </intent-filter>
 122            <intent-filter>
-122-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:38:13-41:29
+122-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:38:13-41:29
 123                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
-123-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:39:17-86
-123-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:39:25-83
+123-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:39:17-86
+123-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:39:25-83
 124
 125                <category android:name="android.intent.category.DEFAULT" />
-125-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:40:17-76
-125-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:40:27-73
+125-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:40:17-76
+125-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:40:27-73
 126            </intent-filter>
 127            <intent-filter android:autoVerify="true" >
-127-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:42:13-49:29
-127-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:42:28-53
+127-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:42:13-49:29
+127-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:42:28-53
 128                <action android:name="android.intent.action.VIEW" />
-128-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:17-69
-128-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:43:25-66
+128-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:17-69
+128-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:43:25-66
 129
 130                <category android:name="android.intent.category.DEFAULT" />
-130-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:40:17-76
-130-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:40:27-73
+130-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:40:17-76
+130-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:40:27-73
 131                <category android:name="android.intent.category.BROWSABLE" />
-131-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:45:17-78
-131-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:45:27-75
+131-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:45:17-78
+131-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:45:27-75
 132
 133                <data
-133-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:17-48:47
+133-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:17-48:47
 134                    android:host="shortcut"
-134-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:48:21-44
+134-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:48:21-44
 135                    android:scheme="radiotime" />
-135-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:47:23-49
+135-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:47:23-49
 136            </intent-filter>
 137        </activity>
 138
 139        <service
-139-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:51:9-59:19
-140            android:name="com.app.radiotime.media.PlayerService"
-140-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:52:13-48
+139-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:51:9-59:19
+140            android:name="com.app.srivyaradio.media.PlayerService"
+140-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:52:13-48
 141            android:exported="true"
-141-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:53:13-36
+141-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:53:13-36
 142            android:foregroundServiceType="mediaPlayback" >
-142-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:54:13-58
+142-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:54:13-58
 143            <intent-filter>
-143-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:55:13-58:29
+143-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:55:13-58:29
 144                <action android:name="androidx.media3.session.MediaLibraryService" />
-144-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:56:17-86
-144-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:56:25-83
+144-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:56:17-86
+144-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:56:25-83
 145                <action android:name="android.media.browse.MediaBrowserService" />
-145-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:57:17-83
-145-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:57:25-80
+145-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:57:17-83
+145-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:57:25-80
 146            </intent-filter>
 147        </service>
 148
 149        <meta-data
-149-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:61:9-63:59
+149-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:61:9-63:59
 150            android:name="com.google.android.gms.car.application"
-150-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:62:13-66
+150-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:62:13-66
 151            android:resource="@xml/automotive_app_desc" />
-151-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:63:13-56
+151-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:63:13-56
 152        <meta-data
 152-->[androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:23:9-25:36
 153            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
@@ -344,7 +344,7 @@
 178-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:80:9-85:43
 179            android:name="com.google.android.gms.ads.MobileAdsInitProvider"
 179-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:81:13-76
-180            android:authorities="com.radiotime.app.mobileadsinitprovider"
+180            android:authorities="com.srivyaradio.app.mobileadsinitprovider"
 180-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:82:13-73
 181            android:exported="false"
 181-->[com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:83:13-37
@@ -464,7 +464,7 @@
 241-->[com.google.firebase:firebase-common:22.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\71ab979dbef2fff09d74a7f779322581\transformed\jetified-firebase-common-22.0.0\AndroidManifest.xml:23:9-28:39
 242            android:name="com.google.firebase.provider.FirebaseInitProvider"
 242-->[com.google.firebase:firebase-common:22.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\71ab979dbef2fff09d74a7f779322581\transformed\jetified-firebase-common-22.0.0\AndroidManifest.xml:24:13-77
-243            android:authorities="com.radiotime.app.firebaseinitprovider"
+243            android:authorities="com.srivyaradio.app.firebaseinitprovider"
 243-->[com.google.firebase:firebase-common:22.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\71ab979dbef2fff09d74a7f779322581\transformed\jetified-firebase-common-22.0.0\AndroidManifest.xml:25:13-72
 244            android:directBootAware="true"
 244-->[com.google.firebase:firebase-common:22.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\71ab979dbef2fff09d74a7f779322581\transformed\jetified-firebase-common-22.0.0\AndroidManifest.xml:26:13-43
@@ -484,7 +484,7 @@
 252-->[androidx.work:work-runtime:2.10.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\fa03afdda4a7e47b741a1c66ca506fa8\transformed\work-runtime-2.10.3\AndroidManifest.xml:29:9-37:20
 253            android:name="androidx.startup.InitializationProvider"
 253-->[androidx.work:work-runtime:2.10.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\fa03afdda4a7e47b741a1c66ca506fa8\transformed\work-runtime-2.10.3\AndroidManifest.xml:30:13-67
-254            android:authorities="com.radiotime.app.androidx-startup"
+254            android:authorities="com.srivyaradio.app.androidx-startup"
 254-->[androidx.work:work-runtime:2.10.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\fa03afdda4a7e47b741a1c66ca506fa8\transformed\work-runtime-2.10.3\AndroidManifest.xml:31:13-68
 255            android:exported="false" >
 255-->[androidx.work:work-runtime:2.10.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\fa03afdda4a7e47b741a1c66ca506fa8\transformed\work-runtime-2.10.3\AndroidManifest.xml:32:13-37
@@ -790,8 +790,8 @@
 411-->[androidx.test:core:1.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d176ae44091ba4c6e1424d573933d1b\transformed\jetified-core-1.5.0\AndroidManifest.xml:31:13-33:29
 411-->[androidx.test:core:1.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d176ae44091ba4c6e1424d573933d1b\transformed\jetified-core-1.5.0\AndroidManifest.xml:31:28-51
 412                <category android:name="android.intent.category.LAUNCHER" />
-412-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:17-77
-412-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:27-74
+412-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:17-77
+412-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:27-74
 413            </intent-filter>
 414        </activity>
 415        <activity
@@ -806,8 +806,8 @@
 419-->[androidx.test:core:1.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d176ae44091ba4c6e1424d573933d1b\transformed\jetified-core-1.5.0\AndroidManifest.xml:31:13-33:29
 419-->[androidx.test:core:1.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d176ae44091ba4c6e1424d573933d1b\transformed\jetified-core-1.5.0\AndroidManifest.xml:31:28-51
 420                <category android:name="android.intent.category.LAUNCHER" />
-420-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:17-77
-420-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:27-74
+420-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:17-77
+420-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:27-74
 421            </intent-filter>
 422        </activity>
 423        <activity
@@ -822,8 +822,8 @@
 427-->[androidx.test:core:1.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d176ae44091ba4c6e1424d573933d1b\transformed\jetified-core-1.5.0\AndroidManifest.xml:31:13-33:29
 427-->[androidx.test:core:1.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d176ae44091ba4c6e1424d573933d1b\transformed\jetified-core-1.5.0\AndroidManifest.xml:31:28-51
 428                <category android:name="android.intent.category.LAUNCHER" />
-428-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:17-77
-428-->C:\Users\Srivya\StudioProjects\RadioTime\app\src\main\AndroidManifest.xml:36:27-74
+428-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:17-77
+428-->C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:36:27-74
 429            </intent-filter>
 430        </activity>
 431

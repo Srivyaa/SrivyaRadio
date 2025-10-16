@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.app.radiotime.app-mergeDebugResources-116:/values-cs/values-cs.xml",
+            "outputFile": "com.app.srivyaradio.app-mergeDebugResources-116:/values-cs/values-cs.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\6fc9927f5be355a4f94783cccbd92aab\\transformed\\jetified-play-services-gcm-17.0.0\\res\\values-cs\\values.xml",

@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "890686890495",
-    "project_id": "radiotime-test",
-    "storage_bucket": "radiotime-test.firebasestorage.app"
+    "project_number": "360485101947",
+    "project_id": "test-radio-time-app",
+    "storage_bucket": "test-radio-time-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:890686890495:android:9d024837bfed8dd84007ca",
+        "mobilesdk_app_id": "1:360485101947:android:2801fe4f5e05fef6041dde",
         "android_client_info": {
-          "package_name": "com.radiotime.app"
+          "package_name": "com.srivyaradio.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCbXYKSiqkJLLRfPzNKkfTD1v7dUMFHLaA"
+          "current_key": "AIzaSyDuBThA4u5QPLtiRmwaUiNYTkUe0gjYqr0"
         }
       ],
       "services": {

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.app.radiotime.app-mergeDebugResources-116:/values-h550dp-port-v13/values-h550dp-port-v13.xml",
+            "outputFile": "com.app.srivyaradio.app-mergeDebugResources-116:/values-h550dp-port-v13/values-h550dp-port-v13.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\b035168507b9cf3658360fcf1b46eb05\\transformed\\material-1.8.0\\res\\values-h550dp-port-v13\\values-h550dp-port-v13.xml",

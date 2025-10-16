@@ -4,7 +4,7 @@
     "type": "COMPATIBLE_SCREEN_MANIFEST",
     "kind": "Directory"
   },
-  "applicationId": "com.radiotime.app",
+  "applicationId": "com.srivyaradio.app",
   "variantName": "debug",
   "elements": []
 }

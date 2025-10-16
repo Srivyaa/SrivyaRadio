@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.app.radiotime.app-mergeDebugResources-116:/values-it/values-it.xml",
+            "outputFile": "com.app.srivyaradio.app-mergeDebugResources-116:/values-it/values-it.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\227f71dcabfac611d8ee6470f8a4e8cf\\transformed\\leanback-1.0.0\\res\\values-it\\values-it.xml",

@@ -1,12 +1,12 @@
-# RadioTime – Live FM & AM Radio App
+# SrivyaRadio – Live FM & AM Radio App
 
-**RadioTime** is a simple app that lets you listen to live radio stations from around the world. Whether you’re into music, talk, sports, or news, it gives you access to over **35,000 stations** in one place.
+**SrivyaRadio** is a simple app that lets you listen to live radio stations from around the world. Whether you’re into music, talk, sports, or news, it gives you access to over **35,000 stations** in one place.
 
 ---
 
 ## About the project
 
-RadioTime was one of my favorite projects to build. It helped me improve a lot as an Android developer.
+SrivyaRadio was one of my favorite projects to build. It helped me improve a lot as an Android developer.
 
 The app is built entirely with **Jetpack Compose**, and follows the **MVVM** architecture. I used **Media3** for audio playback, **Room** for local storage (like favorites and custom stations), and **WorkManager** for background syncing. It also includes **Android Auto** support, **AdMob** for monetization, and **RevenueCat** for in-app purchases.
 
