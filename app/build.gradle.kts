@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.app.radiotime"
+    namespace = "com.app.srivyaradio"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.radiotime.app"
+        applicationId = "com.srivyaradio.app"
         minSdk = 24
         targetSdk = 36
         versionCode = 53
