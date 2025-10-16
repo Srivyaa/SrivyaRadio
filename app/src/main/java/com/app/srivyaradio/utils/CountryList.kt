@@ -1,6 +1,23 @@
 package com.app.srivyaradio.utils
 
 val countryList = listOf(
+    // Custom Radio Categories
+    Pair("🕉️ Hindu_Radio", "HINDU"),
+    Pair("✝️ Christian_Radios", "CHRIST"),
+    Pair("☪️ Islam_Radios", "ISLAM"),
+    Pair("🇬🇧 English_Radios", "ENGLISH"),
+    Pair("🇮🇳 Hindi_Radios", "HINDI"),
+    Pair("🇮🇳 Tamil_FM_Radios", "TAMILFM"),
+    Pair("🎵 Music_Radio", "MUSIC"),
+    Pair("🇮🇳 All_India_Radios", "INDIA"),
+    Pair("🏘️ Community_Radios", "COMMUNITY"),
+    Pair("📍 Local_Radios", "LOCAL"),
+    Pair("🎤 Artist_Radios", "ARTIST"),
+    Pair("🎻 Classic_Radios", "CLASSIC"),
+    Pair("🎭 Actor_Radios", "ACTOR"),
+    Pair("💬 Tamil_Talk_Radios", "TAMILTALK"),
+    
+    // Standard Countries
     Pair("🇦🇫 Afghanistan", "AF"),
     Pair("🇦🇱 Albania", "AL"),
     Pair("🇩🇿 Algeria", "DZ"),
