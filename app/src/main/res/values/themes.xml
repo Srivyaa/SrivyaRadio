@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.RadioTimeV3" parent="android:Theme.Material.Light.NoActionBar" />
+    
+    <style name="Theme.RadioTimeV3.FullScreen" parent="Theme.RadioTimeV3">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
 </resources>
