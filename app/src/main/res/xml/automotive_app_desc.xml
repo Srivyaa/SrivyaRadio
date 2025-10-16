@@ -1,3 +1,9 @@
-<automotiveApp>
-    <uses name="media"/>
+<automotiveApp xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses name="media" />
+    <meta-data
+        android:name="com.google.android.gms.car.media.ALWAYS_RESUME_STATE"
+        android:value="true" />
+    <meta-data
+        android:name="com.google.android.gms.car.media.ALWAYS_EXPANDED"
+        android:value="true" />
 </automotiveApp>
