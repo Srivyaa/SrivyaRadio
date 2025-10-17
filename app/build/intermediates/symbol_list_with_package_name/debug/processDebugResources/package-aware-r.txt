@@ -4275,6 +4275,8 @@ drawable quantum_ic_volume_off_grey600_36
 drawable quantum_ic_volume_off_white_36
 drawable quantum_ic_volume_up_grey600_36
 drawable quantum_ic_volume_up_white_36
+drawable sleet_logo
+drawable splash_screen_background
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
@@ -5058,6 +5060,7 @@ id spacer
 id special_effects_controller_view_tag
 id spherical_gl_surface_view
 id spinner
+id splashImage
 id spline
 id split_action_bar
 id spread
@@ -5337,6 +5340,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_splash
 layout admob_empty_layout
 layout browser_actions_context_menu_page
 layout browser_actions_context_menu_row
@@ -5549,6 +5553,7 @@ layout select_dialog_singlechoice_material
 layout support_simple_spinner_dropdown_item
 layout video_surface_fragment
 mipmap ic_launcher
+mipmap ic_launcher_background
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round
 plurals exo_controls_fastforward_by_amount_description
@@ -5561,6 +5566,7 @@ raw lb_voice_failure
 raw lb_voice_no_input
 raw lb_voice_open
 raw lb_voice_success
+raw splash_sound
 string CronetProviderClassName
 string abc_action_bar_home_description
 string abc_action_bar_up_description
@@ -6816,6 +6822,7 @@ style Theme_MediaRouter_Light_DarkControlPanel
 style Theme_MediaRouter_LightControlPanel
 style Theme_PlayCore_Transparent
 style Theme_RadioTimeV3
+style Theme_RadioTimeV3_FullScreen
 style ThemeOverlay_AppCompat
 style ThemeOverlay_AppCompat_ActionBar
 style ThemeOverlay_AppCompat_Dark

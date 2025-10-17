@@ -19,9 +19,15 @@ drawable ic_play_circle
 drawable ic_radio_filled
 drawable ic_radio_outlined
 drawable icon_launcher
+drawable sleet_logo
+drawable splash_screen_background
+id splashImage
+layout activity_splash
 mipmap ic_launcher
+mipmap ic_launcher_background
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round
+raw splash_sound
 string app_id
 string app_name
 string com.google.firebase.crashlytics.mapping_file_id
@@ -35,6 +41,7 @@ string interstitial_ad_id
 string project_id
 string revcat_key
 style Theme.RadioTimeV3
+style Theme.RadioTimeV3.FullScreen
 xml automotive_app_desc
 xml backup_rules
 xml data_extraction_rules
