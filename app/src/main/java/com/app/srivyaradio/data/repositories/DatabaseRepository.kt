@@ -23,16 +23,16 @@ class DatabaseRepository(application: Application) {
         entityDao.insertStation(radioStations)
     }
 
-    suspend fun getRadioStationByID(id:String):Station? {
+    suspend fun getRadioStationByID(id: String): Station? {
         return entityDao.getStationById(id)
     }
 
-    suspend fun getRadioStationByName(name:String):List<Station> {
+    suspend fun getRadioStationByName(name: String): List<Station> {
         return entityDao.getStationByName(name)
     }
 
-    suspend fun getRadioStationByNameAndCountry(name:String, countryCode: String):List<Station> {
-        return entityDao.getStationByNameAndCountry(name,countryCode)
+    suspend fun getRadioStationByNameAndCountry(name: String, countryCode: String): List<Station> {
+        return entityDao.getStationByNameAndCountry(name, countryCode)
     }
 
     suspend fun insertFavoriteItem(favoriteStation: Favorite) {
@@ -43,15 +43,24 @@ class DatabaseRepository(application: Application) {
         return entityDao.getFavoriteStations()
     }
 
-    suspend fun getFavoriteItemById(id:String):Favorite? {
+    suspend fun getFavoriteItemById(id: String): Favorite? {
         return entityDao.getFavoriteStationById(id)
     }
 
-    suspend fun deleteFavoriteItem(item:Favorite) {
+    suspend fun deleteFavoriteItem(item: Favorite) {
         entityDao.deleteFavoriteStation(item)
     }
 
-    suspend fun updateFavoriteItem(item:Favorite){
+    suspend fun updateFavoriteItem(item: Favorite) {
         entityDao.updateFavoriteItem(item)
+    }
+
+    /**
+     * Search for stations by name (case-insensitive)
+     * @param query The search query string
+     * @return List of matching stations
+     */
+    suspend fun searchStations(query: String): List<Station> {
+        return entityDao.searchStations(query)
     }
 }
