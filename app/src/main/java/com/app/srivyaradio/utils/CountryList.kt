@@ -2,6 +2,7 @@ package com.app.srivyaradio.utils
 
 val countryList = listOf(
     // Custom Radio Categories
+    Pair("📺 Tamil_TV_Channels", "TAMILTV"),
     Pair("🕉️ Hindu_Radio", "HINDU"),
     Pair("✝️ Christian_Radios", "CHRIST"),
     Pair("☪️ Islam_Radios", "ISLAM"),
