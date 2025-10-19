@@ -77,7 +77,7 @@ fun MoreScreen(
             }, modifier = Modifier.clickable {
                 openThemeDialog = true
             })
-            ListItem(headlineContent = {
+/*            ListItem(headlineContent = {
                 Text(text = "Instagram")
             }, leadingContent = {
                 Icon(painterResource(id = R.drawable.ic_instagram), contentDescription = null)
@@ -91,9 +91,9 @@ fun MoreScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            })*/
 
-            ListItem(headlineContent = {
+/*            ListItem(headlineContent = {
                 Text(text = "Share this app")
             }, leadingContent = {
                 Icon(Icons.Outlined.Share, contentDescription = null)
@@ -117,9 +117,9 @@ fun MoreScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            })*/
 
-            ListItem(headlineContent = {
+/*            ListItem(headlineContent = {
                 Text(text = "Rate this app")
             }, leadingContent = {
                 Icon(Icons.Outlined.ThumbUp, contentDescription = null)
@@ -133,7 +133,7 @@ fun MoreScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            })*/
 
             ListItem(headlineContent = {
                 Text(text = "Contact the developer")
@@ -141,7 +141,7 @@ fun MoreScreen(
                 Icon(Icons.Outlined.Email, contentDescription = null)
             }, modifier = Modifier.clickable {
                 val emailIntent =
-                    Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:radiotimeapp@gmail.com"))
+                    Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:dhilipkumareie@gmail.com"))
                 try {
                     context.startActivity(emailIntent)
                 } catch (_: ActivityNotFoundException) {
