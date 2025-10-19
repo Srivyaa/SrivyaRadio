@@ -19,5 +19,5 @@ object Constants {
     const val UPDATE_FAVORITE_COMMAND = "COMMAND_UPDATE_FAVORITE"
     const val SET_TIMER_KEY = "KEY_SET_TIMER"
     const val SET_TIMER_COMMAND = "COMMAND_SET_TIMER"
-    const val RADIO_LOGO = "https://drive.google.com/uc?export=download&id=1K_7HOqLk1u_cVHZlWs-geHlWIQzquxDl"
+    const val RADIO_LOGO = "https://srivyaa.github.io/ImageHost/ic_radiologo.png"
 }
