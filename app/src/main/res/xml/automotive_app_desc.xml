@@ -6,4 +6,10 @@
     <meta-data
         android:name="com.google.android.gms.car.media.ALWAYS_EXPANDED"
         android:value="true" />
+    <meta-data
+        android:name="com.google.android.gms.car.media.CONTENT_STYLE_BROWSABLE_HINT"
+        android:value="2" />
+    <meta-data
+        android:name="com.google.android.gms.car.media.CONTENT_STYLE_PLAYABLE_HINT"
+        android:value="2" />
 </automotiveApp>
