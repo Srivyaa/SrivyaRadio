@@ -48,9 +48,49 @@ class PlayerService : MediaLibraryService() {
     private var countryCode = "US"
 
     private var timer: CountDownTimer? = null
+    
+    // Queue management for previous/next navigation
+    private val currentQueue = mutableListOf<MediaItem>()
+    private var currentQueueIndex = -1
+    private var currentQueueTag = DISCOVER_ID
 
     private val retrofit = LocationClient.getInstance()
     var apiInterface: LocationInterface = retrofit.create(LocationInterface::class.java)
+    
+    @OptIn(UnstableApi::class)
+    private fun updateAvailableCommands() {
+        val commandsBuilder = MediaSession.ConnectionResult.DEFAULT_PLAYER_COMMANDS.buildUpon()
+        
+        val hasNext = currentQueueIndex < currentQueue.size - 1
+        val hasPrevious = currentQueueIndex > 0
+        
+        // Enable/disable next button based on queue state
+        if (hasNext) {
+            commandsBuilder.add(Player.COMMAND_SEEK_TO_NEXT)
+        } else {
+            commandsBuilder.remove(Player.COMMAND_SEEK_TO_NEXT)
+        }
+        
+        // Enable/disable previous button based on queue state
+        if (hasPrevious) {
+            commandsBuilder.add(Player.COMMAND_SEEK_TO_PREVIOUS)
+        } else {
+            commandsBuilder.remove(Player.COMMAND_SEEK_TO_PREVIOUS)
+        }
+        
+        val playerCommands = commandsBuilder.build()
+        
+        Log.d("PlayerService", "updateAvailableCommands: index=$currentQueueIndex, size=${currentQueue.size}, hasNext=$hasNext, hasPrevious=$hasPrevious, controllers=${mediaLibrarySession.connectedControllers.size}")
+        
+        // Update commands for all connected controllers
+        mediaLibrarySession.connectedControllers.forEach { controller ->
+            mediaLibrarySession.setAvailableCommands(
+                controller,
+                MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS,
+                playerCommands
+            )
+        }
+    }
 
 
     @OptIn(UnstableApi::class)
@@ -117,6 +157,15 @@ class PlayerService : MediaLibraryService() {
             getPendingIntent(0, immutableFlag or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
+        // Add player listener for queue navigation
+        player.addListener(object : Player.Listener {
+            override fun onEvents(player: Player, events: Player.Events) {
+                super.onEvents(player, events)
+                // Update available commands based on queue state
+                updateAvailableCommands()
+            }
+        })
+
         mediaLibrarySession =
             MediaLibrarySession.Builder(this, player, MediaLibrarySessionCallback())
                 .setSessionActivity(sessionActivityPendingIntent).build()
@@ -146,6 +195,22 @@ class PlayerService : MediaLibraryService() {
                     })
                 }.build()
             )
+        }
+        
+        MediaItemFactory.onCountryStationsLoaded = { loadedCountryCode ->
+            serviceScope.launch {
+                try {
+                    val stationCount = dbRepository.getAllStations(loadedCountryCode.uppercase()).size
+                    Log.d("PlayerService", "Country stations loaded for $loadedCountryCode: $stationCount stations")
+                    mediaLibrarySession.notifyChildrenChanged(
+                        "${Constants.COUNTRY_PREFIX}$loadedCountryCode", 
+                        stationCount, 
+                        null
+                    )
+                } catch (e: Exception) {
+                    Log.e("PlayerService", "Error notifying country stations loaded: ${e.message}")
+                }
+            }
         }
 
     }
@@ -192,6 +257,38 @@ class PlayerService : MediaLibraryService() {
     }
 
     private inner class MediaLibrarySessionCallback : MediaLibrarySession.Callback {
+        
+        override fun onPlayerCommandRequest(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo,
+            playerCommand: Int
+        ): Int {
+            when (playerCommand) {
+                Player.COMMAND_SEEK_TO_NEXT -> {
+                    if (currentQueueIndex < currentQueue.size - 1) {
+                        currentQueueIndex++
+                        player.setMediaItem(currentQueue[currentQueueIndex])
+                        player.prepare()
+                        player.play()
+                        updateAvailableCommands()
+                    }
+                    return SessionResult.RESULT_SUCCESS
+                }
+                Player.COMMAND_SEEK_TO_PREVIOUS -> {
+                    if (currentQueueIndex > 0) {
+                        currentQueueIndex--
+                        player.setMediaItem(currentQueue[currentQueueIndex])
+                        player.prepare()
+                        player.play()
+                        updateAvailableCommands()
+                    }
+                    return SessionResult.RESULT_SUCCESS
+                }
+            }
+            return super.onPlayerCommandRequest(session, controller, playerCommand)
+        }
+        
+        @OptIn(UnstableApi::class)
         override fun onConnect(
             session: MediaSession, controller: MediaSession.ControllerInfo
         ): MediaSession.ConnectionResult {
@@ -215,9 +312,40 @@ class PlayerService : MediaLibraryService() {
                     Constants.SET_TIMER_COMMAND, Bundle.EMPTY
                 )
             )
+            
+            availableSessionCommands.add(
+                SessionCommand(
+                    Constants.PLAY_NEXT_COMMAND, Bundle.EMPTY
+                )
+            )
+            
+            availableSessionCommands.add(
+                SessionCommand(
+                    Constants.PLAY_PREVIOUS_COMMAND, Bundle.EMPTY
+                )
+            )
+            
+            availableSessionCommands.add(
+                SessionCommand(
+                    Constants.SET_QUEUE_COMMAND, Bundle.EMPTY
+                )
+            )
+
+            // Enable previous/next player commands based on queue state
+            val availablePlayerCommands = connectionResult.availablePlayerCommands.buildUpon()
+            
+            // Only add next command if there's a next item in queue
+            if (currentQueueIndex < currentQueue.size - 1) {
+                availablePlayerCommands.add(Player.COMMAND_SEEK_TO_NEXT)
+            }
+            
+            // Only add previous command if there's a previous item in queue
+            if (currentQueueIndex > 0) {
+                availablePlayerCommands.add(Player.COMMAND_SEEK_TO_PREVIOUS)
+            }
 
             return MediaSession.ConnectionResult.accept(
-                availableSessionCommands.build(), connectionResult.availablePlayerCommands
+                availableSessionCommands.build(), availablePlayerCommands.build()
             )
         }
 
@@ -253,6 +381,50 @@ class PlayerService : MediaLibraryService() {
                             player.pause()
                         }
                     }.start()
+                }
+            }
+            
+            if (Constants.SET_QUEUE_COMMAND == customCommand.customAction) {
+                val queueItems = args.getStringArrayList(Constants.SET_QUEUE_ITEMS_KEY) ?: arrayListOf()
+                val currentIndex = args.getInt(Constants.SET_QUEUE_INDEX_KEY, -1)
+                val tag = args.getString(Constants.SET_QUEUE_TAG_KEY, DISCOVER_ID)
+                
+                Log.d("PlayerService", "SET_QUEUE_COMMAND received: ${queueItems.size} items, index: $currentIndex")
+                
+                currentQueue.clear()
+                serviceScope.launch {
+                    queueItems.forEach { stationId ->
+                        try {
+                            val mediaItem = MediaItemFactory.getItemFromDB(dbRepository, "$tag$stationId")
+                            currentQueue.add(mediaItem)
+                        } catch (e: Exception) {
+                            Log.e("PlayerService", "Error loading queue item: ${e.message}")
+                        }
+                    }
+                    currentQueueIndex = currentIndex
+                    currentQueueTag = tag
+                    Log.d("PlayerService", "Queue loaded: ${currentQueue.size} items, index: $currentQueueIndex")
+                    updateAvailableCommands()
+                }
+            }
+            
+            if (Constants.PLAY_NEXT_COMMAND == customCommand.customAction) {
+                if (currentQueueIndex < currentQueue.size - 1) {
+                    currentQueueIndex++
+                    player.setMediaItem(currentQueue[currentQueueIndex])
+                    player.prepare()
+                    player.play()
+                    updateAvailableCommands()
+                }
+            }
+            
+            if (Constants.PLAY_PREVIOUS_COMMAND == customCommand.customAction) {
+                if (currentQueueIndex > 0) {
+                    currentQueueIndex--
+                    player.setMediaItem(currentQueue[currentQueueIndex])
+                    player.prepare()
+                    player.play()
+                    updateAvailableCommands()
                 }
             }
 
@@ -299,6 +471,21 @@ class PlayerService : MediaLibraryService() {
 
             serviceScope.launch {
                 try {
+                    // If requesting children for a country item, ensure stations are downloaded
+                    if (parentId.startsWith(Constants.COUNTRY_PREFIX)) {
+                        val selectedCountryCode = parentId.removePrefix(Constants.COUNTRY_PREFIX)
+                        val existingStations = dbRepository.getAllStations(selectedCountryCode.uppercase())
+                        
+                        // If no stations exist for this country, trigger download
+                        if (existingStations.isEmpty()) {
+                            Log.d("PlayerService", "No stations found for $selectedCountryCode, triggering download")
+                            MediaItemFactory.getStations(selectedCountryCode, application, "country_browse_$selectedCountryCode")
+                            // Return empty list for now, will be populated after download completes
+                            future.set(LibraryResult.ofItemList(emptyList(), null))
+                            return@launch
+                        }
+                    }
+                    
                     val result = MediaItemFactory.getChildrenWithParent(
                         parentId, page, pageSize, dbRepository, countryCode
                     )
@@ -320,6 +507,16 @@ class PlayerService : MediaLibraryService() {
 
             serviceScope.launch {
                 try {
+                    // If subscribing to a country item, download stations for that country
+                    if (parentId.startsWith(Constants.COUNTRY_PREFIX)) {
+                        val selectedCountryCode = parentId.removePrefix(Constants.COUNTRY_PREFIX)
+                        Log.d("PlayerService", "Subscribing to country: $selectedCountryCode, triggering station download")
+                        MediaItemFactory.getStations(selectedCountryCode, application, "country_browse")
+                        
+                        // Wait a moment for the download to start and potentially complete
+                        kotlinx.coroutines.delay(500)
+                    }
+                    
                     val children = MediaItemFactory.getChildrenWithParent(
                         parentId, 1, 20, dbRepository, countryCode
                     )

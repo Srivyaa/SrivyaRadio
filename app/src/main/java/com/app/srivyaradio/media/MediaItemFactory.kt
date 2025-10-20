@@ -19,19 +19,23 @@ import com.app.srivyaradio.data.models.Station
 import com.app.srivyaradio.data.repositories.DatabaseRepository
 import com.app.srivyaradio.data.repositories.SharedPreferencesRepository
 import com.app.srivyaradio.utils.Constants
+import com.app.srivyaradio.utils.Constants.COUNTRIES_ID
+import com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX
 import com.app.srivyaradio.utils.Constants.DISCOVER_ID
 import com.app.srivyaradio.utils.Constants.FAVORITES_ID
 import com.app.srivyaradio.utils.Constants.ROOT_ID
 import com.app.srivyaradio.utils.Constants.SHARED_PREF
 import com.app.srivyaradio.utils.DownloadStationsWorker
+import com.app.srivyaradio.utils.countryList
 
 object MediaItemFactory {
     var discoverList: List<Station> = listOf()
     private var favoriteList: List<Station> = listOf()
-
+    
     var onFinishedLoading: (() -> Unit)? = null
     var onFinishedReadingDiscover: (() -> Unit)? = null
     var onFinishedReadingFavorite: (() -> Unit)? = null
+    var onCountryStationsLoaded: ((String) -> Unit)? = null
 
     val retrofit = StationsClient.getInstance()
     val apiInterface: StationsInterface = retrofit.create(StationsInterface::class.java)
@@ -62,6 +66,10 @@ object MediaItemFactory {
                     if (!workInfo.isNullOrEmpty()) {
                         if (workInfo[0].state != WorkInfo.State.FAILED) {
                             onFinishedLoading?.invoke()
+                            // Notify country-specific loading completion
+                            if (tag.startsWith("country_browse")) {
+                                onCountryStationsLoaded?.invoke(countryCode)
+                            }
                         } else {
                             WorkManager.getInstance(application).enqueue(getStationsWorkRequest)
                         }
@@ -182,6 +190,10 @@ object MediaItemFactory {
         return MediaItem.Builder().setMediaId(FAVORITES_ID).setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
                     .setTitle("Favorites").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .setExtras(Bundle().apply {
+                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
+                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
+                    })
                     .build()
             ).build()
     }
@@ -190,14 +202,51 @@ object MediaItemFactory {
         return MediaItem.Builder().setMediaId(DISCOVER_ID).setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
                     .setTitle("Discover").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .setExtras(Bundle().apply {
+                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
+                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
+                    })
                     .build()
             ).build()
+    }
+
+    private fun getCountriesBrowsable(): MediaItem {
+        return MediaItem.Builder().setMediaId(COUNTRIES_ID).setMediaMetadata(
+                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                    .setTitle("Countries & Categories").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .setExtras(Bundle().apply {
+                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
+                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
+                    })
+                    .build()
+            ).build()
+    }
+
+    private fun getCountryItems(): List<MediaItem> {
+        return countryList.map { (name, code) ->
+            MediaItem.Builder().setMediaId("$COUNTRY_PREFIX$code").setMediaMetadata(
+                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                    .setTitle(name)
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_RADIO_STATIONS)
+                    .setExtras(Bundle().apply {
+                        putString("COUNTRY_CODE", code)
+                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
+                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
+                    })
+                    .build()
+            ).build()
+        }
     }
 
     fun getRoot(): MediaItem {
         return MediaItem.Builder().setMediaId("root").setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED).build()
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .setExtras(Bundle().apply {
+                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
+                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
+                    })
+                    .build()
             ).build()
     }
 
@@ -208,20 +257,34 @@ object MediaItemFactory {
         dbRepository: DatabaseRepository,
         countryCode: String
     ): List<MediaItem> {
-        return when (parentId) {
-            FAVORITES_ID -> {
+        return when {
+            parentId == FAVORITES_ID -> {
                 getFavorite()
             }
 
-            DISCOVER_ID -> {
+            parentId == DISCOVER_ID -> {
                 dbRepository.getAllStations(countryCode.uppercase()).reversed().take(pageSize).map {
                     stationToMediaItem(it, DISCOVER_ID)
                 }
             }
 
-            ROOT_ID -> {
+            parentId == COUNTRIES_ID -> {
+                getCountryItems()
+            }
+
+            parentId.startsWith(COUNTRY_PREFIX) -> {
+                // Extract country code from the parent ID
+                val selectedCountryCode = parentId.removePrefix(COUNTRY_PREFIX)
+                dbRepository.getAllStations(selectedCountryCode.uppercase()).reversed().take(pageSize).map {
+                    stationToMediaItem(it, DISCOVER_ID)
+                }
+            }
+
+            parentId == ROOT_ID -> {
                 listOf(
-                    getDiscoverBrowsable(), getFavoritesBrowsable()
+                    getDiscoverBrowsable(), 
+                    getFavoritesBrowsable(),
+                    getCountriesBrowsable()
                 )
             }
 
