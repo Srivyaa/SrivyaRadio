@@ -36,10 +36,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import com.app.srivyaradio.data.models.AppTheme
 import com.app.srivyaradio.ui.MainViewModel
 import com.app.srivyaradio.ui.components.CustomAlertDialog
@@ -244,14 +247,22 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-
+                            
+                            val scope = rememberCoroutineScope()
+                            
                             NavGraph(navHostController = navController, modifier = Modifier)
 
-                            mainViewModel.selectedStation?.let {
+                            mainViewModel.selectedStation?.let { station ->
                                 if (showBottomBar) {
+                                    var isMiniPlayerFavorite by remember(station.id) { mutableStateOf(false) }
+                                    
+                                    LaunchedEffect(station.id) {
+                                        isMiniPlayerFavorite = mainViewModel.getFavoriteItem(station.id) != null
+                                    }
+                                    
                                     MiniPlayerController(
                                         modifier = Modifier.align(Alignment.BottomEnd),
-                                        station = it,
+                                        station = station,
                                         isLoading = mainViewModel.isRadioLoading,
                                         isPlaying = mainViewModel.isRadioPlaying,
                                         onPlay = {
@@ -269,6 +280,13 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onClick = {
                                             showPlayerSheet = true
+                                        },
+                                        isFavorite = isMiniPlayerFavorite,
+                                        onFavoriteToggle = {
+                                            scope.launch {
+                                                mainViewModel.addOrRemoveFromFavorites(station.id)
+                                                isMiniPlayerFavorite = !isMiniPlayerFavorite
+                                            }
                                         }
                                     )
                                 }
