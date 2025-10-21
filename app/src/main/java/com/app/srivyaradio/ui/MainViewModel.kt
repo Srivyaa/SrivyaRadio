@@ -40,6 +40,7 @@ import com.app.srivyaradio.data.repositories.DatabaseRepository
 import com.app.srivyaradio.data.repositories.SharedPreferencesRepository
 import com.app.srivyaradio.media.MediaItemFactory
 import com.app.srivyaradio.media.PlayerService
+import com.app.srivyaradio.media.QueueManager
 import com.app.srivyaradio.utils.Constants
 import com.app.srivyaradio.utils.Constants.CHANGE_COUNTRY_COMMAND
 import com.app.srivyaradio.utils.Constants.CHANGE_COUNTRY_KEY
@@ -98,6 +99,7 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
     private lateinit var playerFuture: ListenableFuture<MediaBrowser>
     lateinit var player: MediaBrowser
+    lateinit var queueManager: QueueManager
 
     var page = 1
     var pageSize = 20
@@ -109,6 +111,30 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     var totalImpressionCount: Int = 0
     var totalPlayCount: Int = 0
     var lastAdShownTime: Long = 0
+
+    private fun mediaItemToStation(mediaItem: androidx.media3.common.MediaItem, prefix: String): Station? {
+        return try {
+            val extras = mediaItem.mediaMetadata.extras
+            if (extras == null) {
+                Log.w("MainViewModel", "MediaItem has no extras: ${mediaItem.mediaId}")
+                return null
+            }
+
+            Station(
+                mediaItem.mediaId.replace(prefix, ""),
+                extras.getString("ARTWORK") ?: "",
+                extras.getString("NAME") ?: "Unknown Station",
+                extras.getString("COUNTRY") ?: "",
+                extras.getString("GENRE") ?: "",
+                extras.getString("COUNTRY_CODE") ?: "",
+                extras.getString("STREAMING_URL_RESOLVED") ?: "",
+                extras.getString("STATE") ?: ""
+            )
+        } catch (e: Exception) {
+            Log.e("MainViewModel", "Error converting MediaItem to Station: ${e.message}")
+            null
+        }
+    }
 
     private fun loadBitmapFromUrl(imageUrl: String, callback: (Bitmap?) -> Unit) {
         Glide.with(application).setDefaultRequestOptions(
@@ -233,6 +259,64 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             }
         }
     }
+    
+    private fun syncQueueFromPlayer() {
+        if (!::queueManager.isInitialized || !::player.isInitialized) return
+        
+        try {
+            val currentMediaItem = player.currentMediaItem ?: return
+            val mediaId = currentMediaItem.mediaId
+            
+            viewModelScope.launch {
+                try {
+                    // Wait for selectedStation to be set by getCurrentItem()
+                    kotlinx.coroutines.delay(100)
+                    
+                    val station = selectedStation
+                    if (station == null) {
+                        Log.w("MainViewModel", "syncQueueFromPlayer: selectedStation is null")
+                        return@launch
+                    }
+                    
+                    // Only sync if queue is empty or doesn't contain the current station
+                    val shouldSync = queueManager.currentQueue.isEmpty() || 
+                        queueManager.currentQueue.none { it.id == station.id }
+                    
+                    if (!shouldSync) {
+                        Log.d("MainViewModel", "Queue already contains station, skipping sync")
+                        return@launch
+                    }
+                    
+                    // Determine the tag and populate the queue
+                    when {
+                        mediaId.startsWith(DISCOVER_ID) -> {
+                            if (discoverStations.isNotEmpty()) {
+                                Log.d("MainViewModel", "Syncing discover queue: ${discoverStations.size} stations")
+                                queueManager.setQueue(discoverStations, station, DISCOVER_ID)
+                            } else {
+                                Log.w("MainViewModel", "Discover stations list is empty")
+                            }
+                        }
+                        mediaId.startsWith(FAVORITES_ID) -> {
+                            if (favoritesStations.isNotEmpty()) {
+                                Log.d("MainViewModel", "Syncing favorites queue: ${favoritesStations.size} stations")
+                                queueManager.setQueue(favoritesStations, station, FAVORITES_ID)
+                            } else {
+                                Log.w("MainViewModel", "Favorites stations list is empty")
+                            }
+                        }
+                        else -> {
+                            Log.w("MainViewModel", "Unknown media ID prefix: $mediaId")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("MainViewModel", "Error syncing queue: ${e.message}", e)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("MainViewModel", "Error in syncQueueFromPlayer: ${e.message}", e)
+        }
+    }
 
     fun setStation(station: Station, tag: String) {
         player.setMediaItem(
@@ -285,6 +369,16 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             setStation(station, tag)
             player.prepare()
             player.play()
+            
+            // Populate the queue based on the tag
+            if (::queueManager.isInitialized) {
+                val stationList = when (tag) {
+                    DISCOVER_ID -> discoverStations
+                    FAVORITES_ID -> favoritesStations
+                    else -> listOf(station)
+                }
+                queueManager.setQueue(stationList, station, tag)
+            }
         }
     }
 
@@ -326,11 +420,18 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     isRadioLoading = false
                 }
             }
+            
+            override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) {
+                super.onMediaItemTransition(mediaItem, reason)
+                getCurrentItem()
+                syncQueueFromPlayer()
+            }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                 super.onMediaMetadataChanged(mediaMetadata)
                 currentSong = mediaMetadata.title.toString()
                 getCurrentItem()
+                syncQueueFromPlayer()
             }
 
             override fun onPlayerError(error: PlaybackException) {
@@ -350,32 +451,31 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
         childrenFuture.addListener(
             {
-                val result = childrenFuture.get()!!
-                val children = result.value!!
+                try {
+                    val result = childrenFuture.get()
+                    val children = result?.value
 
-                discoverStations = children.map {
-                    Station(
-                        it.mediaId.replace(DISCOVER_ID, ""),
-                        it.mediaMetadata.extras?.getString("ARTWORK")!!,
-                        it.mediaMetadata.extras?.getString("NAME")!!,
-                        it.mediaMetadata.extras?.getString("COUNTRY")!!,
-                        it.mediaMetadata.extras?.getString("GENRE")!!,
-                        it.mediaMetadata.extras?.getString("COUNTRY_CODE")!!,
-                        it.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")!!,
-                        it.mediaMetadata.extras?.getString("STATE")!!
-                    )
-                }.toMutableList()
+                    if (children != null) {
+                        discoverStations = children.mapNotNull {
+                            mediaItemToStation(it, DISCOVER_ID)
+                        }.toMutableList()
+                    } else {
+                        Log.w("MainViewModel", "loadMore: No children returned")
+                    }
+                } catch (e: Exception) {
+                    Log.e("MainViewModel", "Error loading more stations: ${e.message}")
+                }
             }, ContextCompat.getMainExecutor(application)
         )
     }
 
+    @OptIn(UnstableApi::class)
     private fun initPlayer() {
         playerFuture = MediaBrowser.Builder(
             application,
             SessionToken(application, ComponentName(application, PlayerService::class.java))
         ).setListener(
             object : MediaBrowser.Listener {
-                @OptIn(UnstableApi::class)
                 override fun onChildrenChanged(
                     browser: MediaBrowser,
                     parentId: String,
@@ -394,43 +494,41 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     if (type != FAVORITES_ID) {
                         discoverFuture.addListener(
                             {
-                                val result = discoverFuture.get()!!
-                                val children = result.value!!
+                                try {
+                                    val result = discoverFuture.get()
+                                    val children = result?.value
 
-                                getCountryCode()
+                                    getCountryCode()
 
-                                discoverStations = children.map {
-                                    Station(
-                                        it.mediaId.replace(DISCOVER_ID, ""),
-                                        it.mediaMetadata.extras?.getString("ARTWORK")!!,
-                                        it.mediaMetadata.extras?.getString("NAME")!!,
-                                        it.mediaMetadata.extras?.getString("COUNTRY")!!,
-                                        it.mediaMetadata.extras?.getString("GENRE")!!,
-                                        it.mediaMetadata.extras?.getString("COUNTRY_CODE")!!,
-                                        it.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")!!,
-                                        it.mediaMetadata.extras?.getString("STATE")!!
-                                    )
-                                }.toMutableList()
+                                    if (children != null) {
+                                        discoverStations = children.mapNotNull {
+                                            mediaItemToStation(it, DISCOVER_ID)
+                                        }.toMutableList()
+                                    } else {
+                                        Log.w("MainViewModel", "onChildrenChanged (Discover): No children returned")
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("MainViewModel", "Error in onChildrenChanged (Discover): ${e.message}")
+                                }
                             }, ContextCompat.getMainExecutor(application)
                         )
                     }
 
                     favoritesFuture.addListener(
                         {
-                            val result = favoritesFuture.get()!!
-                            val children = result.value!!
+                            try {
+                                val result = favoritesFuture.get()
+                                val children = result?.value
 
-                            favoritesStations = children.map {
-                                Station(
-                                    it.mediaId.replace(FAVORITES_ID, ""),
-                                    it.mediaMetadata.extras?.getString("ARTWORK")!!,
-                                    it.mediaMetadata.extras?.getString("NAME")!!,
-                                    it.mediaMetadata.extras?.getString("COUNTRY")!!,
-                                    it.mediaMetadata.extras?.getString("GENRE")!!,
-                                    it.mediaMetadata.extras?.getString("COUNTRY_CODE")!!,
-                                    it.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")!!,
-                                    it.mediaMetadata.extras?.getString("STATE")!!
-                                )
+                                if (children != null) {
+                                    favoritesStations = children.mapNotNull {
+                                        mediaItemToStation(it, FAVORITES_ID)
+                                    }
+                                } else {
+                                    Log.w("MainViewModel", "onChildrenChanged (Favorites): No children returned")
+                                }
+                            } catch (e: Exception) {
+                                Log.e("MainViewModel", "Error in onChildrenChanged (Favorites): ${e.message}")
                             }
                         }, ContextCompat.getMainExecutor(application)
                     )
@@ -441,6 +539,7 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
         playerFuture.addListener({
             player = playerFuture.get()
+            queueManager = QueueManager(this)
             player.subscribe(DISCOVER_ID, null)
             player.subscribe(FAVORITES_ID, null)
             listenToPlayer()
@@ -456,7 +555,6 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             }
         }, ContextCompat.getMainExecutor(application))
     }
-
     fun createShortcut(station: Station) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return
@@ -464,7 +562,7 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         val shortcutManager =
             ContextCompat.getSystemService(application, ShortcutManager::class.java)
 
-        if (shortcutManager!!.isRequestPinShortcutSupported) {
+        if (shortcutManager?.isRequestPinShortcutSupported == true) {
             val shortcutIntent = Intent(application, MainActivity::class.java)
             shortcutIntent.action = Intent.ACTION_VIEW
             shortcutIntent.addCategory(Intent.CATEGORY_LAUNCHER)

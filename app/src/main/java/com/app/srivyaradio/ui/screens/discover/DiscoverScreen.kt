@@ -41,6 +41,7 @@ import com.app.srivyaradio.utils.countryList
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -114,9 +115,17 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                     items(mainViewModel.discoverStations) { station ->
                         val label = (station.tags.split(",").take(4)
                             .joinToString(separator = ", ")).capitalize()
+                        
+                        var isFavorite by remember(station.id) { mutableStateOf(false) }
+                        
+                        LaunchedEffect(station.id) {
+                            isFavorite = mainViewModel.getFavoriteItem(station.id) != null
+                        }
+                        
                         LaunchedEffect(isAtBottom) {
                             if (isAtBottom) mainViewModel.loadMore()
                         }
+                        
                         Station(
                             name = station.name,
                             image = station.favicon,
@@ -128,7 +137,14 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                                 showBottomSheet = true
                                 optionsStation = station
                             },
-                            Modifier
+                            modifier = Modifier,
+                            isFavorite = isFavorite,
+                            onFavoriteToggle = {
+                                scope.launch {
+                                    mainViewModel.addOrRemoveFromFavorites(station.id)
+                                    isFavorite = !isFavorite
+                                }
+                            }
                         )
                     }
                     item {

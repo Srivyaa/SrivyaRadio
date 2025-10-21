@@ -7,6 +7,7 @@ import com.app.srivyaradio.utils.Constants.LAST_PLAY
 import com.app.srivyaradio.utils.Constants.MODE
 import com.app.srivyaradio.utils.Constants.HAS_PURCHASED
 import com.app.srivyaradio.utils.Constants.VERSION
+import com.app.srivyaradio.utils.Constants.LANGUAGE_CODE
 import com.app.srivyaradio.utils.ThemeMode
 
 class SharedPreferencesRepository(private val sharedPreferences: SharedPreferences) {
@@ -22,6 +23,17 @@ class SharedPreferencesRepository(private val sharedPreferences: SharedPreferenc
         sharedPreferences.edit().apply {
             putString(COUNTRY_CODE, code)
             putBoolean(IS_FIRST_START, false)
+            apply()
+        }
+    }
+
+    fun getLanguageCode(): String? {
+        return sharedPreferences.getString(LANGUAGE_CODE, "")
+    }
+
+    fun setUserLanguage(code: String) {
+        sharedPreferences.edit().apply {
+            putString(LANGUAGE_CODE, code)
             apply()
         }
     }
