@@ -13,19 +13,23 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaLibraryService.LibraryParams
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import androidx.media3.session.CommandButton
 import com.app.srivyaradio.MainActivity
 import com.app.srivyaradio.data.api.location.LocationClient
 import com.app.srivyaradio.data.api.location.LocationInterface
+import com.app.srivyaradio.data.models.Favorite
 import com.app.srivyaradio.data.repositories.DatabaseRepository
 import com.app.srivyaradio.data.repositories.SharedPreferencesRepository
 import com.app.srivyaradio.utils.Constants
 import com.app.srivyaradio.utils.Constants.DISCOVER_ID
 import com.app.srivyaradio.utils.Constants.FAVORITES_ID
+import com.app.srivyaradio.utils.Constants.ROOT_ID
 import com.app.srivyaradio.utils.Constants.SHARED_PREF
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
@@ -56,6 +60,57 @@ class PlayerService : MediaLibraryService() {
 
     private val retrofit = LocationClient.getInstance()
     var apiInterface: LocationInterface = retrofit.create(LocationInterface::class.java)
+    
+    private fun updatePlaybackState() {
+        // Force a notification update to reflect favorite status changes
+        mediaLibrarySession.broadcastCustomCommand(
+            SessionCommand("UPDATE_PLAYBACK_STATE", Bundle.EMPTY),
+            Bundle.EMPTY
+        )
+        updateCustomActions()
+    }
+    
+    private fun updateCustomActions() {
+        val currentMediaItem = player.currentMediaItem
+        if (currentMediaItem != null) {
+            serviceScope.launch {
+                try {
+                    // Get the actual station ID
+                    val stationId = currentMediaItem.mediaId
+                        .replace(DISCOVER_ID, "")
+                        .replace(FAVORITES_ID, "")
+                    
+                    // Check if station is in favorites
+                    val isFavorite = dbRepository.getFavoriteItemById(stationId) != null
+                    
+                    // Create custom action for toggling favorite
+                    val favoriteActionExtras = Bundle().apply {
+                        putString(Constants.TOGGLE_FAVORITE_STATION_ID_KEY, currentMediaItem.mediaId)
+                    }
+                    
+                    val favoriteCommand = SessionCommand(Constants.TOGGLE_FAVORITE_COMMAND, favoriteActionExtras)
+                    
+                    // Create custom layout with favorite action
+                    val customLayout = ImmutableList.of(
+                        CommandButton.Builder()
+                            .setSessionCommand(favoriteCommand)
+                            .setDisplayName(if (isFavorite) "Remove from Favorites" else "Add to Favorites")
+                            .setIconResId(if (isFavorite) android.R.drawable.btn_star_big_on else android.R.drawable.btn_star_big_off)
+                            .build()
+                    )
+                    
+                    // Update the custom layout for all connected controllers
+                    mediaLibrarySession.connectedControllers.forEach { controller ->
+                        mediaLibrarySession.setCustomLayout(controller, customLayout)
+                    }
+                    
+                    Log.d("PlayerService", "Updated custom actions for station $stationId, isFavorite: $isFavorite")
+                } catch (e: Exception) {
+                    Log.e("PlayerService", "Error updating custom actions: ${e.message}")
+                }
+            }
+        }
+    }
     
     @OptIn(UnstableApi::class)
     private fun updateAvailableCommands() {
@@ -122,6 +177,8 @@ class PlayerService : MediaLibraryService() {
                                     item, DISCOVER_ID
                                 )
                             )
+                            // Update custom actions for the loaded station
+                            updateCustomActions()
                         }
                     } catch (e: Exception) {
                         Log.e("error", e.message.toString())
@@ -157,12 +214,23 @@ class PlayerService : MediaLibraryService() {
             getPendingIntent(0, immutableFlag or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        // Add player listener for queue navigation
+        // Add player listener for queue navigation and favorite state updates
         player.addListener(object : Player.Listener {
             override fun onEvents(player: Player, events: Player.Events) {
                 super.onEvents(player, events)
                 // Update available commands based on queue state
                 updateAvailableCommands()
+                
+                // Update custom actions when media item changes
+                if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
+                    updateCustomActions()
+                }
+            }
+            
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                super.onMediaItemTransition(mediaItem, reason)
+                // Update favorite action when a new item starts playing
+                updateCustomActions()
             }
         })
 
@@ -232,8 +300,8 @@ class PlayerService : MediaLibraryService() {
             )
         )
 
-        if (player.currentMediaItem != null) {
-            repository.setLastPlayID(player.currentMediaItem!!.mediaId)
+        player.currentMediaItem?.let { 
+            repository.setLastPlayID(it.mediaId) 
         }
 
         super.onTaskRemoved(rootIntent)
@@ -271,6 +339,7 @@ class PlayerService : MediaLibraryService() {
                         player.prepare()
                         player.play()
                         updateAvailableCommands()
+                        updateCustomActions()
                     }
                     return SessionResult.RESULT_SUCCESS
                 }
@@ -281,6 +350,7 @@ class PlayerService : MediaLibraryService() {
                         player.prepare()
                         player.play()
                         updateAvailableCommands()
+                        updateCustomActions()
                     }
                     return SessionResult.RESULT_SUCCESS
                 }
@@ -304,6 +374,12 @@ class PlayerService : MediaLibraryService() {
             availableSessionCommands.add(
                 SessionCommand(
                     Constants.UPDATE_FAVORITE_COMMAND, Bundle.EMPTY
+                )
+            )
+            
+            availableSessionCommands.add(
+                SessionCommand(
+                    Constants.TOGGLE_FAVORITE_COMMAND, Bundle.EMPTY
                 )
             )
 
@@ -344,9 +420,16 @@ class PlayerService : MediaLibraryService() {
                 availablePlayerCommands.add(Player.COMMAND_SEEK_TO_PREVIOUS)
             }
 
-            return MediaSession.ConnectionResult.accept(
+            val updatedConnectionResult = MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(), availablePlayerCommands.build()
             )
+            
+            // Set up initial custom actions if a media item is already playing
+            if (player.currentMediaItem != null) {
+                updateCustomActions()
+            }
+            
+            return updatedConnectionResult
         }
 
 
@@ -363,6 +446,48 @@ class PlayerService : MediaLibraryService() {
             if (Constants.UPDATE_FAVORITE_COMMAND == customCommand.customAction) {
                 serviceScope.launch {
                     MediaItemFactory.loadFavorite(dbRepository)
+                }
+            }
+            
+            if (Constants.TOGGLE_FAVORITE_COMMAND == customCommand.customAction) {
+                val stationId = args.getString(Constants.TOGGLE_FAVORITE_STATION_ID_KEY)
+                if (!stationId.isNullOrEmpty()) {
+                    serviceScope.launch {
+                        try {
+                            // Remove discover/favorites prefix to get the actual station ID
+                            val actualStationId = stationId
+                                .replace(DISCOVER_ID, "")
+                                .replace(FAVORITES_ID, "")
+                            
+                            // Check if station is already in favorites
+                            val favoriteItem = dbRepository.getFavoriteItemById(actualStationId)
+                            
+                            if (favoriteItem != null) {
+                                // Remove from favorites
+                                dbRepository.deleteFavoriteItem(favoriteItem)
+                                Log.d("PlayerService", "Removed station $actualStationId from favorites")
+                            } else {
+                                // Add to favorites
+                                dbRepository.insertFavoriteItem(
+                                    Favorite(null, actualStationId, null)
+                                )
+                                Log.d("PlayerService", "Added station $actualStationId to favorites")
+                            }
+                            
+                            // Reload the favorites list
+                            MediaItemFactory.loadFavorite(dbRepository)
+                            
+                            // Update the current media item if it's the one being toggled
+                            val currentMediaId = player.currentMediaItem?.mediaId
+                            if (currentMediaId != null && 
+                                (currentMediaId.contains(actualStationId))) {
+                                // Update the playback state to reflect favorite status
+                                updatePlaybackState()
+                            }
+                        } catch (e: Exception) {
+                            Log.e("PlayerService", "Error toggling favorite: ${e.message}")
+                        }
+                    }
                 }
             }
 
@@ -415,6 +540,7 @@ class PlayerService : MediaLibraryService() {
                     player.prepare()
                     player.play()
                     updateAvailableCommands()
+                    updateCustomActions()
                 }
             }
             
@@ -425,18 +551,30 @@ class PlayerService : MediaLibraryService() {
                     player.prepare()
                     player.play()
                     updateAvailableCommands()
+                    updateCustomActions()
                 }
             }
 
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
 
+        @OptIn(UnstableApi::class)
         override fun onGetLibraryRoot(
             session: MediaLibrarySession,
             browser: MediaSession.ControllerInfo,
             params: LibraryParams?
         ): ListenableFuture<LibraryResult<MediaItem>> {
-            return Futures.immediateFuture(LibraryResult.ofItem(MediaItemFactory.getRoot(), params))
+            Log.d("PlayerService", "onGetLibraryRoot called by: ${browser.packageName}")
+            
+            // Create LibraryParams with content style hints for Android Auto
+            val libraryParams = LibraryParams.Builder()
+                .setExtras(Bundle().apply {
+                    putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
+                    putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
+                })
+                .build()
+            
+            return Futures.immediateFuture(LibraryResult.ofItem(MediaItemFactory.getRoot(), libraryParams))
         }
 
         override fun onGetItem(
@@ -489,8 +627,17 @@ class PlayerService : MediaLibraryService() {
                     val result = MediaItemFactory.getChildrenWithParent(
                         parentId, page, pageSize, dbRepository, countryCode
                     )
+                    
+                    Log.d("PlayerService", "onGetChildren: parentId=$parentId, browser=${browser.packageName}, count=${result.size}")
+                    if (parentId == ROOT_ID) {
+                        result.forEach { item ->
+                            Log.d("PlayerService", "Root child: ${item.mediaId} - ${item.mediaMetadata.title}")
+                        }
+                    }
+                    
                     future.set(LibraryResult.ofItemList(result, null))
                 } catch (e: Exception) {
+                    Log.e("PlayerService", "Error in onGetChildren: ${e.message}", e)
                     future.setException(e)
                 }
             }
@@ -561,32 +708,129 @@ class PlayerService : MediaLibraryService() {
                 return future
 
             }
-            return if (mediaItems[0].mediaId.startsWith(DISCOVER_ID)) {
-                val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
-
-                serviceScope.launch {
-                    try {
-                        val mediaItem =
-                            MediaItemFactory.getItemFromDB(dbRepository, mediaItems[0].mediaId)
-                        val result = MediaSession.MediaItemsWithStartPosition(
-                            listOf(mediaItem), 0, C.TIME_UNSET
-                        )
-                        future.set(result)
-                    } catch (e: Exception) {
-                        future.setException(e)
+            
+            val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
+            
+            serviceScope.launch {
+                try {
+                    val selectedMediaId = mediaItems[0].mediaId
+                    val mediaItem = if (selectedMediaId.startsWith(DISCOVER_ID) || selectedMediaId.startsWith(FAVORITES_ID)) {
+                        MediaItemFactory.getItemFromDB(dbRepository, selectedMediaId)
+                    } else {
+                        mediaItems[0]
                     }
+                    
+                    // Determine which queue to build based on the media item
+                    when {
+                        selectedMediaId.startsWith(DISCOVER_ID) -> {
+                            // Check if this is from a country-specific browse or general discover
+                            val countryCode = mediaItem.mediaMetadata.extras?.getString("COUNTRY_CODE")
+                            
+                            val stationList = if (!countryCode.isNullOrEmpty() && countryCode != this@PlayerService.countryCode) {
+                                // Load stations for the specific country
+                                Log.d("PlayerService", "Loading stations for country: $countryCode")
+                                dbRepository.getAllStations(countryCode.uppercase()).reversed().map {
+                                    MediaItemFactory.stationToMediaItem(it, DISCOVER_ID)
+                                }
+                            } else {
+                                // Use the current discover list
+                                MediaItemFactory.getDiscover().ifEmpty {
+                                    // If discover list is empty, load from database
+                                    dbRepository.getAllStations(this@PlayerService.countryCode.uppercase()).reversed().map {
+                                        MediaItemFactory.stationToMediaItem(it, DISCOVER_ID)
+                                    }
+                                }
+                            }
+                            
+                            // Find the index of the selected item in the list
+                            val itemIndex = stationList.indexOfFirst { 
+                                it.mediaId == selectedMediaId 
+                            }
+                            
+                            // Build the queue
+                            currentQueue.clear()
+                            currentQueue.addAll(stationList)
+                            currentQueueIndex = if (itemIndex >= 0) itemIndex else 0
+                            currentQueueTag = DISCOVER_ID
+                            
+                            Log.d("PlayerService", "onSetMediaItems (Discover): Queue built with ${currentQueue.size} items, index: $currentQueueIndex")
+                            
+                            val result = MediaSession.MediaItemsWithStartPosition(
+                                listOf(mediaItem), 0, C.TIME_UNSET
+                            )
+                            future.set(result)
+                            updateAvailableCommands()
+                            updateCustomActions()
+                        }
+                        selectedMediaId.startsWith(FAVORITES_ID) -> {
+                            // Load the full favorites list as queue
+                            val favoriteList = MediaItemFactory.getFavorite()
+                            val itemIndex = favoriteList.indexOfFirst { 
+                                it.mediaId == selectedMediaId 
+                            }
+                            
+                            // Build the queue
+                            currentQueue.clear()
+                            currentQueue.addAll(favoriteList)
+                            currentQueueIndex = if (itemIndex >= 0) itemIndex else 0
+                            currentQueueTag = FAVORITES_ID
+                            
+                            Log.d("PlayerService", "onSetMediaItems (Favorites): Queue built with ${currentQueue.size} items, index: $currentQueueIndex")
+                            
+                            val result = MediaSession.MediaItemsWithStartPosition(
+                                favoriteList, itemIndex, C.TIME_UNSET
+                            )
+                            future.set(result)
+                            updateAvailableCommands()
+                            updateCustomActions()
+                        }
+                        else -> {
+                            // For any other media item (e.g., from Android Auto browse without DISCOVER_ID prefix)
+                            // Try to determine context from the controller info or metadata
+                            Log.d("PlayerService", "onSetMediaItems: Unknown media ID pattern: $selectedMediaId")
+                            
+                            // Build a queue from the current context
+                            // Check if we can get country code from the media item
+                            val countryCode = mediaItem.mediaMetadata.extras?.getString("COUNTRY_CODE")
+                            if (!countryCode.isNullOrEmpty()) {
+                                // Load stations for this country as the queue
+                                val stationList = dbRepository.getAllStations(countryCode.uppercase()).reversed().map {
+                                    MediaItemFactory.stationToMediaItem(it, DISCOVER_ID)
+                                }
+                                
+                                // Find the current item in the list
+                                val itemIndex = stationList.indexOfFirst { station ->
+                                    // Match by name or URL since we don't have the exact ID
+                                    station.mediaMetadata.artist == mediaItem.mediaMetadata.artist ||
+                                    station.requestMetadata.mediaUri == mediaItem.requestMetadata.mediaUri
+                                }
+                                
+                                if (stationList.isNotEmpty()) {
+                                    currentQueue.clear()
+                                    currentQueue.addAll(stationList)
+                                    currentQueueIndex = if (itemIndex >= 0) itemIndex else 0
+                                    currentQueueTag = DISCOVER_ID
+                                    
+                                    Log.d("PlayerService", "onSetMediaItems (Country context): Queue built with ${currentQueue.size} items from $countryCode, index: $currentQueueIndex")
+                                    updateAvailableCommands()
+                                    updateCustomActions()
+                                }
+                            }
+                            
+                            // Return the requested item
+                            val result = MediaSession.MediaItemsWithStartPosition(
+                                mediaItems, 0, C.TIME_UNSET
+                            )
+                            future.set(result)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("PlayerService", "Error in onSetMediaItems: ${e.message}")
+                    future.setException(e)
                 }
-
-                return future
-            } else {
-                Futures.immediateFuture(
-                    MediaSession.MediaItemsWithStartPosition(
-                        MediaItemFactory.getFavorite(),
-                        MediaItemFactory.getItemIndex(mediaItems[0]),
-                        C.TIME_UNSET
-                    )
-                )
             }
+            
+            return future
         }
 
     }

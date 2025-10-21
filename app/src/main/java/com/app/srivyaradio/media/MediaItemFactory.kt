@@ -190,10 +190,6 @@ object MediaItemFactory {
         return MediaItem.Builder().setMediaId(FAVORITES_ID).setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
                     .setTitle("Favorites").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
-                    .setExtras(Bundle().apply {
-                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
-                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
-                    })
                     .build()
             ).build()
     }
@@ -202,10 +198,6 @@ object MediaItemFactory {
         return MediaItem.Builder().setMediaId(DISCOVER_ID).setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
                     .setTitle("Discover").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
-                    .setExtras(Bundle().apply {
-                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
-                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
-                    })
                     .build()
             ).build()
     }
@@ -214,10 +206,6 @@ object MediaItemFactory {
         return MediaItem.Builder().setMediaId(COUNTRIES_ID).setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
                     .setTitle("Countries & Categories").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
-                    .setExtras(Bundle().apply {
-                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
-                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
-                    })
                     .build()
             ).build()
     }
@@ -230,8 +218,6 @@ object MediaItemFactory {
                     .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_RADIO_STATIONS)
                     .setExtras(Bundle().apply {
                         putString("COUNTRY_CODE", code)
-                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
-                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
                     })
                     .build()
             ).build()
@@ -241,12 +227,7 @@ object MediaItemFactory {
     fun getRoot(): MediaItem {
         return MediaItem.Builder().setMediaId("root").setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
-                    .setExtras(Bundle().apply {
-                        putInt("android.media.browse.CONTENT_STYLE_BROWSABLE_HINT", 2)
-                        putInt("android.media.browse.CONTENT_STYLE_PLAYABLE_HINT", 2)
-                    })
-                    .build()
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED).build()
             ).build()
     }
 

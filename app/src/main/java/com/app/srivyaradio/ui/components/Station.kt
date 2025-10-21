@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,7 +27,14 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Station(
-    name: String, image: String, label: String, onClick: () -> Unit, onOptions: () -> Unit,modifier: Modifier
+    name: String, 
+    image: String, 
+    label: String, 
+    onClick: () -> Unit, 
+    onOptions: () -> Unit,
+    modifier: Modifier,
+    isFavorite: Boolean = false,
+    onFavoriteToggle: (() -> Unit)? = null
 ) {
 
     Row(verticalAlignment = Alignment.CenterVertically,
@@ -59,6 +69,24 @@ fun Station(
                 )
             }
         }
+        
+        // Favorite icon button
+        if (onFavoriteToggle != null) {
+            IconButton(
+                modifier = Modifier.padding(5.dp),
+                onClick = {
+                    onFavoriteToggle()
+                }
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                    modifier = Modifier.size(24.dp),
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+        
         IconButton(
             modifier = Modifier.padding(10.dp),
             onClick = {
