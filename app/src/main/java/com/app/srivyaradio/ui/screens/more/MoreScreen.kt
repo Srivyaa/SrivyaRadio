@@ -49,7 +49,7 @@ fun MoreScreen(
 
     LazyColumn {
         item {
-            PremiumCard(isPremium = mainViewModel.isPremium) {
+/*            PremiumCard(isPremium = mainViewModel.isPremium) {
                 mainViewModel.onPurchase()
             }
             OutlinedButton(
@@ -67,9 +67,10 @@ fun MoreScreen(
                 }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
-            ) {
+            )
+            {
                 Text("Submit radio station")
-            }
+            }*/
             ListItem(headlineContent = {
                 Text(text = "Set app theme")
             }, leadingContent = {

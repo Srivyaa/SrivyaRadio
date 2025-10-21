@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,7 +31,9 @@ fun MiniPlayerController(
     isLoading: Boolean,
     isPlaying: Boolean,
     onPlay: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isFavorite: Boolean = false,
+    onFavoriteToggle: (() -> Unit)? = null
 ) {
 
     Card(
@@ -55,6 +60,23 @@ fun MiniPlayerController(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleMedium
             )
+
+            // Favorite icon button
+            if (onFavoriteToggle != null) {
+                IconButton(
+                    onClick = {
+                        onFavoriteToggle()
+                    }, 
+                    modifier = Modifier.padding(5.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                        modifier = Modifier.size(24.dp),
+                        tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
 
             if (isLoading) {
                 CircularProgressIndicator(
