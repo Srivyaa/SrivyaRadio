@@ -78,28 +78,32 @@ fun FavoriteScreen(
                 .fillMaxSize()
 
                 .pointerInput(Unit) {
-                    detectDragGesturesAfterLongPress(onDrag = { change, offset ->
-                        change.consume()
-                        dragDropListState.onDrag(offset)
+                    detectDragGesturesAfterLongPress(
+                        onDrag = { change, offset ->
+                            change.consume()
+                            dragDropListState.onDrag(offset)
 
-                        if (overscrollJob?.isActive == true) return@detectDragGesturesAfterLongPress
+                            if (overscrollJob?.isActive == true) return@detectDragGesturesAfterLongPress
 
-                        dragDropListState
-                            .checkForOverScroll()
-                            .takeIf { it != 0f }
-                            ?.let {
-                                overscrollJob =
-                                    scope.launch { dragDropListState.lazyListState.scrollBy(it) }
-                            } ?: run { overscrollJob?.cancel() }
-                    },
+                            dragDropListState
+                                .checkForOverScroll()
+                                .takeIf { it != 0f }
+                                ?.let {
+                                    overscrollJob =
+                                        scope.launch { dragDropListState.lazyListState.scrollBy(it) }
+                                } ?: run { overscrollJob?.cancel() }
+                        },
                         onDragStart = { offset -> dragDropListState.onDragStart(offset) },
                         onDragEnd = { dragDropListState.onDragInterrupted() },
-                        onDragCancel = { dragDropListState.onDragInterrupted() })
-                }, state = dragDropListState.lazyListState
+                        onDragCancel = { dragDropListState.onDragInterrupted() }
+                    )
+                }, 
+            state = dragDropListState.lazyListState
         ) {
             itemsIndexed(mainViewModel.favoritesStations) { index, station ->
 
-                Station(name = station.name,
+                Station(
+                    name = station.name,
                     image = station.favicon,
                     label = station.country,
                     onClick = {
@@ -115,9 +119,16 @@ fun FavoriteScreen(
                         }
 
                         Modifier.graphicsLayer {
-                                translationY = offsetOrNull ?: 0f
-                            }
-                    })
+                            translationY = offsetOrNull ?: 0f
+                        }
+                    },
+                    isFavorite = true,
+                    onFavoriteToggle = {
+                        scope.launch {
+                            mainViewModel.addOrRemoveFromFavorites(station.id)
+                        }
+                    }
+                )
 
 
             }
