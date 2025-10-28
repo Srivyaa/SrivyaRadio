@@ -330,34 +330,68 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         return dbRepository.getFavoriteItemById(id)
     }
 
-    suspend fun addOrRemoveFromFavorites(id: String) {
-        val favoriteItem = getFavoriteItem(id)
-        if (favoriteItem != null) {
-            dbRepository.deleteFavoriteItem(favoriteItem)
-            Toast.makeText(application, "Removed from favorites", Toast.LENGTH_SHORT).show()
-        } else {
-            dbRepository.insertFavoriteItem(
-                Favorite(null, id, null)
-            )
-            val favList = dbRepository.getFavoriteStations().keys.toList().mapNotNull {
-                dbRepository.getFavoriteItemById(it.id)
-            }
+    /**
+     * Refresh the favorites list from the database
+     */
+    private suspend fun refreshFavorites() {
+        try {
+            val favs = dbRepository.getFavoriteStations()
+            favoritesStations = favs.keys.toList()
+            Log.d("MainViewModel", "Refreshed favorites: ${favoritesStations.size} stations")
+        } catch (e: Exception) {
+            Log.e("MainViewModel", "Error refreshing favorites: ${e.message}", e)
+        }
+    }
 
-            for (i in favList.indices) {
-                dbRepository.updateFavoriteItem(
-                    Favorite(
-                        favList[i].favId,
-                        favList[i].id,
-                        i.toLong()
-                    )
+    /**
+     * Add or remove a station from favorites
+     */
+    suspend fun addOrRemoveFromFavorites(id: String) {
+        try {
+            val favoriteItem = getFavoriteItem(id)
+            
+            if (favoriteItem != null) {
+                // Remove from favorites
+                dbRepository.deleteFavoriteItem(favoriteItem)
+                // Update UI immediately
+                favoritesStations = favoritesStations.filter { it.id != id }
+                Toast.makeText(application, "Removed from favorites", Toast.LENGTH_SHORT).show()
+            } else {
+                // Add to favorites
+                val newFavorite = Favorite(null, id, null)
+                dbRepository.insertFavoriteItem(newFavorite)
+                
+                // Get the station to add to our list
+                val station = dbRepository.getRadioStationByID(id)
+                station?.let {
+                    // Add to UI immediately
+                    favoritesStations = favoritesStations + it
+                    
+                    // Update the order in database
+                    val favList = dbRepository.getFavoriteStations().keys.toList()
+                    favList.forEachIndexed { index, favStation ->
+                        val favItem = dbRepository.getFavoriteItemById(favStation.id)
+                        favItem?.let { item ->
+                            dbRepository.updateFavoriteItem(
+                                Favorite(item.favId, item.id, index.toLong())
+                            )
+                        }
+                    }
+                }
+                Toast.makeText(application, "Added to favorites", Toast.LENGTH_SHORT).show()
+            }
+            
+            // Notify the player service about the favorites update
+            if (::player.isInitialized) {
+                player.sendCustomCommand(
+                    SessionCommand(Constants.UPDATE_FAVORITE_COMMAND, Bundle.EMPTY),
+                    Bundle.EMPTY
                 )
             }
-            Toast.makeText(application, "Added to favorites", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Log.e("MainViewModel", "Error updating favorites: ${e.message}", e)
+            Toast.makeText(application, "Error updating favorites", Toast.LENGTH_SHORT).show()
         }
-        player.sendCustomCommand(
-            SessionCommand(Constants.UPDATE_FAVORITE_COMMAND, Bundle.EMPTY),
-            Bundle.EMPTY
-        )
     }
 
     fun playStation(station: Station, tag: String, fromShortcut: Boolean = false) {
@@ -421,10 +455,22 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 }
             }
             
+            @OptIn(UnstableApi::class)
             override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
-                getCurrentItem()
-                syncQueueFromPlayer()
+                viewModelScope.launch {
+                    try {
+                        getCurrentItem()
+                        syncQueueFromPlayer()
+                        
+                        // Refresh favorites if we're on the favorites tab
+                        if (mediaItem?.mediaId?.startsWith(FAVORITES_ID) == true) {
+                            refreshFavorites()
+                        }
+                    } catch (e: Exception) {
+                        Log.e("MainViewModel", "Error in onMediaItemTransition: ${e.message}", e)
+                    }
+                }
             }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -471,6 +517,15 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
     @OptIn(UnstableApi::class)
     private fun initPlayer() {
+        // Load initial favorites
+        viewModelScope.launch {
+            try {
+                refreshFavorites()
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error loading initial favorites: ${e.message}", e)
+            }
+        }
+        
         playerFuture = MediaBrowser.Builder(
             application,
             SessionToken(application, ComponentName(application, PlayerService::class.java))
