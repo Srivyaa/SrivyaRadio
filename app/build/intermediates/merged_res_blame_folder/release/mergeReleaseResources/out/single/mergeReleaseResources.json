@@ -1,0 +1,154 @@
+[
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xxhdpi_ic_launcher_background.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xxhdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xxxhdpi_ic_launcher_background.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xxxhdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-mdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/xml_backup_rules.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/xml_data_extraction_rules.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_pause.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_pause.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-mdpi_ic_launcher_background.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-mdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-hdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-hdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xhdpi_ic_launcher_background.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xhdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/layout_activity_splash.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_instagram.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_instagram.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/raw_splash_video.mp4.flat",
+        "source": "com.app.srivyaradio.app-main-115:/raw/splash_video.mp4"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_radio_outlined.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_radio_outlined.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_favorite_filled.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_favorite_filled.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/xml_automotive_app_desc.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/xml/automotive_app_desc.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_radio_filled.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_radio_filled.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_play_circle.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_play_circle.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-hdpi_ic_launcher_background.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-hdpi/ic_launcher_background.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_more_horizontal.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_more_horizontal.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_icon_launcher.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/icon_launcher.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/drawable_ic_favorite_outlined.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/drawable/ic_favorite_outlined.xml"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-xhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.app.srivyaradio.app-release-114:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.app.srivyaradio.app-main-115:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    }
+]
