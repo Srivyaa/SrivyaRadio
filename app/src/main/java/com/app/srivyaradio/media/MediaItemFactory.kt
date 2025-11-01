@@ -22,8 +22,12 @@ import com.app.srivyaradio.utils.Constants
 import com.app.srivyaradio.utils.Constants.DISCOVER_ID
 import com.app.srivyaradio.utils.Constants.FAVORITES_ID
 import com.app.srivyaradio.utils.Constants.ROOT_ID
+import com.app.srivyaradio.utils.Constants.COUNTRIES_ID
+import com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX
+import com.app.srivyaradio.utils.Constants.ALPHABET_PREFIX
 import com.app.srivyaradio.utils.Constants.SHARED_PREF
 import com.app.srivyaradio.utils.DownloadStationsWorker
+import com.app.srivyaradio.utils.countryList
 
 object MediaItemFactory {
     var discoverList: List<Station> = listOf()
@@ -59,14 +63,18 @@ object MediaItemFactory {
         WorkManager.getInstance(application).getWorkInfosByTagLiveData(countryCode + tag)
             .observeForever { workInfo ->
                 try {
-                    if (!workInfo.isNullOrEmpty()) {
-                        if (workInfo[0].state != WorkInfo.State.FAILED) {
-                            onFinishedLoading?.invoke()
-                        } else {
+                    if (workInfo.isNullOrEmpty()) {
+                        WorkManager.getInstance(application).enqueue(getStationsWorkRequest)
+                        return@observeForever
+                    }
+                    when (workInfo[0].state) {
+                        WorkInfo.State.SUCCEEDED -> onFinishedLoading?.invoke()
+                        WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
                             WorkManager.getInstance(application).enqueue(getStationsWorkRequest)
                         }
-                    } else {
-                        WorkManager.getInstance(application).enqueue(getStationsWorkRequest)
+                        WorkInfo.State.ENQUEUED, WorkInfo.State.RUNNING, WorkInfo.State.BLOCKED -> {
+                            // no-op: wait until it succeeds
+                        }
                     }
                 } catch (e: Exception) {
                 }
@@ -93,23 +101,28 @@ object MediaItemFactory {
     }
 
     fun stationToMediaItem(it: Station, tag: String): MediaItem {
+        return stationToMediaItemWithExtras(it, tag, null)
+    }
+
+    fun stationToMediaItemWithExtras(it: Station, tag: String, additionalExtras: Bundle?): MediaItem {
+        val baseExtras = Bundle().apply {
+            putString("STREAMING_URL_RESOLVED", it.url_resolved)
+            putString("COUNTRY_CODE", it.countrycode)
+            putString("COUNTRY", it.country)
+            putString("STATE", it.state)
+            putString("GENRE", it.tags)
+            putString("NAME", it.name)
+            putString("ARTWORK", it.favicon)
+        }
+        if (additionalExtras != null) baseExtras.putAll(additionalExtras)
+
         return MediaItem.Builder().setMediaId(tag + it.id).setUri(it.url_resolved).setMediaMetadata(
                 MediaMetadata.Builder().setAlbumTitle(it.name)
-                    //.setTitle(it.name)
                     .setArtist(it.name).setDescription(it.country).setSubtitle(it.state)
                     .setWriter(it.countrycode)
-                    //.setDisplayTitle(it.name)
                     .setIsBrowsable(false).setIsPlayable(true)
                     .setArtworkUri(getStationLogoURL(it).toUri())
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).setExtras(Bundle().apply {
-                        putString("STREAMING_URL_RESOLVED", it.url_resolved)
-                        putString("COUNTRY_CODE", it.countrycode)
-                        putString("COUNTRY", it.country)
-                        putString("STATE", it.state)
-                        putString("GENRE", it.tags)
-                        putString("NAME", it.name)
-                        putString("ARTWORK", it.favicon)
-                    }).build()
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).setExtras(baseExtras).build()
             ).build()
     }
 
@@ -194,6 +207,39 @@ object MediaItemFactory {
             ).build()
     }
 
+    private fun getCountriesBrowsable(): MediaItem {
+        return MediaItem.Builder().setMediaId(COUNTRIES_ID).setMediaMetadata(
+                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                    .setTitle("Countries").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .build()
+            ).build()
+    }
+
+    private fun countryToBrowsable(name: String, code: String): MediaItem {
+        return MediaItem.Builder().setMediaId(COUNTRY_PREFIX + code.uppercase()).setMediaMetadata(
+                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                    .setTitle(name).setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .setExtras(Bundle().apply {
+                        putString("COUNTRY_CODE", code.uppercase())
+                    })
+                    .build()
+            ).build()
+    }
+
+    private fun alphabetNode(countryCode: String, letter: Char): MediaItem {
+        val id = "$ALPHABET_PREFIX${countryCode.uppercase()}:$letter"
+        return MediaItem.Builder().setMediaId(id).setMediaMetadata(
+                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                    .setTitle(letter.toString())
+                    .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .setExtras(Bundle().apply {
+                        putString("COUNTRY_CODE", countryCode.uppercase())
+                        putString("LETTER", letter.toString())
+                    })
+                    .build()
+            ).build()
+    }
+
     fun getRoot(): MediaItem {
         return MediaItem.Builder().setMediaId("root").setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
@@ -221,12 +267,51 @@ object MediaItemFactory {
 
             ROOT_ID -> {
                 listOf(
-                    getDiscoverBrowsable(), getFavoritesBrowsable()
+                    getDiscoverBrowsable(),
+                    getFavoritesBrowsable(),
+                    getCountriesBrowsable()
                 )
             }
 
+            COUNTRIES_ID -> {
+                // Include all categories from country list
+                countryList.map { (name, code) ->
+                    countryToBrowsable(name, code)
+                }
+            }
+
             else -> {
-                listOf()
+                when {
+                    parentId.startsWith(COUNTRY_PREFIX) -> {
+                        val code = parentId.removePrefix(COUNTRY_PREFIX).uppercase()
+                        // For ISO-2 country codes, show A-Z nodes
+                        // For custom categories, show stations directly
+                        if (code.length == 2) {
+                            ('A'..'Z').map { alphabetNode(code, it) }
+                        } else {
+                            // For custom categories, show all stations in that category
+                            dbRepository.getAllStations(code).map { 
+                                stationToMediaItem(it, DISCOVER_ID) 
+                            }
+                        }
+                    }
+                    parentId.startsWith(ALPHABET_PREFIX) -> {
+                        // Format: alpha:CC:L
+                        val parts = parentId.removePrefix(ALPHABET_PREFIX).split(":")
+                        val code = parts.getOrNull(0)?.uppercase().orEmpty()
+                        val letter = parts.getOrNull(1)?.firstOrNull()?.uppercaseChar()
+                        if (code.isNotEmpty() && letter != null) {
+                            dbRepository.getAllStations(code).filter { st ->
+                                val n = st.name.trim()
+                                n.isNotEmpty() && n[0].uppercaseChar() == letter
+                            }.map {
+                                val extras = Bundle().apply { putString("BROWSE_ALPHA", letter.toString()) }
+                                stationToMediaItemWithExtras(it, DISCOVER_ID, extras)
+                            }
+                        } else emptyList()
+                    }
+                    else -> emptyList()
+                }
             }
         }
     }

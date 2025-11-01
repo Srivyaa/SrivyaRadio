@@ -96,6 +96,10 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         false
     )
 
+    private val purchaseListener = UpdatedCustomerInfoListener { customerInfo ->
+        isPremium = customerInfo.entitlements.active.isNotEmpty()
+    }
+
     private lateinit var playerFuture: ListenableFuture<MediaBrowser>
     lateinit var player: MediaBrowser
 
@@ -134,6 +138,19 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             })
     }
 
+    private fun getCurrentItem() {
+        try {
+            val item = player.currentMediaItem ?: return
+            val mediaId = item.mediaId
+            val id = mediaId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
+            viewModelScope.launch {
+                try {
+                    selectedStation = dbRepository.getRadioStationByID(id)
+                } catch (_: Exception) { }
+            }
+        } catch (_: Exception) { }
+    }
+
     fun setCountryCode(index: Int) {
         val location = countryList[index]
         if (location.second != selectedCountryCode) {
@@ -143,149 +160,194 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             player.sendCustomCommand(
                 SessionCommand(
                     CHANGE_COUNTRY_COMMAND, Bundle.EMPTY
-
                 ), Bundle().apply {
                     putString(CHANGE_COUNTRY_KEY, selectedCountryCode)
-                })
+                }
+            )
         }
     }
 
-    private fun getCountryCode() {
-        selectedCountryCode = repository.getCountryCode() ?: "US"
-    }
-
-    fun setTheme(theme: ThemeMode) {
-        appTheme = theme
-        repository.setThemeMode(theme.id)
-    }
-
-    fun getTheme() {
-        val appId = repository.getThemeMode()
-
-        appTheme = when (appId) {
-            0 -> ThemeMode.AUTO
-            1 -> ThemeMode.LIGHT
-            2 -> ThemeMode.DARK
-            else -> ThemeMode.AUTO
+    fun playStation(station: Station, tag: String, openPlayer: Boolean = false) {
+        try {
+            selectedStation = station
+            isRadioLoading = true
+            player.setMediaItem(MediaItemFactory.stationToMediaItem(station, tag))
+            player.prepare()
+            player.play()
+        } catch (_: Exception) {
+            isRadioLoading = false
+            Toast.makeText(application, "Playback failed", Toast.LENGTH_SHORT).show()
         }
     }
 
     fun search(query: String) {
-        if (query.isBlank()) searchStations = listOf()
-        else {
-            viewModelScope.launch {
-                searchStations = try {
-                    dbRepository.getRadioStationByNameAndCountry(
-                        query.lowercase(),
-                        selectedCountryCode
-                    ).reversed()
-                } catch (e: Exception) {
+        viewModelScope.launch {
+            try {
+                val q = query.trim()
+                searchStations = if (q.isBlank()) {
                     listOf()
+                } else {
+                    dbRepository.searchStations(q)
                 }
+            } catch (_: Exception) {
+                searchStations = listOf()
             }
         }
     }
 
     fun moveFav(from: Int, to: Int) {
-        try {
-            favoritesStations = favoritesStations.toMutableList().apply {
-                add(to, removeAt(from))
-            }
-        } catch (e: Exception) {
-
+        if (from == to) return
+        val list = favoritesStations.toMutableList()
+        if (from in list.indices && to in 0..list.size) {
+            val item = list.removeAt(from)
+            val insertAt = if (to > list.size) list.size else to
+            list.add(insertAt, item)
+            favoritesStations = list
         }
     }
 
     suspend fun reorderStations() {
-        val favList = favoritesStations.mapNotNull {
-            dbRepository.getFavoriteItemById(it.id)
-        }
-
-        for (i in favList.indices) {
-            dbRepository.updateFavoriteItem(Favorite(favList[i].favId, favList[i].id, i.toLong()))
-        }
-
-        player.sendCustomCommand(
-            SessionCommand(Constants.UPDATE_FAVORITE_COMMAND, Bundle.EMPTY),
-            Bundle.EMPTY
-        )
-    }
-
-    private fun getCurrentItem() {
-        val it = player.currentMediaItem
-        if (it != null) {
-            viewModelScope.launch {
-                try {
-                    val item = dbRepository.getRadioStationByID(
-                        it.mediaId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
+        try {
+            val favMap = dbRepository.getFavoriteStations()
+            favoritesStations.forEachIndexed { index, station ->
+                favMap[station]?.let { fav ->
+                    dbRepository.updateFavoriteItem(
+                        Favorite(fav.favId, fav.id, index.toLong())
                     )
-                    if (item != null) {
-                        selectedStation = item
-                    }
-                    if (player.isPlaying) {
-                        isRadioPlaying = true
-                    } else {
-                        isRadioPlaying = false
-                    }
-                } catch (e: Exception) {
-                    Log.e("error", e.message.toString())
                 }
             }
-        }
-    }
-
-    fun setStation(station: Station, tag: String) {
-        player.setMediaItem(
-            MediaItemFactory.stationToMediaItem(station, tag)
-        )
-        selectedStation = station
-        repository.setLastPlayID(station.id)
+            player.sendCustomCommand(
+                SessionCommand(
+                    Constants.UPDATE_FAVORITE_COMMAND,
+                    Bundle.EMPTY
+                ), Bundle.EMPTY
+            )
+        } catch (_: Exception) { }
     }
 
     suspend fun getFavoriteItem(id: String): Favorite? {
-        return dbRepository.getFavoriteItemById(id)
+        return try {
+            dbRepository.getFavoriteItemById(id)
+        } catch (_: Exception) { null }
     }
 
     suspend fun addOrRemoveFromFavorites(id: String) {
-        val favoriteItem = getFavoriteItem(id)
-        if (favoriteItem != null) {
-            dbRepository.deleteFavoriteItem(favoriteItem)
-            Toast.makeText(application, "Removed from favorites", Toast.LENGTH_SHORT).show()
-        } else {
-            dbRepository.insertFavoriteItem(
-                Favorite(null, id, null)
-            )
-            val favList = dbRepository.getFavoriteStations().keys.toList().mapNotNull {
-                dbRepository.getFavoriteItemById(it.id)
+        try {
+            val existing = dbRepository.getFavoriteItemById(id)
+            if (existing != null) {
+                dbRepository.deleteFavoriteItem(existing)
+            } else {
+                val order = dbRepository.getFavoriteStations().size.toLong()
+                dbRepository.insertFavoriteItem(Favorite(null, id, order))
             }
 
-            for (i in favList.indices) {
-                dbRepository.updateFavoriteItem(
-                    Favorite(
-                        favList[i].favId,
-                        favList[i].id,
-                        i.toLong()
-                    )
-                )
-            }
-            Toast.makeText(application, "Added to favorites", Toast.LENGTH_SHORT).show()
-        }
-        player.sendCustomCommand(
-            SessionCommand(Constants.UPDATE_FAVORITE_COMMAND, Bundle.EMPTY),
-            Bundle.EMPTY
-        )
+            val updated = dbRepository.getFavoriteStations().keys.toList()
+            favoritesStations = updated
+            hasSaved = updated.isNotEmpty()
+
+            player.sendCustomCommand(
+                SessionCommand(
+                    Constants.UPDATE_FAVORITE_COMMAND,
+                    Bundle.EMPTY
+                ), Bundle.EMPTY
+            )
+        } catch (_: Exception) { }
     }
 
-    fun playStation(station: Station, tag: String, fromShortcut: Boolean = false) {
-        isRadioLoading = true
-        if (player.currentMediaItem?.mediaId?.contains(station.id) == true && isRadioPlaying && !fromShortcut) {
-            player.pause()
-            isRadioLoading = false
-        } else {
-            setStation(station, tag)
+    fun skipToPrevious() {
+        try {
+            if (this::player.isInitialized) {
+                player.seekToPreviousMediaItem()
+                if (!player.isPlaying) player.play()
+            }
+        } catch (_: Exception) { }
+    }
+
+    fun skipToNext() {
+        try {
+            if (this::player.isInitialized) {
+                player.seekToNextMediaItem()
+                if (!player.isPlaying) player.play()
+            }
+        } catch (_: Exception) { }
+    }
+
+    fun resetPlayer() {
+        try {
+            if (!this::player.isInitialized) return
+            isRadioLoading = true
+            if (player.currentMediaItem != null) {
+                player.seekToDefaultPosition()
+            }
             player.prepare()
             player.play()
+        } catch (_: Exception) {
+            isRadioLoading = false
         }
+    }
+
+    fun openRadioFromLink(id: String) {
+        if (!this::player.isInitialized) {
+            open = true
+            openID = id
+            return
+        }
+        viewModelScope.launch {
+            try {
+                val item = dbRepository.getRadioStationByID(id)
+                if (item != null) {
+                    playStation(item, DISCOVER_ID, true)
+                } else {
+                    open = true
+                    openID = id
+                }
+            } catch (_: Exception) {
+                open = true
+                openID = id
+            }
+        }
+    }
+
+    fun addStation(name: String, link: String) {
+        viewModelScope.launch {
+            try {
+                val id = UUID.randomUUID().toString()
+                val station = Station(
+                    id = id,
+                    favicon = "",
+                    name = name,
+                    country = "",
+                    tags = "",
+                    countrycode = selectedCountryCode.ifBlank { "" },
+                    url_resolved = link,
+                    state = "",
+                    homepage = "",
+                    rank = 0,
+                )
+                dbRepository.insertStations(listOf(station))
+                val order = dbRepository.getFavoriteStations().size.toLong()
+                dbRepository.insertFavoriteItem(Favorite(null, id, order))
+
+                val updated = dbRepository.getFavoriteStations().keys.toList()
+                favoritesStations = updated
+                hasSaved = updated.isNotEmpty()
+
+                player.sendCustomCommand(
+                    SessionCommand(
+                        Constants.UPDATE_FAVORITE_COMMAND,
+                        Bundle.EMPTY
+                    ), Bundle.EMPTY
+                )
+            } catch (_: Exception) { }
+        }
+    }
+
+    fun onPurchase() {
+        Toast.makeText(application, "Purchases UI not implemented yet", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getCountryCode() {
+        selectedCountryCode = repository.getCountryCode() ?: "US"
     }
 
     fun playOrPause() {
@@ -508,96 +570,14 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
-    fun addStation(name: String, url: String) {
-        val id = UUID.randomUUID().toString()
-        viewModelScope.launch {
-            try {
-                dbRepository.insertStations(
-                    listOf(
-                        Station(
-                            id,
-                            "",
-                            name,
-                            "Custom entry",
-                            "",
-                            "",
-                            url,
-                            ""
-                        )
-                    )
-                )
-                dbRepository.insertFavoriteItem(Favorite(null, id, null))
-
-
-                val favList = dbRepository.getFavoriteStations().keys.toList().mapNotNull {
-                    dbRepository.getFavoriteItemById(it.id)
-                }
-
-                for (i in favList.indices) {
-                    dbRepository.updateFavoriteItem(
-                        Favorite(
-                            favList[i].favId,
-                            favList[i].id,
-                            i.toLong()
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                Toast.makeText(application, "Something went wrong", Toast.LENGTH_SHORT).show()
-            }
-
-            player.sendCustomCommand(
-                SessionCommand(
-                    Constants.UPDATE_FAVORITE_COMMAND,
-                    Bundle.EMPTY
-                ), Bundle.EMPTY
-            )
-        }
-    }
-
-    fun openRadioFromLink(id: String) {
-        open = true
-        openID = id
-    }
-
-    fun resetPlayer() {
-        player.seekToDefaultPosition()
-        Toast.makeText(application, "Resetting player", Toast.LENGTH_SHORT).show()
-    }
-
-    fun hasSaved() {
-        viewModelScope.launch {
-            hasSaved = dbRepository.getFavoriteStations().isNotEmpty()
-        }
-    }
-
-    val purchaseListener = UpdatedCustomerInfoListener { customerInfo ->
-
-        if (customerInfo.entitlements["Premium"]?.isActive == true) {
-            repository.setHasPurchased(true)
-            isPremium = true
-        } else {
-            repository.setHasPurchased(false)
-            isPremium = false
-        }
-    }
-
-    fun onPurchase() {
-        isPremium = true
-    }
-
-    fun getIsPremium() {
-        isPremium = repository.getHasPurchased()
-    }
-
     fun sleepTimer(time: Int) {
         player.sendCustomCommand(
             SessionCommand(
                 Constants.SET_TIMER_COMMAND, Bundle.EMPTY
-
             ), Bundle().apply {
                 putLong(Constants.SET_TIMER_KEY, (time * 60000).toLong())
-            })
+            }
+        )
 
         if (time == 0) {
             Toast.makeText(
@@ -611,6 +591,29 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 "Playback will stop in $time minutes",
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    fun getTheme() {
+        appTheme = when (repository.getThemeMode()) {
+            ThemeMode.DARK.id -> ThemeMode.DARK
+            ThemeMode.LIGHT.id -> ThemeMode.LIGHT
+            else -> ThemeMode.AUTO
+        }
+    }
+
+    fun setTheme(mode: ThemeMode) {
+        appTheme = mode
+        repository.setThemeMode(mode.id)
+    }
+
+    private fun hasSaved() {
+        viewModelScope.launch {
+            try {
+                hasSaved = dbRepository.getFavoriteStations().isNotEmpty()
+            } catch (_: Exception) {
+                hasSaved = false
+            }
         }
     }
 

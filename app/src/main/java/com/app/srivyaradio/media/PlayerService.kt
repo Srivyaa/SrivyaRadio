@@ -15,6 +15,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaLibraryService.LibraryParams
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
@@ -46,6 +47,11 @@ class PlayerService : MediaLibraryService() {
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
     private var countryCode = "US"
+
+    // Track last requested browse node to refresh children after background loads
+    private var lastBrowseParentId: String? = null
+    private var lastBrowsePage: Int = 1
+    private var lastBrowsePageSize: Int = 20
 
     private var timer: CountDownTimer? = null
 
@@ -124,8 +130,20 @@ class PlayerService : MediaLibraryService() {
 
         MediaItemFactory.onFinishedLoading = {
             serviceScope.launch {
+                // Keep existing behavior
                 MediaItemFactory.loadDiscover(dbRepository, countryCode)
                 MediaItemFactory.loadFavorite(dbRepository)
+
+                // Also refresh the last browsed node (e.g., alpha:CC:L) so AA updates UI
+                lastBrowseParentId?.let { parent ->
+                    try {
+                        val children = MediaItemFactory.getChildrenWithParent(
+                            parent, lastBrowsePage, lastBrowsePageSize, dbRepository, countryCode
+                        )
+                        mediaLibrarySession.notifyChildrenChanged(parent, children.size, null)
+                    } catch (_: Exception) {
+                    }
+                }
             }
         }
 
@@ -229,8 +247,10 @@ class PlayerService : MediaLibraryService() {
             args: Bundle
         ): ListenableFuture<SessionResult> {
             if (Constants.CHANGE_COUNTRY_COMMAND == customCommand.customAction) {
-                countryCode = args.getString(Constants.CHANGE_COUNTRY_KEY).toString()
-                MediaItemFactory.getStations(countryCode, application, "load")
+                val newCode = args.getString(Constants.CHANGE_COUNTRY_KEY).toString()
+                countryCode = newCode
+                repository.setUserCountry(newCode)
+                MediaItemFactory.getStations(newCode, application, "load")
             }
             if (Constants.UPDATE_FAVORITE_COMMAND == customCommand.customAction) {
                 serviceScope.launch {
@@ -299,6 +319,45 @@ class PlayerService : MediaLibraryService() {
 
             serviceScope.launch {
                 try {
+                    // Track last requested browse node
+                    lastBrowseParentId = parentId
+                    lastBrowsePage = page
+                    lastBrowsePageSize = pageSize
+
+                    // Preload data for requested node
+                    if (parentId.startsWith(Constants.COUNTRY_PREFIX)) {
+                        val code = parentId.removePrefix(Constants.COUNTRY_PREFIX).uppercase()
+                        if (code.length == 2) {
+                            if (code != countryCode) {
+                                countryCode = code
+                                repository.setUserCountry(code)
+                            }
+                            val count = dbRepository.getAllStations(code).size
+                            if (count == 0) {
+                                MediaItemFactory.getStations(code, application, "load")
+                            }
+                        } else {
+                            // Custom categories (e.g., INDIA, TAMILFM)
+                            val count = dbRepository.getAllStations(code).size
+                            if (count == 0) {
+                                MediaItemFactory.getStations(code, application, "load")
+                            }
+                        }
+                    } else if (parentId.startsWith(Constants.ALPHABET_PREFIX)) {
+                        val parts = parentId.removePrefix(Constants.ALPHABET_PREFIX).split(":")
+                        val code = parts.getOrNull(0)?.uppercase().orEmpty()
+                        if (code.length == 2) {
+                            if (code != countryCode) {
+                                countryCode = code
+                                repository.setUserCountry(code)
+                            }
+                            val count = dbRepository.getAllStations(code).size
+                            if (count == 0) {
+                                MediaItemFactory.getStations(code, application, "load")
+                            }
+                        }
+                    }
+
                     val result = MediaItemFactory.getChildrenWithParent(
                         parentId, page, pageSize, dbRepository, countryCode
                     )
@@ -307,6 +366,7 @@ class PlayerService : MediaLibraryService() {
                     future.setException(e)
                 }
             }
+
             return future
         }
 
@@ -320,6 +380,27 @@ class PlayerService : MediaLibraryService() {
 
             serviceScope.launch {
                 try {
+                    // Track last requested browse node
+                    lastBrowseParentId = parentId
+                    lastBrowsePage = 1
+                    lastBrowsePageSize = 20
+
+                    // Preload for requested node
+                    if (parentId.startsWith(Constants.COUNTRY_PREFIX)) {
+                        val code = parentId.removePrefix(Constants.COUNTRY_PREFIX).uppercase()
+                        val count = dbRepository.getAllStations(code).size
+                        if (count == 0) {
+                            MediaItemFactory.getStations(code, application, "load")
+                        }
+                    } else if (parentId.startsWith(Constants.ALPHABET_PREFIX)) {
+                        val parts = parentId.removePrefix(Constants.ALPHABET_PREFIX).split(":")
+                        val code = parts.getOrNull(0)?.uppercase().orEmpty()
+                        val count = dbRepository.getAllStations(code).size
+                        if (count == 0) {
+                            MediaItemFactory.getStations(code, application, "load")
+                        }
+                    }
+
                     val children = MediaItemFactory.getChildrenWithParent(
                         parentId, 1, 20, dbRepository, countryCode
                     )
@@ -341,6 +422,12 @@ class PlayerService : MediaLibraryService() {
             startIndex: Int,
             startPositionMs: Long
         ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> {
+
+            if (mediaItems.isEmpty()) {
+                return Futures.immediateFuture(
+                    MediaSession.MediaItemsWithStartPosition(emptyList(), 0, 0)
+                )
+            }
 
             if (mediaItems[0].requestMetadata.searchQuery != null) {
                 val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
@@ -364,32 +451,71 @@ class PlayerService : MediaLibraryService() {
                 return future
 
             }
-            return if (mediaItems[0].mediaId.startsWith(DISCOVER_ID)) {
-                val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
+            val selectedItem = mediaItems.getOrNull(startIndex)?.let { it } ?: mediaItems[0]
+            val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
 
-                serviceScope.launch {
-                    try {
-                        val mediaItem =
-                            MediaItemFactory.getItemFromDB(dbRepository, mediaItems[0].mediaId)
-                        val result = MediaSession.MediaItemsWithStartPosition(
-                            listOf(mediaItem), 0, C.TIME_UNSET
-                        )
-                        future.set(result)
-                    } catch (e: Exception) {
-                        future.setException(e)
+            serviceScope.launch {
+                try {
+                    val result = if (selectedItem.mediaId.startsWith(FAVORITES_ID)) {
+                        val queue = MediaItemFactory.getFavorite()
+                        val idx = queue.indexOfFirst { it.mediaId == selectedItem.mediaId }
+                            .takeIf { it >= 0 } ?: MediaItemFactory.getItemIndex(selectedItem)
+                        MediaSession.MediaItemsWithStartPosition(queue, idx, C.TIME_UNSET)
+                    } else {
+                        val extras = selectedItem.mediaMetadata.extras
+                        val selectedId = when {
+                            selectedItem.mediaId.startsWith(DISCOVER_ID) -> selectedItem.mediaId.removePrefix(DISCOVER_ID)
+                            selectedItem.mediaId.startsWith(FAVORITES_ID) -> selectedItem.mediaId.removePrefix(FAVORITES_ID)
+                            else -> selectedItem.mediaId
+                        }
+                        val selectedStation = dbRepository.getRadioStationByID(selectedId)
+                        val itemCountry = selectedStation?.countrycode?.uppercase()
+                            ?: extras?.getString("COUNTRY_CODE")?.uppercase()
+                        val alpha = extras?.getString("BROWSE_ALPHA")?.firstOrNull()?.uppercaseChar()
+
+                        // Persist country so app and AA stay in sync
+                        if (!itemCountry.isNullOrEmpty() && itemCountry != countryCode) {
+                            countryCode = itemCountry
+                            repository.setUserCountry(itemCountry)
+                        }
+
+                        // Derive country from browse context if extras are missing
+                        val browseCode = when {
+                            lastBrowseParentId?.startsWith(Constants.ALPHABET_PREFIX) == true ->
+                                lastBrowseParentId!!.removePrefix(Constants.ALPHABET_PREFIX).substringBefore(":").uppercase()
+                            lastBrowseParentId?.startsWith(Constants.COUNTRY_PREFIX) == true ->
+                                lastBrowseParentId!!.removePrefix(Constants.COUNTRY_PREFIX).uppercase()
+                            else -> null
+                        }
+
+                        val code = (itemCountry ?: browseCode ?: countryCode).uppercase()
+                        val stations = dbRepository.getAllStations(code)
+                        val filtered = if (alpha != null) {
+                            stations.filter { st ->
+                                val n = st.name.trim()
+                                n.isNotEmpty() && n[0].uppercaseChar() == alpha
+                            }
+                        } else {
+                            stations
+                        }
+                        val queue = if (filtered.isEmpty() && selectedStation != null) {
+                            // Data for this country may not be loaded yet; trigger load and play selected only
+                            try { MediaItemFactory.getStations(code, application, "load") } catch (_: Exception) {}
+                            listOf(MediaItemFactory.stationToMediaItem(selectedStation, DISCOVER_ID))
+                        } else {
+                            filtered.map { st -> MediaItemFactory.stationToMediaItem(st, DISCOVER_ID) }
+                        }
+                        val idx = queue.indexOfFirst { it.mediaId.endsWith(selectedId) }
+                            .takeIf { it >= 0 } ?: 0
+                        MediaSession.MediaItemsWithStartPosition(queue, idx, C.TIME_UNSET)
                     }
+                    future.set(result)
+                } catch (e: Exception) {
+                    future.setException(e)
                 }
-
-                return future
-            } else {
-                Futures.immediateFuture(
-                    MediaSession.MediaItemsWithStartPosition(
-                        MediaItemFactory.getFavorite(),
-                        MediaItemFactory.getItemIndex(mediaItems[0]),
-                        C.TIME_UNSET
-                    )
-                )
             }
+
+            return future
         }
 
     }

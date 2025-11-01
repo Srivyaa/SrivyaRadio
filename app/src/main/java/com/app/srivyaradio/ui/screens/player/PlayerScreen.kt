@@ -11,6 +11,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,8 +22,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -104,6 +106,20 @@ fun PlayerScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    // Previous
+                    IconButton(
+                        onClick = { mainViewModel.skipToPrevious() },
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(5.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.SkipPrevious,
+                            contentDescription = null,
+                            modifier = Modifier.size(35.dp)
+                        )
+                    }
+
                     IconButton(
                         onClick = {
                             scope.launch {
@@ -142,6 +158,20 @@ fun PlayerScreen(
                                 modifier = Modifier.size(35.dp)
                             )
                         }
+                    }
+
+                    // Next
+                    IconButton(
+                        onClick = { mainViewModel.skipToNext() },
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(5.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.SkipNext,
+                            contentDescription = null,
+                            modifier = Modifier.size(35.dp)
+                        )
                     }
 
                     IconButton(
