@@ -11,8 +11,8 @@ import com.app.srivyaradio.data.models.Station
 
 @Dao
 interface EntityDao {
-    @Query("SELECT * FROM radio_stations WHERE countrycode = (:countryCode) ORDER BY rank ASC")
-    suspend fun getStations(countryCode:String): List<Station>
+    @Query("SELECT * FROM radio_stations WHERE LOWER(countrycode) = LOWER(:countryCode) ORDER BY rank ASC")
+    suspend fun getStations(countryCode: String): List<Station>
 
     @Query("SELECT * FROM radio_stations WHERE id = (:id)")
     suspend fun getStationById(id: String): Station?
@@ -23,8 +23,8 @@ interface EntityDao {
     @Query("SELECT * FROM radio_stations WHERE name LIKE '%' || :search || '%' COLLATE NOCASE")
     suspend fun getStationByName(search: String): List<Station>
 
-    @Query("SELECT * FROM radio_stations WHERE name LIKE '%' || :search || '%' COLLATE NOCASE and countrycode = (:countryCode)")
-    suspend fun getStationByNameAndCountry(search: String, countryCode:String): List<Station>
+    @Query("SELECT * FROM radio_stations WHERE name LIKE '%' || :search || '%' COLLATE NOCASE and LOWER(countrycode) = LOWER(:countryCode)")
+    suspend fun getStationByNameAndCountry(search: String, countryCode: String): List<Station>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStation(radioStations: List<Station>)
