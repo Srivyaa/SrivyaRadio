@@ -11,9 +11,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Shuffle
+import androidx.compose.material.icons.filled.FiberManualRecord
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
-import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.app.srivyaradio.R
 import com.app.srivyaradio.ui.MainViewModel
 import com.app.srivyaradio.ui.components.RadioLogoSmall
+import com.app.srivyaradio.ui.components.CastButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -105,6 +108,9 @@ fun PlayerScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
+                    // Cast button
+                    CastButton(modifier = Modifier.size(48.dp))
+
                     // Previous
                     IconButton(
                         onClick = { mainViewModel.skipToPrevious() },
@@ -178,6 +184,30 @@ fun PlayerScreen(
                             .padding(5.dp),
                     ) {
                         Icon(Icons.Default.Refresh, null, modifier = Modifier.size(35.dp))
+                    }
+
+                    // Shuffle toggle
+                    IconButton(
+                        onClick = { mainViewModel.toggleShuffle() },
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(5.dp)
+                    ) {
+                        Icon(Icons.Filled.Shuffle, null, modifier = Modifier.size(35.dp))
+                    }
+
+                    // Recording toggle
+                    IconButton(
+                        onClick = { mainViewModel.toggleRecording() },
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(5.dp)
+                    ) {
+                        if (mainViewModel.isRecording) {
+                            Icon(Icons.Filled.Stop, null, modifier = Modifier.size(35.dp))
+                        } else {
+                            Icon(Icons.Filled.FiberManualRecord, null, modifier = Modifier.size(35.dp))
+                        }
                     }
                 }
                 Spacer(Modifier.padding(25.dp))

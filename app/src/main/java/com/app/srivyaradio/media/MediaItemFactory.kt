@@ -252,7 +252,8 @@ object MediaItemFactory {
         page: Int,
         pageSize: Int,
         dbRepository: DatabaseRepository,
-        countryCode: String
+        countryCode: String,
+        prefsRepository: SharedPreferencesRepository
     ): List<MediaItem> {
         return when (parentId) {
             FAVORITES_ID -> {
@@ -274,8 +275,11 @@ object MediaItemFactory {
             }
 
             COUNTRIES_ID -> {
-                // Include all categories from country list
-                countryList.map { (name, code) ->
+                // Include built-in categories + user-managed countries
+                val dynamicList = try {
+                    countryList + prefsRepository.getUserCountries()
+                } catch (_: Exception) { countryList }
+                dynamicList.map { (name, code) ->
                     countryToBrowsable(name, code)
                 }
             }

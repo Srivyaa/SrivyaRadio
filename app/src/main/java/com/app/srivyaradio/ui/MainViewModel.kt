@@ -94,12 +94,53 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
     var currentSong by mutableStateOf("")
 
+    // Recording and shuffle UI state
+    var isRecording by mutableStateOf(false)
+        private set
+    var isShuffleOn by mutableStateOf(false)
+        private set
+
     var isPremium by mutableStateOf(
         false
     )
 
     private val purchaseListener = UpdatedCustomerInfoListener { customerInfo ->
         isPremium = customerInfo.entitlements.active.isNotEmpty()
+    }
+
+    fun toggleShuffle() {
+        try {
+            isShuffleOn = !isShuffleOn
+            if (this::player.isInitialized) {
+                player.shuffleModeEnabled = isShuffleOn
+            }
+        } catch (_: Exception) { }
+    }
+
+    fun startRecording() {
+        try {
+            if (!this::player.isInitialized) return
+            player.sendCustomCommand(
+                SessionCommand(Constants.START_RECORDING_COMMAND, Bundle.EMPTY),
+                Bundle.EMPTY
+            )
+            isRecording = true
+        } catch (_: Exception) { }
+    }
+
+    fun stopRecording() {
+        try {
+            if (!this::player.isInitialized) return
+            player.sendCustomCommand(
+                SessionCommand(Constants.STOP_RECORDING_COMMAND, Bundle.EMPTY),
+                Bundle.EMPTY
+            )
+            isRecording = false
+        } catch (_: Exception) { }
+    }
+
+    fun toggleRecording() {
+        if (isRecording) stopRecording() else startRecording()
     }
 
     private lateinit var playerFuture: ListenableFuture<MediaBrowser>

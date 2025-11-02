@@ -58,7 +58,6 @@ android {
         }
     }
 }
-
 dependencies {
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
@@ -126,6 +125,10 @@ dependencies {
     implementation("androidx.media3:media3-decoder:1.8.0")
     implementation("androidx.media3:media3-datasource:1.8.0")
     implementation("androidx.media3:media3-common:1.8.0")
+
+    // Google Cast framework and MediaRouter for cast button
+    implementation("com.google.android.gms:play-services-cast-framework:21.5.0")
+    implementation("androidx.mediarouter:mediarouter:1.5.0")
 
     implementation ("com.google.accompanist:accompanist-permissions:0.37.3")
 }
