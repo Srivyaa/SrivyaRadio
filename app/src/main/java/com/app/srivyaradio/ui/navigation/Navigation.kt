@@ -6,6 +6,9 @@ enum class Screen(val routeName:String) {
     FAVORITES("Favorites"),
     DISCOVER("Discover"),
     MORE("More"),
+    RECENTS("Recents"),
+    QUEUE("Queue"),
+    MANAGE_COUNTRIES("Manage Countries"),
 }
 
 sealed class NavigationItem(val route: String, val icon: Int, val iconFilled: Int, val routeName:String) {

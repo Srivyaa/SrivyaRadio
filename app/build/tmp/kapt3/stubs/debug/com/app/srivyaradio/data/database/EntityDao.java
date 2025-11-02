@@ -4,7 +4,7 @@ package com.app.srivyaradio.data.database;
 @androidx.room.Dao()
 public abstract interface EntityDao {
     
-    @androidx.room.Query(value = "SELECT * FROM radio_stations WHERE countrycode = (:countryCode) ORDER BY rank ASC")
+    @androidx.room.Query(value = "SELECT * FROM radio_stations WHERE LOWER(countrycode) = LOWER(:countryCode) ORDER BY name COLLATE NOCASE ASC")
     @org.jetbrains.annotations.Nullable()
     public abstract java.lang.Object getStations(@org.jetbrains.annotations.NotNull()
     java.lang.String countryCode, @org.jetbrains.annotations.NotNull()
@@ -28,7 +28,7 @@ public abstract interface EntityDao {
     java.lang.String search, @org.jetbrains.annotations.NotNull()
     kotlin.coroutines.Continuation<? super java.util.List<com.app.srivyaradio.data.models.Station>> $completion);
     
-    @androidx.room.Query(value = "SELECT * FROM radio_stations WHERE name LIKE \'%\' || :search || \'%\' COLLATE NOCASE and countrycode = (:countryCode)")
+    @androidx.room.Query(value = "SELECT * FROM radio_stations WHERE name LIKE \'%\' || :search || \'%\' COLLATE NOCASE and LOWER(countrycode) = LOWER(:countryCode)")
     @org.jetbrains.annotations.Nullable()
     public abstract java.lang.Object getStationByNameAndCountry(@org.jetbrains.annotations.NotNull()
     java.lang.String search, @org.jetbrains.annotations.NotNull()

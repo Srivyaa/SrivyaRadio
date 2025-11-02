@@ -86,6 +86,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     var discoverStations by mutableStateOf<MutableList<Station>>(mutableListOf())
     var favoritesStations by mutableStateOf<List<Station>>(listOf())
     var searchStations by mutableStateOf<List<Station>>(listOf())
+    var recentStations by mutableStateOf<List<Station>>(listOf())
+    var queueStations by mutableStateOf<List<Station>>(listOf())
 
     var isRadioPlaying by mutableStateOf(false)
     var isRadioLoading by mutableStateOf(false)
@@ -146,6 +148,9 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             viewModelScope.launch {
                 try {
                     selectedStation = dbRepository.getRadioStationByID(id)
+                    // Update recents list
+                    repository.addRecent(id)
+                    loadRecents()
                 } catch (_: Exception) { }
             }
         } catch (_: Exception) { }
@@ -163,6 +168,24 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 ), Bundle().apply {
                     putString(CHANGE_COUNTRY_KEY, selectedCountryCode)
                 }
+            )
+        }
+    }
+
+    // Dynamic country list for UI
+    fun getCountryListForUI(): List<Pair<String, String>> {
+        val user = repository.getUserCountries()
+        return countryList + user
+    }
+
+    fun setCountryCodeByCode(code: String) {
+        if (code != selectedCountryCode) {
+            selectedCountryCode = code
+            repository.setUserCountry(selectedCountryCode)
+            discoverStations = mutableListOf()
+            player.sendCustomCommand(
+                SessionCommand(CHANGE_COUNTRY_COMMAND, Bundle.EMPTY),
+                Bundle().apply { putString(CHANGE_COUNTRY_KEY, selectedCountryCode) }
             )
         }
     }
@@ -192,6 +215,17 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             } catch (_: Exception) {
                 searchStations = listOf()
             }
+        }
+    }
+
+    // Recents
+    fun loadRecents() {
+        viewModelScope.launch {
+            try {
+                val ids = repository.getRecents()
+                val list = ids.mapNotNull { dbRepository.getRadioStationByID(it) }
+                recentStations = list
+            } catch (_: Exception) { recentStations = listOf() }
         }
     }
 
@@ -344,6 +378,82 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
     fun onPurchase() {
         Toast.makeText(application, "Purchases UI not implemented yet", Toast.LENGTH_SHORT).show()
+    }
+
+    // Default screen preference
+    fun getDefaultScreen(): String? = repository.getDefaultScreen()
+    fun setDefaultScreen(screenRoute: String) { repository.setDefaultScreen(screenRoute) }
+
+    fun getStartDestinationRoute(): String {
+        val pref = getDefaultScreen()
+        return when {
+            pref != null -> pref
+            hasSaved -> com.app.srivyaradio.ui.navigation.NavigationItem.Favorites.route
+            else -> com.app.srivyaradio.ui.navigation.NavigationItem.Discover.route
+        }
+    }
+
+    // Queue management
+    fun refreshQueue() {
+        try {
+            val items = (0 until player.mediaItemCount).mapNotNull { idx ->
+                val mediaId = player.getMediaItemAt(idx).mediaId
+                val id = mediaId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
+                // Will fill on background
+                id
+            }
+            viewModelScope.launch {
+                val stations = items.mapNotNull { dbRepository.getRadioStationByID(it) }
+                queueStations = stations
+            }
+        } catch (_: Exception) { queueStations = listOf() }
+    }
+
+    fun moveInQueue(from: Int, to: Int) {
+        try {
+            player.moveMediaItem(from, to)
+            refreshQueue()
+        } catch (_: Exception) { }
+    }
+
+    fun removeFromQueue(index: Int) {
+        try {
+            player.removeMediaItem(index)
+            refreshQueue()
+        } catch (_: Exception) { }
+    }
+
+    fun clearQueue() {
+        try {
+            player.clearMediaItems()
+            refreshQueue()
+        } catch (_: Exception) { }
+    }
+
+    // Manage user countries
+    fun addUserCountry(name: String, code: String) {
+        val trimmedName = name.trim()
+        val trimmedCode = code.trim().uppercase()
+        if (trimmedName.isBlank() || trimmedCode.isBlank()) return
+        val current = repository.getUserCountries().toMutableList()
+        if (current.any { it.second.equals(trimmedCode, ignoreCase = true) }) return
+        current.add(trimmedName to trimmedCode)
+        repository.setUserCountries(current)
+    }
+
+    fun updateUserCountry(oldName: String, oldCode: String, newName: String, newCode: String) {
+        val current = repository.getUserCountries().toMutableList()
+        val idx = current.indexOfFirst { it.first == oldName && it.second.equals(oldCode, true) }
+        if (idx >= 0) {
+            current[idx] = newName.trim() to newCode.trim().uppercase()
+            repository.setUserCountries(current)
+        }
+    }
+
+    fun removeUserCountry(name: String, code: String) {
+        val current = repository.getUserCountries().toMutableList()
+        current.removeAll { it.first == name && it.second.equals(code, true) }
+        repository.setUserCountries(current)
     }
 
     private fun getCountryCode() {
@@ -624,5 +734,6 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         getCountryCode()
         getTheme()
         initPlayer()
+        loadRecents()
     }
 }

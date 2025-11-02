@@ -10049,3 +10049,4 @@ int xml automotive_app_desc 0x7f170000
 int xml backup_rules 0x7f170001
 int xml data_extraction_rules 0x7f170002
 int xml image_share_filepaths 0x7f170003
+int xml media_session_service 0x7f170004

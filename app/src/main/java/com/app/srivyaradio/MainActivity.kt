@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -67,6 +68,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -80,14 +82,11 @@ class MainActivity : ComponentActivity() {
             PurchasesConfiguration.Builder(this, getString(R.string.revcat_key)).build()
         )
 
-
         setContent {
             val navController = rememberNavController()
             var showAppBar by rememberSaveable { mutableStateOf(true) }
             var showBottomBar by rememberSaveable { mutableStateOf(true) }
-            var screenName by rememberSaveable {
-                mutableStateOf("")
-            }
+            var screenName by rememberSaveable { mutableStateOf("") }
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val snackbarHostState = remember { SnackbarHostState() }
 
@@ -95,9 +94,7 @@ class MainActivity : ComponentActivity() {
                 NavigationItem.Discover.route -> NavigationItem.Discover.routeName
                 NavigationItem.Favorites.route -> NavigationItem.Favorites.routeName
                 NavigationItem.More.route -> NavigationItem.More.routeName
-                else -> {
-                    ""
-                }
+                else -> ""
             }
 
             showAppBar = when (navBackStackEntry?.destination?.route) {
@@ -105,9 +102,7 @@ class MainActivity : ComponentActivity() {
                 else -> true
             }
 
-            showBottomBar = when (navBackStackEntry?.destination?.route) {
-                else -> true
-            }
+            showBottomBar = true
 
             val scrollBehavior = when (navBackStackEntry?.destination?.route) {
                 NavigationItem.Favorites.route -> TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -129,13 +124,8 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.DARK -> AppTheme(true)
             }
 
-            var showAddDialog by remember {
-                mutableStateOf(false)
-            }
-
-            var showPlayerSheet by rememberSaveable {
-                mutableStateOf(false)
-            }
+            var showAddDialog by remember { mutableStateOf(false) }
+            var showPlayerSheet by rememberSaveable { mutableStateOf(false) }
 
             fun showInterstitial() {
                 val adRequest = AdRequest.Builder().build()
@@ -156,26 +146,21 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             interstitialAd.show(this@MainActivity)
-                            Log.d("mkv", "hh")
+                            Log.d("ads", "interstitial shown")
                         }
-                    })
+                    }
+                )
             }
 
             CompositionLocalProvider(LocalTheme provides darkTheme) {
-
                 RadioTimeV3Theme(darkTheme = LocalTheme.current.isDark) {
-
                     Scaffold(
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-
-                        snackbarHost = {
-                            SnackbarHost(hostState = snackbarHostState)
-                        }, topBar = {
+                        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+                        topBar = {
                             if (showAppBar) {
                                 TopAppBar(
-                                    title = {
-                                        Text(screenName)
-                                    },
+                                    title = { Text(screenName) },
                                     scrollBehavior = scrollBehavior,
                                     colors = TopAppBarDefaults.topAppBarColors().copy(
                                         scrolledContainerColor = TopAppBarDefaults.topAppBarColors().containerColor
@@ -183,30 +168,32 @@ class MainActivity : ComponentActivity() {
                                     navigationIcon = {
                                         if (!showBottomBar && navController.previousBackStackEntry != null) {
                                             IconButton(onClick = { navController.navigateUp() }) {
-                                                Icon(Icons.Default.Close, null)
+                                                Icon(
+                                                    Icons.Default.Close,
+                                                    null
+                                                )
                                             }
                                         }
                                     },
                                     actions = {
                                         if (navBackStackEntry?.destination?.route == NavigationItem.Favorites.route) {
-                                            IconButton(onClick = {
-                                                showAddDialog = true
-                                            }) {
+                                            IconButton(onClick = { showAddDialog = true }) {
                                                 Icon(
                                                     Icons.AutoMirrored.Filled.PlaylistAdd,
                                                     contentDescription = null
                                                 )
                                             }
                                         }
-                                    })
+                                    }
+                                )
                             }
-                        }, bottomBar = {
+                        },
+                        bottomBar = {
                             if (showBottomBar) {
-                                BottomAppBar {
-                                    BottomNavigationBar(navController = navController)
-                                }
+                                BottomAppBar { BottomNavigationBar(navController = navController) }
                             }
-                        }) { innerPadding ->
+                        }
+                    ) { innerPadding ->
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -219,7 +206,6 @@ class MainActivity : ComponentActivity() {
                                     )
                                 )
                         ) {
-
                             fun Context.findActivity(): Activity? = when (this) {
                                 is Activity -> this
                                 is ContextWrapper -> baseContext.findActivity()
@@ -229,15 +215,12 @@ class MainActivity : ComponentActivity() {
                             val context = LocalContext.current
                             val activity = context.findActivity()
                             val intent = activity?.intent
-
                             val appLinkIntent: Intent? = intent
                             val appLinkData: Uri? = appLinkIntent?.data
-
                             appLinkData?.let {
                                 if (appLinkData.host == "shortcut") {
                                     val stationID =
                                         appLinkData.toString().substringAfter("shortcut/")
-
                                     if (stationID.isNotEmpty() && stationID.isNotBlank()) {
                                         mainViewModel.openRadioFromLink(stationID)
                                         activity?.intent = Intent()
@@ -247,13 +230,19 @@ class MainActivity : ComponentActivity() {
 
                             NavGraph(navHostController = navController, modifier = Modifier)
 
-                            mainViewModel.selectedStation?.let {
+                            mainViewModel.selectedStation?.let { st ->
                                 if (showBottomBar) {
                                     MiniPlayerController(
                                         modifier = Modifier.align(Alignment.BottomEnd),
-                                        station = it,
+                                        station = st,
                                         isLoading = mainViewModel.isRadioLoading,
                                         isPlaying = mainViewModel.isRadioPlaying,
+                                        isFavorite = mainViewModel.favoritesStations.any { it.id == st.id },
+                                        onToggleFavorite = {
+                                            mainViewModel.viewModelScope.launch {
+                                                mainViewModel.addOrRemoveFromFavorites(st.id)
+                                            }
+                                        },
                                         onPlay = {
                                             mainViewModel.playOrPause()
                                             if (!mainViewModel.isPremium) {
@@ -267,9 +256,7 @@ class MainActivity : ComponentActivity() {
                                                 }
                                             }
                                         },
-                                        onClick = {
-                                            showPlayerSheet = true
-                                        }
+                                        onClick = { showPlayerSheet = true }
                                     )
                                 }
                             }
@@ -283,45 +270,29 @@ class MainActivity : ComponentActivity() {
                             if (showAddDialog) {
                                 var name by remember { mutableStateOf("") }
                                 var link by remember { mutableStateOf("") }
-
-                                var nameErr by remember {
-                                    mutableStateOf("")
-                                }
-                                var linkErr by remember {
-                                    mutableStateOf("")
-                                }
+                                var nameErr by remember { mutableStateOf("") }
+                                var linkErr by remember { mutableStateOf("") }
 
                                 CustomAlertDialog(
                                     title = "Add station",
                                     confirmText = "Add",
                                     dismissText = "Cancel",
                                     icon = Icons.Default.Radio,
-                                    onDismiss = {
-                                        showAddDialog = false
-                                    },
+                                    onDismiss = { showAddDialog = false },
                                     onConfirm = {
-                                        if (name.isEmpty() || name.isBlank()) {
-                                            nameErr = "Name can't be empty"
-                                        } else {
-                                            nameErr = ""
-                                        }
-                                        if (link.isEmpty() || link.isBlank()) {
-                                            linkErr = "Streaming link is required"
-                                        }
-                                        if (!link.isValidUrl()) {
-                                            linkErr = "Invalid link"
-                                        } else {
-                                            linkErr = ""
-                                        }
+                                        if (name.isEmpty() || name.isBlank()) nameErr =
+                                            "Name can't be empty" else nameErr = ""
+                                        if (link.isEmpty() || link.isBlank()) linkErr =
+                                            "Streaming link is required"
+                                        if (!link.isValidUrl()) linkErr =
+                                            "Invalid link" else if (linkErr == "") linkErr = ""
                                         if (nameErr.isBlank() && linkErr.isBlank()) {
                                             mainViewModel.addStation(name, link)
                                             showAddDialog = false
                                         }
-                                    }) {
-                                    Column(
-                                        modifier = Modifier.fillMaxWidth(),
-
-                                        ) {
+                                    }
+                                ) {
+                                    Column(modifier = Modifier.fillMaxWidth()) {
                                         Text(
                                             "Missing a station? Add it directly in your favorite list!",
                                             modifier = Modifier.padding(5.dp)
@@ -346,12 +317,9 @@ class MainActivity : ComponentActivity() {
                                                     tint = MaterialTheme.colorScheme.error
                                                 )
                                             },
-                                            onValueChange = {
-                                                name = it
-                                                nameErr = ""
-                                            },
-                                            label = { Text("Station name") })
-
+                                            onValueChange = { name = it; nameErr = "" },
+                                            label = { Text("Station name") }
+                                        )
                                         OutlinedTextField(
                                             value = link,
                                             modifier = Modifier.fillMaxWidth(),
@@ -371,11 +339,9 @@ class MainActivity : ComponentActivity() {
                                                     tint = MaterialTheme.colorScheme.error
                                                 )
                                             },
-                                            onValueChange = {
-                                                linkErr = ""
-                                                link = it
-                                            },
-                                            label = { Text("Streaming link") })
+                                            onValueChange = { link = it; linkErr = "" },
+                                            label = { Text("Streaming link") }
+                                        )
                                     }
                                 }
                             }

@@ -15,16 +15,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-
+import com.app.srivyaradio.R
 
 @Composable
 fun Station(
-    name: String, image: String, label: String, onClick: () -> Unit, onOptions: () -> Unit,modifier: Modifier
+    name: String,
+    image: String,
+    label: String,
+    isFavorite: Boolean = false,
+    onToggleFavorite: () -> Unit = {},
+    onClick: () -> Unit,
+    onOptions: () -> Unit,
+    modifier: Modifier
 ) {
 
     Row(verticalAlignment = Alignment.CenterVertically,
@@ -36,7 +44,7 @@ fun Station(
 
     ) {
         Box(modifier = Modifier.padding(15.dp)) {
-            RadioLogoSmall(imageUrl = image, 53)
+            RadioLogoSmall(imageUrl = image, size = 53)
         }
 
         Column(
@@ -59,17 +67,24 @@ fun Station(
                 )
             }
         }
-        IconButton(
-            modifier = Modifier.padding(10.dp),
-            onClick = {
-                onOptions()
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { onToggleFavorite() }) {
+                Icon(
+                    painter = painterResource(id = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outlined),
+                    modifier = Modifier.size(24.dp),
+                    contentDescription = null
+                )
             }
-        ) {
-            Icon(
-                Icons.Default.MoreVert,
-                modifier = Modifier.size(27.dp),
-                contentDescription = null
-            )
+            IconButton(
+                modifier = Modifier.padding(6.dp),
+                onClick = { onOptions() }
+            ) {
+                Icon(
+                    Icons.Default.MoreVert,
+                    modifier = Modifier.size(24.dp),
+                    contentDescription = null
+                )
+            }
         }
     }
 }

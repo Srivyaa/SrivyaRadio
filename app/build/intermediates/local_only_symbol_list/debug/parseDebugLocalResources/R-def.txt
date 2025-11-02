@@ -43,3 +43,4 @@ style Theme.RadioTimeV3.FullScreen
 xml automotive_app_desc
 xml backup_rules
 xml data_extraction_rules
+xml media_session_service

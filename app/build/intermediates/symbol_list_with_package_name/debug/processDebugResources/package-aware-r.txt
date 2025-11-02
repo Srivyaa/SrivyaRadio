@@ -7613,3 +7613,4 @@ xml automotive_app_desc
 xml backup_rules
 xml data_extraction_rules
 xml image_share_filepaths
+xml media_session_service

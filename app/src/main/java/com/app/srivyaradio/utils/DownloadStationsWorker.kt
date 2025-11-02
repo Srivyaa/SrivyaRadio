@@ -27,13 +27,12 @@ class DownloadStationsWorker(appContext: Context, workerParams: WorkerParameters
     override suspend fun doWork(): Result {
         val retrofit = StationsClient.getInstance()
         val apiInterface: StationsInterface = retrofit.create(StationsInterface::class.java)
-
         return try {
             val countryCode = inputData.getString(COUNTRY_CODE)?.lowercase()
             val dbVersion = apiInterface.getVersion()
             repository.setDBVersion(dbVersion.toInt())
             val radioStations = apiInterface.getStations(countryCode.toString())
-            dbRepository.insertStations(radioStations.reversed())
+            dbRepository.insertStations(radioStations)
             Result.success()
         } catch (e: Exception) {
             Result.retry()

@@ -237,7 +237,7 @@ public final class EntityDao_Impl implements EntityDao {
   @Override
   public Object getStations(final String countryCode,
       final Continuation<? super List<Station>> $completion) {
-    final String _sql = "SELECT * FROM radio_stations WHERE LOWER(countrycode) = LOWER(?) ORDER BY rank ASC";
+    final String _sql = "SELECT * FROM radio_stations WHERE LOWER(countrycode) = LOWER(?) ORDER BY name COLLATE NOCASE ASC";
     return DBUtil.performSuspending(__db, true, false, (_connection) -> {
       final SQLiteStatement _stmt = _connection.prepare(_sql);
       try {
