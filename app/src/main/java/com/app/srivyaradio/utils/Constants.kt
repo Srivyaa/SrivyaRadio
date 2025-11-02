@@ -25,4 +25,8 @@ object Constants {
     const val TOGGLE_FAVORITE_COMMAND = "COMMAND_TOGGLE_FAVORITE"
     const val TOGGLE_FAVORITE_STATION_ID_KEY = "KEY_TOGGLE_FAVORITE_STATION_ID"
     const val RADIO_LOGO = "https://srivyaa.github.io/ImageHost/ic_radiologo.png"
+    // New preferences
+    const val DEFAULT_SCREEN = "defaultScreen" // values: Favorites, Discover, Recents
+    const val USER_COUNTRIES = "userCountries" // serialized as name|code;name|code;...
+    const val RECENTS_LIST = "recentsList" // comma-separated station IDs
 }

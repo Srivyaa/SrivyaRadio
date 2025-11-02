@@ -35,13 +35,19 @@ import com.app.srivyaradio.ui.components.PremiumCard
 import com.app.srivyaradio.ui.components.TextAlertDialog
 import com.app.srivyaradio.ui.components.ThemeSelectionDialog
 import com.app.srivyaradio.utils.ThemeMode
+import androidx.navigation.NavController
+import androidx.compose.material3.RadioButton
+import com.app.srivyaradio.ui.navigation.NavigationItem
+import com.app.srivyaradio.ui.navigation.Screen
 
 @Composable
 fun MoreScreen(
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    navController: NavController
 ) {
     var openThemeDialog by remember { mutableStateOf(false) }
     var openChangelogDialog by remember { mutableStateOf(false) }
+    var openDefaultScreenDialog by remember { mutableStateOf(false) }
 
     val themeOptions = listOf(ThemeMode.AUTO, ThemeMode.DARK, ThemeMode.LIGHT)
     val uriHandler = LocalUriHandler.current
@@ -52,6 +58,29 @@ fun MoreScreen(
             PremiumCard(isPremium = mainViewModel.isPremium) {
                 mainViewModel.onPurchase()
             }
+            ListItem(headlineContent = {
+                Text(text = "Default start screen")
+            }, leadingContent = {
+                Icon(Icons.Outlined.Settings, contentDescription = null)
+            }, modifier = Modifier.clickable {
+                openDefaultScreenDialog = true
+            })
+            ListItem(headlineContent = {
+                Text(text = "Recently played")
+            }, leadingContent = {
+                Icon(painterResource(id = R.drawable.ic_radio_outlined), contentDescription = null)
+            }, modifier = Modifier.clickable { navController.navigate(Screen.RECENTS.name) })
+            ListItem(headlineContent = {
+                Text(text = "Manage queue")
+            }, leadingContent = {
+                Icon(painterResource(id = R.drawable.ic_radio_filled), contentDescription = null)
+            },modifier = Modifier.clickable { navController.navigate(Screen.QUEUE.name) })
+            ListItem(headlineContent = {
+                Text(text = "Manage countries")
+            }, leadingContent = {
+                Icon(Icons.Outlined.Settings, contentDescription = null)
+            },modifier = Modifier.clickable { navController.navigate(Screen.MANAGE_COUNTRIES.name) })
+
             OutlinedButton(
                 onClick = {
                     try {
@@ -63,96 +92,12 @@ fun MoreScreen(
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
                 }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
                 Text("Submit radio station")
             }
-            ListItem(headlineContent = {
-                Text(text = "Set app theme")
-            }, leadingContent = {
-                Icon(Icons.Outlined.Settings, contentDescription = null)
-            }, modifier = Modifier.clickable {
-                openThemeDialog = true
-            })
-/*            ListItem(headlineContent = {
-                Text(text = "Instagram")
-            }, leadingContent = {
-                Icon(painterResource(id = R.drawable.ic_instagram), contentDescription = null)
-            }, modifier = Modifier.clickable {
-                try {
-                    uriHandler.openUri("https://bit.ly/radiotimeinstagram")
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        context,
-                        "No app found to handle this action",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })*/
-
-/*            ListItem(headlineContent = {
-                Text(text = "Share this app")
-            }, leadingContent = {
-                Icon(Icons.Outlined.Share, contentDescription = null)
-            }, modifier = Modifier.clickable {
-                val sendIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(
-                        Intent.EXTRA_TEXT,
-                        "https://play.google.com/store/apps/details?id=com.radiotime.app"
-                    )
-                    type = "text/plain"
-                }
-
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                try {
-                    context.startActivity(shareIntent)
-                } catch (_: Exception) {
-                    Toast.makeText(
-                        context,
-                        "No app found to handle this action",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })*/
-
-/*            ListItem(headlineContent = {
-                Text(text = "Rate this app")
-            }, leadingContent = {
-                Icon(Icons.Outlined.ThumbUp, contentDescription = null)
-            }, modifier = Modifier.clickable {
-                try {
-                    uriHandler.openUri("https://play.google.com/store/apps/details?id=com.radiotime.app")
-                } catch (e: Exception) {
-                    Toast.makeText(
-                        context,
-                        "No app found to handle this action",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })*/
-
-            ListItem(headlineContent = {
-                Text(text = "Contact the developer")
-            }, leadingContent = {
-                Icon(Icons.Outlined.Email, contentDescription = null)
-            }, modifier = Modifier.clickable {
-                val emailIntent =
-                    Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:dhilipkumareie@gmail.com"))
-                try {
-                    context.startActivity(emailIntent)
-                } catch (_: ActivityNotFoundException) {
-                    Toast.makeText(
-                        context,
-                        "No app found to handle this action",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-            //HorizontalDivider()
             ListItem(headlineContent = {
                 Text(text = "Update changelog")
             }, leadingContent = {
@@ -172,6 +117,40 @@ fun MoreScreen(
             )
         }
 
+        openDefaultScreenDialog -> {
+            var selection by remember { mutableStateOf(mainViewModel.getDefaultScreen() ?: (if (mainViewModel.hasSaved) NavigationItem.Favorites.route else NavigationItem.Discover.route)) }
+            com.app.srivyaradio.ui.components.CustomAlertDialog(
+                title = "Default start screen",
+                confirmText = "Apply",
+                dismissText = "Cancel",
+                icon = Icons.Outlined.Settings,
+                onDismiss = { openDefaultScreenDialog = false },
+                onConfirm = {
+                    mainViewModel.setDefaultScreen(selection)
+                    openDefaultScreenDialog = false
+                }
+            ) {
+                val options = listOf(
+                    NavigationItem.Favorites.route to NavigationItem.Favorites.routeName,
+                    NavigationItem.Discover.route to NavigationItem.Discover.routeName,
+                    Screen.RECENTS.name to Screen.RECENTS.routeName
+                )
+                androidx.compose.foundation.layout.Column(modifier = Modifier.fillMaxWidth()) {
+                    options.forEach { (route, label) ->
+                        androidx.compose.foundation.layout.Row(
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { selection = route }
+                        ) {
+                            RadioButton(selected = selection == route, onClick = { selection = route })
+                            Text(text = label, modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+            }
+        }
+
         openChangelogDialog -> {
             TextAlertDialog(
                 onDismissRequest = { openChangelogDialog = false },
@@ -183,3 +162,4 @@ fun MoreScreen(
         }
     }
 }
+
