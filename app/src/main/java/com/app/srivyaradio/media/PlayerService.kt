@@ -19,6 +19,8 @@ import androidx.media3.session.MediaLibraryService.LibraryParams
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
+import androidx.media3.session.CommandButton
+import com.app.srivyaradio.R
 import com.app.srivyaradio.MainActivity
 import com.app.srivyaradio.data.api.location.LocationClient
 import com.app.srivyaradio.data.api.location.LocationInterface
@@ -58,6 +60,32 @@ class PlayerService : MediaLibraryService() {
     private val retrofit = LocationClient.getInstance()
     var apiInterface: LocationInterface = retrofit.create(LocationInterface::class.java)
 
+    private fun updateCustomActions() {
+        val mediaItem = player.currentMediaItem ?: run {
+            mediaLibrarySession.setCustomLayout(emptyList())
+            return
+        }
+        val mediaId = mediaItem.mediaId
+        val id = mediaId.removePrefix(DISCOVER_ID).removePrefix(FAVORITES_ID)
+        if (id.isBlank()) {
+            mediaLibrarySession.setCustomLayout(emptyList())
+            return
+        }
+        serviceScope.launch(Dispatchers.Main) {
+            try {
+                val isFav = dbRepository.getFavoriteItemById(id) != null
+                val toggleCommand = SessionCommand(Constants.TOGGLE_FAVORITE_COMMAND, Bundle.EMPTY)
+                val button = CommandButton.Builder()
+                    .setDisplayName(if (isFav) "Remove from Favorites" else "Add to Favorites")
+                    .setIconResId(if (isFav) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outlined)
+                    .setSessionCommand(toggleCommand)
+                    .build()
+                mediaLibrarySession.setCustomLayout(listOf(button))
+            } catch (_: Exception) {
+                mediaLibrarySession.setCustomLayout(emptyList())
+            }
+        }
+    }
 
     @OptIn(UnstableApi::class)
     override fun onCreate() {
@@ -127,6 +155,14 @@ class PlayerService : MediaLibraryService() {
             MediaLibrarySession.Builder(this, player, MediaLibrarySessionCallback())
                 .setSessionActivity(sessionActivityPendingIntent).build()
 
+        // Update custom actions when media item changes
+        player.addListener(object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                super.onMediaItemTransition(mediaItem, reason)
+                updateCustomActions()
+            }
+        })
+
 
         MediaItemFactory.onFinishedLoading = {
             serviceScope.launch {
@@ -164,6 +200,7 @@ class PlayerService : MediaLibraryService() {
                     })
                 }.build()
             )
+            updateCustomActions()
         }
 
     }
@@ -234,6 +271,12 @@ class PlayerService : MediaLibraryService() {
                 )
             )
 
+            availableSessionCommands.add(
+                SessionCommand(
+                    Constants.TOGGLE_FAVORITE_COMMAND, Bundle.EMPTY
+                )
+            )
+
             return MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(), connectionResult.availablePlayerCommands
             )
@@ -255,6 +298,26 @@ class PlayerService : MediaLibraryService() {
             if (Constants.UPDATE_FAVORITE_COMMAND == customCommand.customAction) {
                 serviceScope.launch {
                     MediaItemFactory.loadFavorite(dbRepository)
+                }
+            }
+
+            if (Constants.TOGGLE_FAVORITE_COMMAND == customCommand.customAction) {
+                serviceScope.launch {
+                    try {
+                        val mediaId = player.currentMediaItem?.mediaId ?: ""
+                        val id = mediaId.removePrefix(DISCOVER_ID).removePrefix(FAVORITES_ID)
+                        if (id.isNotBlank()) {
+                            val existing = dbRepository.getFavoriteItemById(id)
+                            if (existing != null) {
+                                dbRepository.deleteFavoriteItem(existing)
+                            } else {
+                                val order = dbRepository.getFavoriteStations().size.toLong()
+                                dbRepository.insertFavoriteItem(com.app.srivyaradio.data.models.Favorite(null, id, order))
+                            }
+                            MediaItemFactory.loadFavorite(dbRepository)
+                            updateCustomActions()
+                        }
+                    } catch (_: Exception) {}
                 }
             }
 

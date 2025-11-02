@@ -28,15 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.app.srivyaradio.data.models.Station
+import com.app.srivyaradio.data.models.Station as RadioStation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppSearchBar(
-    searchStations: List<Station>,
+    searchStations: List<RadioStation>,
     onSearch: (query: String) -> Unit,
-    onClick: (Station) -> Unit,
-    onOptions: (Station) -> Unit
+    onClick: (RadioStation) -> Unit,
+    onOptions: (RadioStation) -> Unit
 ) {
     var queryString by remember {
         mutableStateOf("")

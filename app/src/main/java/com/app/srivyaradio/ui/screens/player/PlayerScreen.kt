@@ -13,8 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -130,12 +129,8 @@ fun PlayerScreen(
                             .size(100.dp)
                             .padding(5.dp)
                     ) {
-                        if (isFavorite) Icon(
-                            Icons.Outlined.Favorite,
-                            contentDescription = null,
-                            modifier = Modifier.size(30.dp)
-                        ) else Icon(
-                            Icons.Outlined.FavoriteBorder,
+                        Icon(
+                            painterResource(id = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outlined),
                             contentDescription = null,
                             modifier = Modifier.size(35.dp)
                         )

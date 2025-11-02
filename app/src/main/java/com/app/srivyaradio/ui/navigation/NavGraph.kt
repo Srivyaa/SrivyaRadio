@@ -10,12 +10,14 @@ import com.app.srivyaradio.ui.MainViewModel
 import com.app.srivyaradio.ui.screens.discover.DiscoverScreen
 import com.app.srivyaradio.ui.screens.favorites.FavoriteScreen
 import com.app.srivyaradio.ui.screens.more.MoreScreen
+import com.app.srivyaradio.ui.screens.recents.RecentsScreen
+import com.app.srivyaradio.ui.screens.queue.QueueScreen
+import com.app.srivyaradio.ui.screens.countries.ManageCountriesScreen
 
 @Composable
 fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
     val mainViewModel: MainViewModel = viewModel()
-    val initialRoute =
-        if (mainViewModel.hasSaved) NavigationItem.Favorites.route else NavigationItem.Discover.route
+    val initialRoute = mainViewModel.getStartDestinationRoute()
 
     NavHost(navController = navHostController, startDestination = initialRoute) {
         composable(NavigationItem.Favorites.route) {
@@ -25,7 +27,16 @@ fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
             DiscoverScreen(mainViewModel)
         }
         composable(NavigationItem.More.route) {
-            MoreScreen(mainViewModel = mainViewModel)
+            MoreScreen(mainViewModel = mainViewModel, navController = navHostController)
+        }
+        composable(Screen.RECENTS.name) {
+            RecentsScreen(mainViewModel)
+        }
+        composable(Screen.QUEUE.name) {
+            QueueScreen(mainViewModel)
+        }
+        composable(Screen.MANAGE_COUNTRIES.name) {
+            ManageCountriesScreen(mainViewModel)
         }
     }
 }

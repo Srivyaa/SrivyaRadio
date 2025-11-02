@@ -37,7 +37,7 @@ import com.app.srivyaradio.ui.components.ShimmerStation
 import com.app.srivyaradio.ui.components.SleepTimerSheet
 import com.app.srivyaradio.ui.components.Station
 import com.app.srivyaradio.utils.Constants.DISCOVER_ID
-import com.app.srivyaradio.utils.countryList
+import kotlinx.coroutines.launch
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -46,23 +46,19 @@ import com.google.accompanist.permissions.rememberPermissionState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun DiscoverScreen(mainViewModel: MainViewModel) {
-    var selectedIndex = countryList.indexOfFirst { it.second == mainViewModel.selectedCountryCode }
+    val countries = mainViewModel.getCountryListForUI()
+    var selectedIndex = countries.indexOfFirst { it.second == mainViewModel.selectedCountryCode }.let { if (it < 0) 0 else it }
     val keyboardController = LocalSoftwareKeyboardController.current
     var showBottomSheet by remember { mutableStateOf(false) }
     var showSleepSheet by remember { mutableStateOf(false) }
-    var optionsStation by remember {
-        mutableStateOf<Station?>(null)
-    }
+    var optionsStation by remember { mutableStateOf<Station?>(null) }
     val state = rememberLazyListState()
     val isAtBottom = !state.canScrollForward
     val scope = rememberCoroutineScope()
-    var jumpTop by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var jumpTop by rememberSaveable { mutableStateOf(false) }
     val visibleItem by remember { derivedStateOf { state.firstVisibleItemIndex } }
 
     val notificationsPermissionState = rememberPermissionState(POST_NOTIFICATIONS)
-
     LaunchedEffect(notificationsPermissionState) {
         if (!notificationsPermissionState.status.isGranted) {
             notificationsPermissionState.launchPermissionRequest()
@@ -76,10 +72,7 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
+    Column(modifier = Modifier.fillMaxSize()) {
         AppSearchBar(mainViewModel.searchStations, onSearch = {
             mainViewModel.search(it)
         }, onOptions = {
@@ -90,63 +83,47 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
             keyboardController?.hide()
         })
 
-        Box(
-            contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxSize()
-        ) {
+        Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxSize()) {
             LazyColumn(state = state) {
                 item("dr") {
                     LargeDropdownMenu(
                         label = "View stations from",
-                        items = countryList.map { it.first },
+                        items = countries.map { it.first },
                         selectedIndex = selectedIndex,
                         onItemSelected = { index, _ ->
                             selectedIndex = index
-                            mainViewModel.setCountryCode(index)
+                            mainViewModel.setCountryCodeByCode(countries[index].second)
                         },
                         modifier = Modifier.padding(10.dp)
                     )
                 }
                 if (mainViewModel.discoverStations.isEmpty()) {
-                    items(15) {
-                        ShimmerStation()
-                    }
+                    items(15) { ShimmerStation() }
                 } else {
                     items(mainViewModel.discoverStations) { station ->
-                        val label = (station.tags.split(",").take(4)
-                            .joinToString(separator = ", ")).capitalize()
-                        LaunchedEffect(isAtBottom) {
-                            if (isAtBottom) mainViewModel.loadMore()
-                        }
+                        val label = (station.tags.split(",").take(4).joinToString(separator = ", ")).capitalize()
+                        LaunchedEffect(isAtBottom) { if (isAtBottom) mainViewModel.loadMore() }
                         Station(
                             name = station.name,
                             image = station.favicon,
                             label = if (label.isNotBlank()) label else station.country,
-                            onClick = {
-                                mainViewModel.playStation(station, DISCOVER_ID)
-                            },
+                            isFavorite = mainViewModel.favoritesStations.any { it.id == station.id },
+                            onToggleFavorite = { scope.launch { mainViewModel.addOrRemoveFromFavorites(station.id) } },
+                            onClick = { mainViewModel.playStation(station, DISCOVER_ID) },
                             onOptions = {
                                 showBottomSheet = true
                                 optionsStation = station
                             },
-                            Modifier
+                            modifier = Modifier
                         )
                     }
-                    item {
-                        Spacer(
-                            modifier = Modifier.padding(bottom = 80.dp)
-                        )
-                    }
+                    item { Spacer(modifier = Modifier.padding(bottom = 80.dp)) }
                 }
             }
 
             AnimatedContent(targetState = !state.isScrollingUp() && visibleItem > 15, label = "") {
                 if (it) {
-                    FloatingActionButton(
-                        modifier = Modifier.padding(10.dp),
-                        onClick = {
-                            jumpTop = true
-                        },
-                    ) {
+                    FloatingActionButton(modifier = Modifier.padding(10.dp), onClick = { jumpTop = true }) {
                         Icon(Icons.Default.ArrowUpward, null)
                     }
                 }
@@ -154,9 +131,7 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
 
             if (showBottomSheet) {
                 optionsStation?.let {
-                    OptionsBottomSheet(onDismiss = {
-                        showBottomSheet = false
-                    }, station = it, mainViewModel = mainViewModel, onSleepTimer = {
+                    OptionsBottomSheet(onDismiss = { showBottomSheet = false }, station = it, mainViewModel = mainViewModel, onSleepTimer = {
                         showBottomSheet = false
                         showSleepSheet = true
                     })
@@ -164,18 +139,10 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
             }
 
             if (showSleepSheet) {
-                SleepTimerSheet(onDismiss = {
-                    showSleepSheet = false
-                }, onSelected = {
-                    mainViewModel.sleepTimer(it)
-                })
+                SleepTimerSheet(onDismiss = { showSleepSheet = false }, onSelected = { mainViewModel.sleepTimer(it) })
             }
-
         }
-
-
     }
-
 }
 
 @Composable

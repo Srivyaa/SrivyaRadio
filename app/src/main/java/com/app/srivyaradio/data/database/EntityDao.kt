@@ -11,7 +11,7 @@ import com.app.srivyaradio.data.models.Station
 
 @Dao
 interface EntityDao {
-    @Query("SELECT * FROM radio_stations WHERE LOWER(countrycode) = LOWER(:countryCode) ORDER BY rank ASC")
+    @Query("SELECT * FROM radio_stations WHERE LOWER(countrycode) = LOWER(:countryCode) ORDER BY name COLLATE NOCASE ASC")
     suspend fun getStations(countryCode: String): List<Station>
 
     @Query("SELECT * FROM radio_stations WHERE id = (:id)")

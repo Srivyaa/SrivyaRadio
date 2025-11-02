@@ -27,6 +27,8 @@ fun MiniPlayerController(
     station: Station,
     isLoading: Boolean,
     isPlaying: Boolean,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit,
     onPlay: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -45,7 +47,7 @@ fun MiniPlayerController(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.padding(vertical = 7.dp, horizontal = 10.dp)) {
-                RadioLogoSmall(imageUrl = station.favicon, 50)
+                RadioLogoSmall(imageUrl = station.favicon, size = 50)
             }
 
             Text(
@@ -63,6 +65,15 @@ fun MiniPlayerController(
                         .size(35.dp)
                 )
             } else {
+                IconButton(
+                    onClick = { onToggleFavorite() }, Modifier.padding(6.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outlined),
+                        contentDescription = null,
+                        Modifier.size(24.dp)
+                    )
+                }
                 IconButton(
                     onClick = {
                         onPlay()

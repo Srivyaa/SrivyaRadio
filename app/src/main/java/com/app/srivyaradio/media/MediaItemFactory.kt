@@ -140,7 +140,7 @@ object MediaItemFactory {
     }
 
     suspend fun loadDiscover(dbRepository: DatabaseRepository, countryCode: String) {
-        discoverList = dbRepository.getAllStations(countryCode.uppercase()).reversed()
+        discoverList = dbRepository.getAllStations(countryCode.uppercase())
         onFinishedReadingDiscover?.invoke()
     }
 
@@ -260,7 +260,7 @@ object MediaItemFactory {
             }
 
             DISCOVER_ID -> {
-                dbRepository.getAllStations(countryCode.uppercase()).reversed().take(pageSize).map {
+                dbRepository.getAllStations(countryCode.uppercase()).take(pageSize).map {
                     stationToMediaItem(it, DISCOVER_ID)
                 }
             }
