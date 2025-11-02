@@ -6,6 +6,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.os.Environment
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Date
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -57,8 +65,64 @@ class PlayerService : MediaLibraryService() {
 
     private var timer: CountDownTimer? = null
 
+    // Recording state
+    private var recordingJob: Job? = null
+    private var isRecording: Boolean = false
+
     private val retrofit = LocationClient.getInstance()
     var apiInterface: LocationInterface = retrofit.create(LocationInterface::class.java)
+
+    private fun startRecording() {
+        if (isRecording || player.currentMediaItem == null) return
+        val uri = player.currentMediaItem!!.localConfiguration?.uri?.toString()
+            ?: player.currentMediaItem!!.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")
+            ?: return
+
+        val dir = applicationContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
+            ?: applicationContext.filesDir
+        if (!dir.exists()) dir.mkdirs()
+        val name = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val file = File(dir, "recording_$name.mp3")
+
+        isRecording = true
+        recordingJob = serviceScope.launch(Dispatchers.IO) {
+            var conn: HttpURLConnection? = null
+            try {
+                val url = URL(uri)
+                conn = (url.openConnection() as HttpURLConnection).apply {
+                    connectTimeout = 10000
+                    readTimeout = 10000
+                    instanceFollowRedirects = true
+                }
+                conn.connect()
+                if (conn.responseCode in 200..399) {
+                    BufferedInputStream(conn.inputStream).use { input ->
+                        FileOutputStream(file).use { out ->
+                            val buffer = ByteArray(8 * 1024)
+                            while (isRecording) {
+                                val read = input.read(buffer)
+                                if (read <= 0) break
+                                out.write(buffer, 0, read)
+                            }
+                            out.flush()
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+                // ignore
+            } finally {
+                try { conn?.disconnect() } catch (_: Exception) {}
+                isRecording = false
+            }
+        }
+    }
+
+    private fun stopRecording() {
+        if (!isRecording) return
+        isRecording = false
+        try { recordingJob?.cancel() } catch (_: Exception) {}
+        recordingJob = null
+    }
 
     private fun updateCustomActions() {
         val mediaItem = player.currentMediaItem ?: run {
@@ -174,7 +238,7 @@ class PlayerService : MediaLibraryService() {
                 lastBrowseParentId?.let { parent ->
                     try {
                         val children = MediaItemFactory.getChildrenWithParent(
-                            parent, lastBrowsePage, lastBrowsePageSize, dbRepository, countryCode
+                            parent, lastBrowsePage, lastBrowsePageSize, dbRepository, countryCode, repository
                         )
                         mediaLibrarySession.notifyChildrenChanged(parent, children.size, null)
                     } catch (_: Exception) {
@@ -277,6 +341,18 @@ class PlayerService : MediaLibraryService() {
                 )
             )
 
+            availableSessionCommands.add(
+                SessionCommand(
+                    Constants.START_RECORDING_COMMAND, Bundle.EMPTY
+                )
+            )
+
+            availableSessionCommands.add(
+                SessionCommand(
+                    Constants.STOP_RECORDING_COMMAND, Bundle.EMPTY
+                )
+            )
+
             return MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(), connectionResult.availablePlayerCommands
             )
@@ -337,6 +413,14 @@ class PlayerService : MediaLibraryService() {
                         }
                     }.start()
                 }
+            }
+
+            if (Constants.START_RECORDING_COMMAND == customCommand.customAction) {
+                startRecording()
+            }
+
+            if (Constants.STOP_RECORDING_COMMAND == customCommand.customAction) {
+                stopRecording()
             }
 
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
@@ -422,7 +506,7 @@ class PlayerService : MediaLibraryService() {
                     }
 
                     val result = MediaItemFactory.getChildrenWithParent(
-                        parentId, page, pageSize, dbRepository, countryCode
+                        parentId, page, pageSize, dbRepository, countryCode, repository
                     )
                     future.set(LibraryResult.ofItemList(result, null))
                 } catch (e: Exception) {
@@ -465,7 +549,7 @@ class PlayerService : MediaLibraryService() {
                     }
 
                     val children = MediaItemFactory.getChildrenWithParent(
-                        parentId, 1, 20, dbRepository, countryCode
+                        parentId, 1, 20, dbRepository, countryCode, repository
                     )
                     future.set(LibraryResult.ofVoid())
                     session.notifyChildrenChanged(browser, parentId, children.size, params)
@@ -474,6 +558,26 @@ class PlayerService : MediaLibraryService() {
                 }
             }
 
+            return future
+        }
+
+        override fun onSearch(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            query: String,
+            params: LibraryParams?
+        ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+            val future = SettableFuture.create<LibraryResult<ImmutableList<MediaItem>>>()
+            serviceScope.launch {
+                try {
+                    val q = query.trim()
+                    val list = if (q.isBlank()) emptyList() else dbRepository.searchStations(q)
+                    val items = list.map { st -> MediaItemFactory.stationToMediaItem(st, DISCOVER_ID) }
+                    future.set(LibraryResult.ofItemList(items, null))
+                } catch (e: Exception) {
+                    future.setException(e)
+                }
+            }
             return future
         }
 
