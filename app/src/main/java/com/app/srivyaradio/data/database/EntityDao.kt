@@ -17,7 +17,16 @@ interface EntityDao {
     @Query("SELECT * FROM radio_stations WHERE id = (:id)")
     suspend fun getStationById(id: String): Station?
 
-    @Query("SELECT * FROM radio_stations WHERE name LIKE '%' || :search || '%' COLLATE NOCASE")
+    @Query(
+        """
+        SELECT * FROM radio_stations 
+        WHERE 
+            name LIKE '%' || :search || '%' COLLATE NOCASE 
+            OR tags LIKE '%' || :search || '%' COLLATE NOCASE 
+            OR country LIKE '%' || :search || '%' COLLATE NOCASE 
+            OR state LIKE '%' || :search || '%' COLLATE NOCASE
+        """
+    )
     suspend fun searchStations(search: String): List<Station>
 
     @Query("SELECT * FROM radio_stations WHERE name LIKE '%' || :search || '%' COLLATE NOCASE")

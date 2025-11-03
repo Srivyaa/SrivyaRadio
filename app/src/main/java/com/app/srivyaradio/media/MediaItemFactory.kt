@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MimeTypes
 import androidx.work.Constraints
 import androidx.work.Data
 import androidx.work.NetworkType
@@ -116,14 +117,34 @@ object MediaItemFactory {
         }
         if (additionalExtras != null) baseExtras.putAll(additionalExtras)
 
-        return MediaItem.Builder().setMediaId(tag + it.id).setUri(it.url_resolved).setMediaMetadata(
-                MediaMetadata.Builder().setAlbumTitle(it.name)
-                    .setArtist(it.name).setDescription(it.country).setSubtitle(it.state)
-                    .setWriter(it.countrycode)
-                    .setIsBrowsable(false).setIsPlayable(true)
-                    .setArtworkUri(getStationLogoURL(it).toUri())
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).setExtras(baseExtras).build()
-            ).build()
+        val detectedMime = run {
+            val u = it.url_resolved.lowercase()
+            when {
+                u.contains(".m3u8") -> MimeTypes.APPLICATION_M3U8
+                u.endsWith(".mp3") -> MimeTypes.AUDIO_MPEG
+                u.endsWith(".aac") || u.contains("/aac") -> MimeTypes.AUDIO_AAC
+                u.endsWith(".ogg") || u.contains("/ogg") -> MimeTypes.AUDIO_OGG
+                u.endsWith(".opus") -> MimeTypes.AUDIO_OPUS
+                u.endsWith(".flac") -> MimeTypes.AUDIO_FLAC
+                else -> null
+            }
+        }
+
+        val builder = MediaItem.Builder()
+            .setMediaId(tag + it.id)
+            .setUri(it.url_resolved)
+        if (detectedMime != null) builder.setMimeType(detectedMime)
+
+        return builder.setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(it.name)
+                .setAlbumTitle(it.name)
+                .setArtist(it.name).setDescription(it.country).setSubtitle(it.state)
+                .setWriter(it.countrycode)
+                .setIsBrowsable(false).setIsPlayable(true)
+                .setArtworkUri(getStationLogoURL(it).toUri())
+                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).setExtras(baseExtras).build()
+        ).build()
     }
 
 
@@ -150,13 +171,7 @@ object MediaItemFactory {
     }
 
     suspend fun getItemFromDB(dbRepository: DatabaseRepository, stationId: String): MediaItem {
-        var tag = ""
-        tag = if (stationId.startsWith(DISCOVER_ID)) {
-            DISCOVER_ID
-        } else {
-            FAVORITES_ID
-        }
-
+        val tag = if (stationId.startsWith(DISCOVER_ID)) DISCOVER_ID else FAVORITES_ID
         val item = dbRepository.getRadioStationByID(
             stationId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
         )
@@ -167,10 +182,10 @@ object MediaItemFactory {
 
 
     suspend fun getItemFromDBByName(dbRepository: DatabaseRepository, query: String): MediaItem {
-        val item = dbRepository.getRadioStationByName(query)
-
-        return if (item.isNotEmpty()) {
-            stationToMediaItem(item[0], DISCOVER_ID)
+        // Use broadened search that includes name, tags, country, and state with wildcard support
+        val items = dbRepository.searchStations(query)
+        return if (items.isNotEmpty()) {
+            stationToMediaItem(items[0], DISCOVER_ID)
         } else MediaItem.EMPTY
     }
 
@@ -180,20 +195,19 @@ object MediaItemFactory {
             val stationItem = discoverList.find {
                 it.id == item.mediaId.replace(DISCOVER_ID, "")
             }
-
             discoverList.indexOf(stationItem)
         } else {
             val stationItem = favoriteList.find {
                 it.id == item.mediaId.replace(FAVORITES_ID, "")
             }
-
             favoriteList.indexOf(stationItem)
         }
     }
 
     private fun getFavoritesBrowsable(): MediaItem {
         return MediaItem.Builder().setMediaId(FAVORITES_ID).setMediaMetadata(
-                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                MediaMetadata.Builder()
+                    .setIsBrowsable(true).setIsPlayable(false)
                     .setTitle("Favorites").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
                     .build()
             ).build()
