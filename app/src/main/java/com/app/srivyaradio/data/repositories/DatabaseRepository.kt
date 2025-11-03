@@ -28,11 +28,13 @@ class DatabaseRepository(application: Application) {
     }
 
     suspend fun getRadioStationByName(name: String): List<Station> {
-        return entityDao.getStationByName(name)
+        val pattern = toSqlLikePattern(name)
+        return entityDao.getStationByName(pattern)
     }
 
     suspend fun getRadioStationByNameAndCountry(name: String, countryCode: String): List<Station> {
-        return entityDao.getStationByNameAndCountry(name, countryCode)
+        val pattern = toSqlLikePattern(name)
+        return entityDao.getStationByNameAndCountry(pattern, countryCode)
     }
 
     suspend fun insertFavoriteItem(favoriteStation: Favorite) {
@@ -56,11 +58,21 @@ class DatabaseRepository(application: Application) {
     }
 
     /**
-     * Search for stations by name (case-insensitive)
-     * @param query The search query string
-     * @return List of matching stations
+     * Search for stations by name, tags, country, or state (case-insensitive)
+     * Supports wildcard: '*' -> any sequence, '?' -> single char. Spaces are treated as wildcards.
      */
     suspend fun searchStations(query: String): List<Station> {
-        return entityDao.searchStations(query)
+        val pattern = toSqlLikePattern(query)
+        return entityDao.searchStations(pattern)
+    }
+
+    private fun toSqlLikePattern(input: String): String {
+        // Normalize whitespace and translate wildcard chars to SQL LIKE equivalents
+        val trimmed = input.trim()
+        if (trimmed.isEmpty()) return ""
+        return trimmed
+            .replace("*", "%")
+            .replace("?", "_")
+            .replace(Regex("\\s+"), "%")
     }
 }
