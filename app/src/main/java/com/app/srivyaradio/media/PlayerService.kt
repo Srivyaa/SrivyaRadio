@@ -10,17 +10,18 @@ import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaLibraryService.LibraryParams
+import androidx.media3.session.MediaLibraryService.MediaLibrarySession
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
 import androidx.media3.session.CommandButton
-import com.app.srivyaradio.R
 import com.app.srivyaradio.MainActivity
 import com.app.srivyaradio.data.api.location.LocationClient
 import com.app.srivyaradio.data.api.location.LocationInterface
@@ -29,7 +30,9 @@ import com.app.srivyaradio.data.repositories.SharedPreferencesRepository
 import com.app.srivyaradio.utils.Constants
 import com.app.srivyaradio.utils.Constants.DISCOVER_ID
 import com.app.srivyaradio.utils.Constants.FAVORITES_ID
+import com.app.srivyaradio.R
 import com.app.srivyaradio.utils.Constants.SHARED_PREF
+import com.app.srivyaradio.utils.countryList
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
@@ -169,7 +172,7 @@ class PlayerService : MediaLibraryService() {
         }
 
         mediaLibrarySession =
-            MediaLibrarySession.Builder(this, player, MediaLibrarySessionCallback())
+            MediaLibrarySession.Builder(this, player, MediaLibrarySessionCallback(this))
                 .setSessionActivity(sessionActivityPendingIntent).build()
 
         // Update custom actions when media item changes
@@ -263,7 +266,7 @@ class PlayerService : MediaLibraryService() {
         serviceScope.cancel()
     }
 
-    private inner class MediaLibrarySessionCallback : MediaLibrarySession.Callback {
+    private class MediaLibrarySessionCallback(private val service: PlayerService) : MediaLibrarySession.Callback {
         override fun onConnect(
             session: MediaSession, controller: MediaSession.ControllerInfo
         ): MediaSession.ConnectionResult {
@@ -308,31 +311,31 @@ class PlayerService : MediaLibraryService() {
         ): ListenableFuture<SessionResult> {
             if (Constants.CHANGE_COUNTRY_COMMAND == customCommand.customAction) {
                 val newCode = args.getString(Constants.CHANGE_COUNTRY_KEY).toString()
-                countryCode = newCode
-                repository.setUserCountry(newCode)
-                MediaItemFactory.getStations(newCode, application, "load")
+                service.countryCode = newCode
+                service.repository.setUserCountry(newCode)
+                MediaItemFactory.getStations(newCode, service.application, "load")
             }
             if (Constants.UPDATE_FAVORITE_COMMAND == customCommand.customAction) {
-                serviceScope.launch {
-                    MediaItemFactory.loadFavorite(dbRepository)
+                service.serviceScope.launch {
+                    MediaItemFactory.loadFavorite(service.dbRepository)
                 }
             }
 
             if (Constants.TOGGLE_FAVORITE_COMMAND == customCommand.customAction) {
-                serviceScope.launch {
+                service.serviceScope.launch {
                     try {
-                        val mediaId = player.currentMediaItem?.mediaId ?: ""
+                        val mediaId = service.player.currentMediaItem?.mediaId ?: ""
                         val id = mediaId.removePrefix(DISCOVER_ID).removePrefix(FAVORITES_ID)
                         if (id.isNotBlank()) {
-                            val existing = dbRepository.getFavoriteItemById(id)
+                            val existing = service.dbRepository.getFavoriteItemById(id)
                             if (existing != null) {
-                                dbRepository.deleteFavoriteItem(existing)
+                                service.dbRepository.deleteFavoriteItem(existing)
                             } else {
-                                val order = dbRepository.getFavoriteStations().size.toLong()
-                                dbRepository.insertFavoriteItem(com.app.srivyaradio.data.models.Favorite(null, id, order))
+                                val order = service.dbRepository.getFavoriteStations().size.toLong()
+                                service.dbRepository.insertFavoriteItem(com.app.srivyaradio.data.models.Favorite(null, id, order))
                             }
-                            MediaItemFactory.loadFavorite(dbRepository)
-                            updateCustomActions()
+                            MediaItemFactory.loadFavorite(service.dbRepository)
+                            service.updateCustomActions()
                         }
                     } catch (_: Exception) {}
                 }
@@ -341,16 +344,16 @@ class PlayerService : MediaLibraryService() {
             if (Constants.SET_TIMER_COMMAND == customCommand.customAction) {
                 val stopTimeMillis = args.getLong(Constants.SET_TIMER_KEY)
 
-                timer?.cancel()
+                service.timer?.cancel()
 
                 if (stopTimeMillis.toInt() != 0) {
-                    timer?.cancel()
-                    timer = object : CountDownTimer(stopTimeMillis, 1000) {
+                    service.timer?.cancel()
+                    service.timer = object : CountDownTimer(stopTimeMillis, 1000) {
                         override fun onTick(millisUntilFinished: Long) {
                         }
 
                         override fun onFinish() {
-                            player.pause()
+                            service.player.pause()
                         }
                     }.start()
                 }
@@ -378,9 +381,9 @@ class PlayerService : MediaLibraryService() {
         ): ListenableFuture<LibraryResult<MediaItem>> {
             val future = SettableFuture.create<LibraryResult<MediaItem>>()
 
-            serviceScope.launch {
+            service.serviceScope.launch {
                 try {
-                    val mediaItem = MediaItemFactory.getItemFromDB(dbRepository, mediaId)
+                    val mediaItem = MediaItemFactory.getItemFromDB(service.dbRepository, mediaId)
                     val result = LibraryResult.ofItem(mediaItem, null)
                     future.set(result)
                 } catch (e: Exception) {
@@ -399,10 +402,10 @@ class PlayerService : MediaLibraryService() {
         ): ListenableFuture<LibraryResult<Void>> {
             val future = SettableFuture.create<LibraryResult<Void>>()
 
-            serviceScope.launch {
+            service.serviceScope.launch {
                 try {
                     val q = query.trim()
-                    val total = if (q.isBlank()) 0 else dbRepository.searchStations(q).size
+                    val total = if (q.isBlank()) 0 else service.dbRepository.searchStations(q).size
                     Log.d("AA-Search", "onSearch query='${q}', total=${total}")
                     future.set(LibraryResult.ofVoid())
                     session.notifySearchResultChanged(browser, query, total, null)
@@ -424,10 +427,10 @@ class PlayerService : MediaLibraryService() {
         ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
             val future = SettableFuture.create<LibraryResult<ImmutableList<MediaItem>>>()
 
-            serviceScope.launch {
+            service.serviceScope.launch {
                 try {
                     val q = query.trim()
-                    val results = if (q.isBlank()) emptyList() else dbRepository.searchStations(q)
+                    val results = if (q.isBlank()) emptyList() else service.dbRepository.searchStations(q)
                     val size = if (pageSize > 0) pageSize else results.size
                     val from = (if (page >= 0) page else 0) * size
                     val pageItems = if (from >= results.size) emptyList() else results.drop(from).take(size)
@@ -454,49 +457,71 @@ class PlayerService : MediaLibraryService() {
 
             val future = SettableFuture.create<LibraryResult<ImmutableList<MediaItem>>>()
 
-            serviceScope.launch {
+            service.serviceScope.launch {
                 try {
                     // Track last requested browse node
-                    lastBrowseParentId = parentId
-                    lastBrowsePage = page
-                    lastBrowsePageSize = pageSize
+                    service.lastBrowseParentId = parentId
+                    service.lastBrowsePage = page
+                    service.lastBrowsePageSize = pageSize
+
+                    // If requesting Countries, include user-managed countries along with static list
+                    if (parentId == com.app.srivyaradio.utils.Constants.COUNTRIES_ID) {
+                        val user = service.repository.getUserCountries()
+                        val combined = (countryList + user).distinctBy { it.second.uppercase() }
+                        val items = combined.map { (name, code) ->
+                            MediaItem.Builder()
+                                .setMediaId(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX + code.uppercase())
+                                .setMediaMetadata(
+                                    MediaMetadata.Builder()
+                                        .setIsBrowsable(true)
+                                        .setIsPlayable(false)
+                                        .setTitle(name)
+                                        .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                                        .setExtras(Bundle().apply { putString("COUNTRY_CODE", code.uppercase()) })
+                                        .build()
+                                )
+                                .build()
+                        }
+                        future.set(LibraryResult.ofItemList(ImmutableList.copyOf(items), null))
+                        return@launch
+                    }
 
                     // Preload data for requested node
                     if (parentId.startsWith(Constants.COUNTRY_PREFIX)) {
                         val code = parentId.removePrefix(Constants.COUNTRY_PREFIX).uppercase()
                         if (code.length == 2) {
-                            if (code != countryCode) {
-                                countryCode = code
-                                repository.setUserCountry(code)
+                            if (code != service.countryCode) {
+                                service.countryCode = code
+                                service.repository.setUserCountry(code)
                             }
-                            val count = dbRepository.getAllStations(code).size
+                            val count = service.dbRepository.getAllStations(code).size
                             if (count == 0) {
-                                MediaItemFactory.getStations(code, application, "load")
+                                MediaItemFactory.getStations(code, service.application, "load")
                             }
                         } else {
                             // Custom categories (e.g., INDIA, TAMILFM)
-                            val count = dbRepository.getAllStations(code).size
+                            val count = service.dbRepository.getAllStations(code).size
                             if (count == 0) {
-                                MediaItemFactory.getStations(code, application, "load")
+                                MediaItemFactory.getStations(code, service.application, "load")
                             }
                         }
                     } else if (parentId.startsWith(Constants.ALPHABET_PREFIX)) {
                         val parts = parentId.removePrefix(Constants.ALPHABET_PREFIX).split(":")
                         val code = parts.getOrNull(0)?.uppercase().orEmpty()
                         if (code.length == 2) {
-                            if (code != countryCode) {
-                                countryCode = code
-                                repository.setUserCountry(code)
+                            if (code != service.countryCode) {
+                                service.countryCode = code
+                                service.repository.setUserCountry(code)
                             }
-                            val count = dbRepository.getAllStations(code).size
+                            val count = service.dbRepository.getAllStations(code).size
                             if (count == 0) {
-                                MediaItemFactory.getStations(code, application, "load")
+                                MediaItemFactory.getStations(code, service.application, "load")
                             }
                         }
                     }
 
                     val result = MediaItemFactory.getChildrenWithParent(
-                        parentId, page, pageSize, dbRepository, countryCode
+                        parentId, page, pageSize, service.dbRepository, service.countryCode
                     )
                     future.set(LibraryResult.ofItemList(result, null))
                 } catch (e: Exception) {
@@ -515,31 +540,41 @@ class PlayerService : MediaLibraryService() {
         ): ListenableFuture<LibraryResult<Void>> {
             val future = SettableFuture.create<LibraryResult<Void>>()
 
-            serviceScope.launch {
+            service.serviceScope.launch {
                 try {
                     // Track last requested browse node
-                    lastBrowseParentId = parentId
-                    lastBrowsePage = 1
-                    lastBrowsePageSize = 20
+                    service.lastBrowseParentId = parentId
+                    service.lastBrowsePage = 1
+                    service.lastBrowsePageSize = 20
+
+                    // If subscribing to Countries, notify with combined size (static + user-managed)
+                    if (parentId == com.app.srivyaradio.utils.Constants.COUNTRIES_ID) {
+                        val total = (countryList + service.repository.getUserCountries())
+                            .distinctBy { it.second.uppercase() }
+                            .size
+                        future.set(LibraryResult.ofVoid())
+                        session.notifyChildrenChanged(browser, parentId, total, params)
+                        return@launch
+                    }
 
                     // Preload for requested node
                     if (parentId.startsWith(Constants.COUNTRY_PREFIX)) {
                         val code = parentId.removePrefix(Constants.COUNTRY_PREFIX).uppercase()
-                        val count = dbRepository.getAllStations(code).size
+                        val count = service.dbRepository.getAllStations(code).size
                         if (count == 0) {
-                            MediaItemFactory.getStations(code, application, "load")
+                            MediaItemFactory.getStations(code, service.application, "load")
                         }
                     } else if (parentId.startsWith(Constants.ALPHABET_PREFIX)) {
                         val parts = parentId.removePrefix(Constants.ALPHABET_PREFIX).split(":")
                         val code = parts.getOrNull(0)?.uppercase().orEmpty()
-                        val count = dbRepository.getAllStations(code).size
+                        val count = service.dbRepository.getAllStations(code).size
                         if (count == 0) {
-                            MediaItemFactory.getStations(code, application, "load")
+                            MediaItemFactory.getStations(code, service.application, "load")
                         }
                     }
 
                     val children = MediaItemFactory.getChildrenWithParent(
-                        parentId, 1, 20, dbRepository, countryCode
+                        parentId, 1, 20, service.dbRepository, service.countryCode
                     )
                     future.set(LibraryResult.ofVoid())
                     session.notifyChildrenChanged(browser, parentId, children.size, params)
@@ -569,10 +604,10 @@ class PlayerService : MediaLibraryService() {
             if (mediaItems[0].requestMetadata.searchQuery != null) {
                 val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
 
-                serviceScope.launch {
+                service.serviceScope.launch {
                     try {
                         val mediaItem = MediaItemFactory.getItemFromDBByName(
-                            dbRepository,
+                            service.dbRepository,
                             mediaItems[0].requestMetadata.searchQuery.toString()
                                 .substringBefore("on").substringBefore("from").trim().lowercase()
                         )
@@ -591,7 +626,7 @@ class PlayerService : MediaLibraryService() {
             val selectedItem = mediaItems.getOrNull(startIndex)?.let { it } ?: mediaItems[0]
             val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
 
-            serviceScope.launch {
+            service.serviceScope.launch {
                 try {
                     val result = if (selectedItem.mediaId.startsWith(FAVORITES_ID)) {
                         val queue = MediaItemFactory.getFavorite()
@@ -605,28 +640,28 @@ class PlayerService : MediaLibraryService() {
                             selectedItem.mediaId.startsWith(FAVORITES_ID) -> selectedItem.mediaId.removePrefix(FAVORITES_ID)
                             else -> selectedItem.mediaId
                         }
-                        val selectedStation = dbRepository.getRadioStationByID(selectedId)
+                        val selectedStation = service.dbRepository.getRadioStationByID(selectedId)
                         val itemCountry = selectedStation?.countrycode?.uppercase()
                             ?: extras?.getString("COUNTRY_CODE")?.uppercase()
                         val alpha = extras?.getString("BROWSE_ALPHA")?.firstOrNull()?.uppercaseChar()
 
                         // Persist country so app and AA stay in sync
-                        if (!itemCountry.isNullOrEmpty() && itemCountry != countryCode) {
-                            countryCode = itemCountry
-                            repository.setUserCountry(itemCountry)
+                        if (!itemCountry.isNullOrEmpty() && itemCountry != service.countryCode) {
+                            service.countryCode = itemCountry
+                            service.repository.setUserCountry(itemCountry)
                         }
 
                         // Derive country from browse context if extras are missing
                         val browseCode = when {
-                            lastBrowseParentId?.startsWith(Constants.ALPHABET_PREFIX) == true ->
-                                lastBrowseParentId!!.removePrefix(Constants.ALPHABET_PREFIX).substringBefore(":").uppercase()
-                            lastBrowseParentId?.startsWith(Constants.COUNTRY_PREFIX) == true ->
-                                lastBrowseParentId!!.removePrefix(Constants.COUNTRY_PREFIX).uppercase()
+                            service.lastBrowseParentId?.startsWith(Constants.ALPHABET_PREFIX) == true ->
+                                service.lastBrowseParentId!!.removePrefix(Constants.ALPHABET_PREFIX).substringBefore(":").uppercase()
+                            service.lastBrowseParentId?.startsWith(Constants.COUNTRY_PREFIX) == true ->
+                                service.lastBrowseParentId!!.removePrefix(Constants.COUNTRY_PREFIX).uppercase()
                             else -> null
                         }
 
-                        val code = (itemCountry ?: browseCode ?: countryCode).uppercase()
-                        val stations = dbRepository.getAllStations(code)
+                        val code = (itemCountry ?: browseCode ?: service.countryCode).uppercase()
+                        val stations = service.dbRepository.getAllStations(code)
                         val filtered = if (alpha != null) {
                             stations.filter { st ->
                                 val n = st.name.trim()
@@ -637,7 +672,7 @@ class PlayerService : MediaLibraryService() {
                         }
                         val queue = if (filtered.isEmpty() && selectedStation != null) {
                             // Data for this country may not be loaded yet; trigger load and play selected only
-                            try { MediaItemFactory.getStations(code, application, "load") } catch (_: Exception) {}
+                            try { MediaItemFactory.getStations(code, service.application, "load") } catch (_: Exception) {}
                             listOf(MediaItemFactory.stationToMediaItem(selectedStation, DISCOVER_ID))
                         } else {
                             filtered.map { st -> MediaItemFactory.stationToMediaItem(st, DISCOVER_ID) }
