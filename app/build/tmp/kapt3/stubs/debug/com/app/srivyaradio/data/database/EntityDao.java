@@ -16,7 +16,7 @@ public abstract interface EntityDao {
     java.lang.String id, @org.jetbrains.annotations.NotNull()
     kotlin.coroutines.Continuation<? super com.app.srivyaradio.data.models.Station> $completion);
     
-    @androidx.room.Query(value = "SELECT * FROM radio_stations WHERE name LIKE \'%\' || :search || \'%\' COLLATE NOCASE")
+    @androidx.room.Query(value = "\n        SELECT * FROM radio_stations \n        WHERE \n            name LIKE \'%\' || :search || \'%\' COLLATE NOCASE \n            OR tags LIKE \'%\' || :search || \'%\' COLLATE NOCASE \n            OR country LIKE \'%\' || :search || \'%\' COLLATE NOCASE \n            OR state LIKE \'%\' || :search || \'%\' COLLATE NOCASE\n        ")
     @org.jetbrains.annotations.Nullable()
     public abstract java.lang.Object searchStations(@org.jetbrains.annotations.NotNull()
     java.lang.String search, @org.jetbrains.annotations.NotNull()

@@ -91,8 +91,25 @@ class PlayerService : MediaLibraryService() {
     override fun onCreate() {
         super.onCreate()
 
-        player = ExoPlayer.Builder(this).setAudioAttributes(AudioAttributes.DEFAULT, true)
-            .setHandleAudioBecomingNoisy(true).build()
+        val okHttpClient = okhttp3.OkHttpClient.Builder()
+            .followRedirects(true)
+            .followSslRedirects(true)
+            .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .build()
+
+        val httpFactory = androidx.media3.datasource.okhttp.OkHttpDataSource.Factory(okHttpClient)
+            .setUserAgent("SrivyaRadio/3.0 (ExoPlayer)")
+            .setDefaultRequestProperties(mapOf("Icy-MetaData" to "1"))
+
+        val mediaSourceFactory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(this)
+            .setDataSourceFactory(httpFactory)
+
+        player = ExoPlayer.Builder(this)
+            .setMediaSourceFactory(mediaSourceFactory)
+            .setAudioAttributes(AudioAttributes.DEFAULT, true)
+            .setHandleAudioBecomingNoisy(true)
+            .build()
 
         dbRepository = DatabaseRepository(application)
 
@@ -342,12 +359,18 @@ class PlayerService : MediaLibraryService() {
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
 
+        @OptIn(UnstableApi::class)
         override fun onGetLibraryRoot(
             session: MediaLibrarySession,
             browser: MediaSession.ControllerInfo,
             params: LibraryParams?
         ): ListenableFuture<LibraryResult<MediaItem>> {
-            return Futures.immediateFuture(LibraryResult.ofItem(MediaItemFactory.getRoot(), params))
+            val extras = Bundle().apply {
+                // Signal to Android Auto that search is supported (legacy-compatible key)
+                putBoolean("android.media.browse.SEARCH_SUPPORTED", true)
+            }
+            val rootParams = LibraryParams.Builder().setExtras(extras).build()
+            return Futures.immediateFuture(LibraryResult.ofItem(MediaItemFactory.getRoot(), rootParams))
         }
 
         override fun onGetItem(
@@ -360,6 +383,57 @@ class PlayerService : MediaLibraryService() {
                     val mediaItem = MediaItemFactory.getItemFromDB(dbRepository, mediaId)
                     val result = LibraryResult.ofItem(mediaItem, null)
                     future.set(result)
+                } catch (e: Exception) {
+                    future.setException(e)
+                }
+            }
+
+            return future
+        }
+
+        override fun onSearch(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            query: String,
+            params: LibraryParams?
+        ): ListenableFuture<LibraryResult<Void>> {
+            val future = SettableFuture.create<LibraryResult<Void>>()
+
+            serviceScope.launch {
+                try {
+                    val q = query.trim()
+                    val total = if (q.isBlank()) 0 else dbRepository.searchStations(q).size
+                    Log.d("AA-Search", "onSearch query='${q}', total=${total}")
+                    future.set(LibraryResult.ofVoid())
+                    session.notifySearchResultChanged(browser, query, total, null)
+                } catch (e: Exception) {
+                    future.setException(e)
+                }
+            }
+
+            return future
+        }
+
+        override fun onGetSearchResult(
+            session: MediaLibrarySession,
+            browser: MediaSession.ControllerInfo,
+            query: String,
+            page: Int,
+            pageSize: Int,
+            params: LibraryParams?
+        ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
+            val future = SettableFuture.create<LibraryResult<ImmutableList<MediaItem>>>()
+
+            serviceScope.launch {
+                try {
+                    val q = query.trim()
+                    val results = if (q.isBlank()) emptyList() else dbRepository.searchStations(q)
+                    val size = if (pageSize > 0) pageSize else results.size
+                    val from = (if (page >= 0) page else 0) * size
+                    val pageItems = if (from >= results.size) emptyList() else results.drop(from).take(size)
+                    val mediaItems = pageItems.map { MediaItemFactory.stationToMediaItem(it, DISCOVER_ID) }
+                    Log.d("AA-Search", "onGetSearchResult query='${q}', page=${page}, size=${size}, returned=${mediaItems.size}")
+                    future.set(LibraryResult.ofItemList(ImmutableList.copyOf(mediaItems), null))
                 } catch (e: Exception) {
                     future.setException(e)
                 }

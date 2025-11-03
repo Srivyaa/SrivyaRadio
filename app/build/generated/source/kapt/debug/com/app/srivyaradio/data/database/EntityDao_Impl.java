@@ -420,11 +420,36 @@ public final class EntityDao_Impl implements EntityDao {
   @Override
   public Object searchStations(final String search,
       final Continuation<? super List<Station>> $completion) {
-    final String _sql = "SELECT * FROM radio_stations WHERE name LIKE '%' || ? || '%' COLLATE NOCASE";
+    final String _sql = "\n"
+            + "        SELECT * FROM radio_stations \n"
+            + "        WHERE \n"
+            + "            name LIKE '%' || ? || '%' COLLATE NOCASE \n"
+            + "            OR tags LIKE '%' || ? || '%' COLLATE NOCASE \n"
+            + "            OR country LIKE '%' || ? || '%' COLLATE NOCASE \n"
+            + "            OR state LIKE '%' || ? || '%' COLLATE NOCASE\n"
+            + "        ";
     return DBUtil.performSuspending(__db, true, false, (_connection) -> {
       final SQLiteStatement _stmt = _connection.prepare(_sql);
       try {
         int _argIndex = 1;
+        if (search == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, search);
+        }
+        _argIndex = 2;
+        if (search == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, search);
+        }
+        _argIndex = 3;
+        if (search == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, search);
+        }
+        _argIndex = 4;
         if (search == null) {
           _stmt.bindNull(_argIndex);
         } else {
