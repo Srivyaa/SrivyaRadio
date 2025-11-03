@@ -55,9 +55,9 @@ fun MoreScreen(
 
     LazyColumn {
         item {
-            PremiumCard(isPremium = mainViewModel.isPremium) {
+/*            PremiumCard(isPremium = mainViewModel.isPremium) {
                 mainViewModel.onPurchase()
-            }
+            }*/
             ListItem(headlineContent = {
                 Text(text = "Default start screen")
             }, leadingContent = {
@@ -84,7 +84,7 @@ fun MoreScreen(
             OutlinedButton(
                 onClick = {
                     try {
-                        uriHandler.openUri("https://docs.google.com/forms/d/e/1FAIpQLSejDu1XaN-iCQ_8wlwbfducJyZeQtwrXodn3G_x3OLpPFW8UA/viewform")
+                        uriHandler.openUri("https://docs.google.com/forms/d/e/1FAIpQLSemOBM9r8wneDHSzmODFIpPwG-Dk9VPqlh6HAedNepqfvuwKg/viewform?usp=publish-editor")
                     } catch (e: Exception) {
                         Toast.makeText(
                             context,
