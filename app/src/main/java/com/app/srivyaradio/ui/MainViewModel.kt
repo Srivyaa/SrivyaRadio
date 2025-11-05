@@ -93,7 +93,6 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     var isRadioLoading by mutableStateOf(false)
 
     var currentSong by mutableStateOf("")
-
     var isPremium by mutableStateOf(
         false
     )
@@ -102,15 +101,23 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         isPremium = customerInfo.entitlements.active.isNotEmpty()
     }
 
+    // Playback controls state
+    var shuffleEnabled by mutableStateOf(false)
+        private set
+    var repeatMode by mutableStateOf(Player.REPEAT_MODE_OFF)
+        private set
+    var isSeekable by mutableStateOf(false)
+        private set
+
     private lateinit var playerFuture: ListenableFuture<MediaBrowser>
     lateinit var player: MediaBrowser
 
     var page = 1
     var pageSize = 20
+    var isLoadingMore by mutableStateOf(false)
 
     var open = false
     var openID = ""
-
     var totalClickCount: Int = 0
     var totalImpressionCount: Int = 0
     var totalPlayCount: Int = 0
@@ -162,6 +169,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             selectedCountryCode = location.second
             repository.setUserCountry(selectedCountryCode)
             discoverStations = mutableListOf()
+            page = 1
+            isLoadingMore = false
             player.sendCustomCommand(
                 SessionCommand(
                     CHANGE_COUNTRY_COMMAND, Bundle.EMPTY
@@ -183,6 +192,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             selectedCountryCode = code
             repository.setUserCountry(selectedCountryCode)
             discoverStations = mutableListOf()
+            page = 1
+            isLoadingMore = false
             player.sendCustomCommand(
                 SessionCommand(CHANGE_COUNTRY_COMMAND, Bundle.EMPTY),
                 Bundle().apply { putString(CHANGE_COUNTRY_KEY, selectedCountryCode) }
@@ -303,6 +314,42 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 player.seekToNextMediaItem()
                 if (!player.isPlaying) player.play()
             }
+        } catch (_: Exception) { }
+    }
+
+    fun toggleShuffle() {
+        try {
+            if (!this::player.isInitialized) return
+            val newVal = !player.shuffleModeEnabled
+            player.shuffleModeEnabled = newVal
+            shuffleEnabled = newVal
+        } catch (_: Exception) { }
+    }
+
+    fun cycleRepeatMode() {
+        try {
+            if (!this::player.isInitialized) return
+            val next = when (player.repeatMode) {
+                Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL
+                Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE
+                else -> Player.REPEAT_MODE_OFF
+            }
+            player.repeatMode = next
+            repeatMode = next
+        } catch (_: Exception) { }
+    }
+
+    fun seekBack() {
+        try {
+            if (!this::player.isInitialized) return
+            player.seekBack()
+        } catch (_: Exception) { }
+    }
+
+    fun seekForward() {
+        try {
+            if (!this::player.isInitialized) return
+            player.seekForward()
         } catch (_: Exception) { }
     }
 
@@ -497,12 +544,18 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 if (playbackState == PlaybackState.STATE_PLAYING) {
                     isRadioLoading = false
                 }
+                try { isSeekable = player.isCurrentMediaItemSeekable } catch (_: Exception) { }
             }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                 super.onMediaMetadataChanged(mediaMetadata)
                 currentSong = mediaMetadata.title.toString()
                 getCurrentItem()
+                try {
+                    shuffleEnabled = player.shuffleModeEnabled
+                    repeatMode = player.repeatMode
+                    isSeekable = player.isCurrentMediaItemSeekable
+                } catch (_: Exception) { }
             }
 
             override fun onPlayerError(error: PlaybackException) {
@@ -510,37 +563,16 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 Toast.makeText(application, "Something went wrong", Toast.LENGTH_SHORT).show()
             }
 
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+                shuffleEnabled = shuffleModeEnabled
+            }
+
+            override fun onRepeatModeChanged(repeatMode: Int) {
+                this@MainViewModel.repeatMode = repeatMode
+            }
+
         })
     }
-
-    fun loadMore() {
-        page++
-        val loadPageSize = page * pageSize
-        val childrenFuture = player.getChildren(
-            DISCOVER_ID, page, loadPageSize, null
-        )
-
-        childrenFuture.addListener(
-            {
-                val result = childrenFuture.get()!!
-                val children = result.value!!
-
-                discoverStations = children.map {
-                    Station(
-                        it.mediaId.replace(DISCOVER_ID, ""),
-                        it.mediaMetadata.extras?.getString("ARTWORK")!!,
-                        it.mediaMetadata.extras?.getString("NAME")!!,
-                        it.mediaMetadata.extras?.getString("COUNTRY")!!,
-                        it.mediaMetadata.extras?.getString("GENRE")!!,
-                        it.mediaMetadata.extras?.getString("COUNTRY_CODE")!!,
-                        it.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")!!,
-                        it.mediaMetadata.extras?.getString("STATE")!!
-                    )
-                }.toMutableList()
-            }, ContextCompat.getMainExecutor(application)
-        )
-    }
-
     private fun initPlayer() {
         playerFuture = MediaBrowser.Builder(
             application,
@@ -627,6 +659,47 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 }
             }
         }, ContextCompat.getMainExecutor(application))
+    }
+
+    fun loadMore() {
+        try {
+            if (!this::player.isInitialized) return
+            if (isLoadingMore) return
+            isLoadingMore = true
+
+            val nextPage = page + 1
+            val future = player.getChildren(DISCOVER_ID, nextPage, pageSize, null)
+            future.addListener({
+                try {
+                    val result = future.get()!!
+                    val children = result.value!!
+
+                    val newItems = children.map {
+                        Station(
+                            it.mediaId.replace(DISCOVER_ID, ""),
+                            it.mediaMetadata.extras?.getString("ARTWORK")!!,
+                            it.mediaMetadata.extras?.getString("NAME")!!,
+                            it.mediaMetadata.extras?.getString("COUNTRY")!!,
+                            it.mediaMetadata.extras?.getString("GENRE")!!,
+                            it.mediaMetadata.extras?.getString("COUNTRY_CODE")!!,
+                            it.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")!!,
+                            it.mediaMetadata.extras?.getString("STATE")!!
+                        )
+                    }
+
+                    if (newItems.isNotEmpty()) {
+                        val list = discoverStations.toMutableList()
+                        list.addAll(newItems)
+                        discoverStations = list
+                        page = nextPage
+                    }
+                } catch (_: Exception) { } finally {
+                    isLoadingMore = false
+                }
+            }, ContextCompat.getMainExecutor(application))
+        } catch (_: Exception) {
+            isLoadingMore = false
+        }
     }
 
     fun createShortcut(station: Station) {
