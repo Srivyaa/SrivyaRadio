@@ -274,9 +274,12 @@ object MediaItemFactory {
             }
 
             DISCOVER_ID -> {
-                dbRepository.getAllStations(countryCode.uppercase()).take(pageSize).map {
-                    stationToMediaItem(it, DISCOVER_ID)
-                }
+                val all = dbRepository.getAllStations(countryCode.uppercase())
+                val size = if (pageSize > 0) pageSize else all.size
+                val safePage = if (page > 0) page else 1
+                val from = (safePage - 1) * size
+                val pageItems = if (from >= all.size) emptyList() else all.drop(from).take(size)
+                pageItems.map { stationToMediaItem(it, DISCOVER_ID) }
             }
 
             ROOT_ID -> {
