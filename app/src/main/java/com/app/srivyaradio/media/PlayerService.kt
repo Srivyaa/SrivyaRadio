@@ -77,13 +77,38 @@ class PlayerService : MediaLibraryService() {
         serviceScope.launch(Dispatchers.Main) {
             try {
                 val isFav = dbRepository.getFavoriteItemById(id) != null
-                val toggleCommand = SessionCommand(Constants.TOGGLE_FAVORITE_COMMAND, Bundle.EMPTY)
-                val button = CommandButton.Builder()
-                    .setDisplayName(if (isFav) "Remove from Favorites" else "Add to Favorites")
+                val favButton = CommandButton.Builder()
+                    .setDisplayName(if (isFav) "Remove Favorite" else "Add Favorite")
                     .setIconResId(if (isFav) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outlined)
-                    .setSessionCommand(toggleCommand)
+                    .setSessionCommand(SessionCommand(Constants.TOGGLE_FAVORITE_COMMAND, Bundle.EMPTY))
                     .build()
-                mediaLibrarySession.setCustomLayout(listOf(button))
+
+                val shuffleButton = CommandButton.Builder()
+                    .setDisplayName(if (player.shuffleModeEnabled) "Shuffle On" else "Shuffle Off")
+                    .setIconResId(R.drawable.ic_shuffle)
+                    .setSessionCommand(SessionCommand(Constants.TOGGLE_SHUFFLE_COMMAND, Bundle.EMPTY))
+                    .build()
+
+                val repeatIcon = R.drawable.ic_more_horizontal
+                val repeatButton = CommandButton.Builder()
+                    .setDisplayName("Repeat")
+                    .setIconResId(repeatIcon)
+                    .setSessionCommand(SessionCommand(Constants.CYCLE_REPEAT_COMMAND, Bundle.EMPTY))
+                    .build()
+
+                val seekBackButton = CommandButton.Builder()
+                    .setDisplayName("Seek -10s")
+                    .setIconResId(R.drawable.ic_fast_rewind)
+                    .setSessionCommand(SessionCommand(Constants.SEEK_BACK_COMMAND, Bundle.EMPTY))
+                    .build()
+
+                val seekForwardButton = CommandButton.Builder()
+                    .setDisplayName("Seek +10s")
+                    .setIconResId(R.drawable.ic_fast_forward)
+                    .setSessionCommand(SessionCommand(Constants.SEEK_FORWARD_COMMAND, Bundle.EMPTY))
+                    .build()
+
+                mediaLibrarySession.setCustomLayout(listOf(seekBackButton, favButton, shuffleButton, repeatButton, seekForwardButton))
             } catch (_: Exception) {
                 mediaLibrarySession.setCustomLayout(emptyList())
             }
@@ -112,6 +137,8 @@ class PlayerService : MediaLibraryService() {
             .setMediaSourceFactory(mediaSourceFactory)
             .setAudioAttributes(AudioAttributes.DEFAULT, true)
             .setHandleAudioBecomingNoisy(true)
+            .setSeekBackIncrementMs(10_000)
+            .setSeekForwardIncrementMs(10_000)
             .build()
 
         dbRepository = DatabaseRepository(application)
@@ -175,10 +202,18 @@ class PlayerService : MediaLibraryService() {
             MediaLibrarySession.Builder(this, player, MediaLibrarySessionCallback(this))
                 .setSessionActivity(sessionActivityPendingIntent).build()
 
-        // Update custom actions when media item changes
+        // Update custom actions when media item or modes change
         player.addListener(object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 super.onMediaItemTransition(mediaItem, reason)
+                updateCustomActions()
+            }
+
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
+                updateCustomActions()
+            }
+
+            override fun onRepeatModeChanged(repeatMode: Int) {
                 updateCustomActions()
             }
         })
@@ -297,11 +332,15 @@ class PlayerService : MediaLibraryService() {
                 )
             )
 
+            availableSessionCommands.add(SessionCommand(Constants.TOGGLE_SHUFFLE_COMMAND, Bundle.EMPTY))
+            availableSessionCommands.add(SessionCommand(Constants.CYCLE_REPEAT_COMMAND, Bundle.EMPTY))
+            availableSessionCommands.add(SessionCommand(Constants.SEEK_BACK_COMMAND, Bundle.EMPTY))
+            availableSessionCommands.add(SessionCommand(Constants.SEEK_FORWARD_COMMAND, Bundle.EMPTY))
+
             return MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(), connectionResult.availablePlayerCommands
             )
         }
-
 
         override fun onCustomCommand(
             session: MediaSession,
@@ -349,14 +388,35 @@ class PlayerService : MediaLibraryService() {
                 if (stopTimeMillis.toInt() != 0) {
                     service.timer?.cancel()
                     service.timer = object : CountDownTimer(stopTimeMillis, 1000) {
-                        override fun onTick(millisUntilFinished: Long) {
-                        }
-
+                        override fun onTick(millisUntilFinished: Long) {}
                         override fun onFinish() {
                             service.player.pause()
                         }
                     }.start()
                 }
+            }
+
+            if (Constants.TOGGLE_SHUFFLE_COMMAND == customCommand.customAction) {
+                service.player.shuffleModeEnabled = !service.player.shuffleModeEnabled
+                service.updateCustomActions()
+            }
+
+            if (Constants.CYCLE_REPEAT_COMMAND == customCommand.customAction) {
+                val next = when (service.player.repeatMode) {
+                    Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL
+                    Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE
+                    else -> Player.REPEAT_MODE_OFF
+                }
+                service.player.repeatMode = next
+                service.updateCustomActions()
+            }
+
+            if (Constants.SEEK_BACK_COMMAND == customCommand.customAction) {
+                service.player.seekBack()
+            }
+
+            if (Constants.SEEK_FORWARD_COMMAND == customCommand.customAction) {
+                service.player.seekForward()
             }
 
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
