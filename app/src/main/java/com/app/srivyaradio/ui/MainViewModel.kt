@@ -339,6 +339,15 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         } catch (_: Exception) { }
     }
 
+    fun refreshPlaybackControlsState() {
+        try {
+            if (!this::player.isInitialized) return
+            shuffleEnabled = player.shuffleModeEnabled
+            repeatMode = player.repeatMode
+            isSeekable = player.isCurrentMediaItemSeekable
+        } catch (_: Exception) { }
+    }
+
     fun seekBack() {
         try {
             if (!this::player.isInitialized) return

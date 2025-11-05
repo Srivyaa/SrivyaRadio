@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Forward10
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.RepeatOne
+import androidx.compose.material.icons.filled.Replay10
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
-import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -21,8 +25,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.Player
 import com.app.srivyaradio.R
 import com.app.srivyaradio.ui.MainViewModel
 import com.app.srivyaradio.ui.components.RadioLogoSmall
@@ -54,6 +59,10 @@ fun PlayerScreen(
 
     var isFavorite by remember {
         mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+        mainViewModel.refreshPlaybackControlsState()
     }
 
     LaunchedEffect(mainViewModel.selectedStation) {
@@ -173,11 +182,66 @@ fun PlayerScreen(
                         onClick = {
                             mainViewModel.resetPlayer()
 
-                        }, modifier = Modifier
+                        },
+                        modifier = Modifier
                             .size(100.dp)
                             .padding(5.dp),
                     ) {
                         Icon(Icons.Default.Refresh, null, modifier = Modifier.size(35.dp))
+                    }
+                }
+                Spacer(Modifier.padding(6.dp))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Shuffle toggle
+                    IconButton(onClick = { mainViewModel.toggleShuffle() }) {
+                        Icon(
+                            imageVector = Icons.Filled.Shuffle,
+                            contentDescription = if (mainViewModel.shuffleEnabled) "Shuffle On" else "Shuffle Off",
+                            modifier = Modifier.size(26.dp),
+                            tint = if (mainViewModel.shuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    // Seek back 10s
+                    IconButton(
+                        onClick = { mainViewModel.seekBack() },
+                        enabled = mainViewModel.isSeekable
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Replay10,
+                            contentDescription = "Seek back",
+                            modifier = Modifier.size(26.dp),
+                        )
+                    }
+
+                    // Seek forward 10s
+                    IconButton(
+                        onClick = { mainViewModel.seekForward() },
+                        enabled = mainViewModel.isSeekable
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Forward10,
+                            contentDescription = "Seek forward",
+                            modifier = Modifier.size(26.dp),
+                        )
+                    }
+
+                    // Repeat mode cycle
+                    IconButton(onClick = { mainViewModel.cycleRepeatMode() }) {
+                        val icon = when (mainViewModel.repeatMode) {
+                            Player.REPEAT_MODE_ONE -> Icons.Filled.RepeatOne
+                            Player.REPEAT_MODE_ALL -> Icons.Filled.Repeat
+                            else -> Icons.Filled.Repeat
+                        }
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = "Repeat",
+                            modifier = Modifier.size(26.dp),
+                        )
                     }
                 }
                 Spacer(Modifier.padding(25.dp))
