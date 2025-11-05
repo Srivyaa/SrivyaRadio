@@ -15,12 +15,15 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.RepeatOne
 import androidx.compose.material.icons.filled.Replay10
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -242,6 +245,37 @@ fun PlayerScreen(
                             contentDescription = "Repeat",
                             modifier = Modifier.size(26.dp),
                         )
+                    }
+
+                    // Sleep timer menu
+                    var timerMenuExpanded by remember { mutableStateOf(false) }
+                    IconButton(onClick = { timerMenuExpanded = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.Timer,
+                            contentDescription = "Sleep timer",
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = timerMenuExpanded,
+                        onDismissRequest = { timerMenuExpanded = false }
+                    ) {
+                        val options = listOf(
+                            0 to "Off",
+                            15 to "15 min",
+                            30 to "30 min",
+                            60 to "60 min",
+                            90 to "90 min"
+                        )
+                        options.forEach { (minutes, label) ->
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                onClick = {
+                                    mainViewModel.sleepTimer(minutes)
+                                    timerMenuExpanded = false
+                                }
+                            )
+                        }
                     }
                 }
                 Spacer(Modifier.padding(25.dp))
