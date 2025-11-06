@@ -94,7 +94,6 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                             selectedIndex = index
                             mainViewModel.setCountryCodeByCode(countries[index].second)
                         },
-                        modifier = Modifier.padding(10.dp)
                     )
                 }
                 if (mainViewModel.discoverStations.isEmpty()) {
@@ -107,6 +106,7 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                             name = station.name,
                             image = station.favicon,
                             label = if (label.isNotBlank()) label else station.country,
+                            isOffline = mainViewModel.isStationOffline(station.id),
                             isFavorite = mainViewModel.favoritesStations.any { it.id == station.id },
                             onToggleFavorite = { scope.launch { mainViewModel.addOrRemoveFromFavorites(station.id) } },
                             onClick = { mainViewModel.playStation(station, DISCOVER_ID) },
@@ -117,7 +117,6 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                             modifier = Modifier
                         )
                     }
-                    item { Spacer(modifier = Modifier.padding(bottom = 80.dp)) }
                 }
             }
 

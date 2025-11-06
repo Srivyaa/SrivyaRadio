@@ -83,15 +83,20 @@ class PlayerService : MediaLibraryService() {
                     .setSessionCommand(SessionCommand(Constants.TOGGLE_FAVORITE_COMMAND, Bundle.EMPTY))
                     .build()
 
+                val shuffleIcon = if (player.shuffleModeEnabled) R.drawable.ic_shuffle else R.drawable.ic_shuffle_off
                 val shuffleButton = CommandButton.Builder()
                     .setDisplayName(if (player.shuffleModeEnabled) "Shuffle On" else "Shuffle Off")
-                    .setIconResId(R.drawable.ic_shuffle)
+                    .setIconResId(shuffleIcon)
                     .setSessionCommand(SessionCommand(Constants.TOGGLE_SHUFFLE_COMMAND, Bundle.EMPTY))
                     .build()
 
-                val repeatIcon = R.drawable.ic_more_horizontal
+                val (repeatIcon, repeatLabel) = when (player.repeatMode) {
+                    Player.REPEAT_MODE_ONE -> R.drawable.ic_repeat_one to "Repeat One"
+                    Player.REPEAT_MODE_ALL -> R.drawable.ic_repeat to "Repeat All"
+                    else -> R.drawable.ic_repeat to "Repeat Off"
+                }
                 val repeatButton = CommandButton.Builder()
-                    .setDisplayName("Repeat")
+                    .setDisplayName(repeatLabel)
                     .setIconResId(repeatIcon)
                     .setSessionCommand(SessionCommand(Constants.CYCLE_REPEAT_COMMAND, Bundle.EMPTY))
                     .build()

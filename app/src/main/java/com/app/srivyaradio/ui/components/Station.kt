@@ -1,5 +1,6 @@
 package com.app.srivyaradio.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.MaterialTheme
 import com.app.srivyaradio.R
 
 @Composable
@@ -28,6 +31,7 @@ fun Station(
     name: String,
     image: String,
     label: String,
+    isOffline: Boolean = false,
     isFavorite: Boolean = false,
     onToggleFavorite: () -> Unit = {},
     onClick: () -> Unit,
@@ -50,13 +54,23 @@ fun Station(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            Text(
-                text = name,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontSize = TextUnit(18f, TextUnitType.Sp),
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = name,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = TextUnit(18f, TextUnitType.Sp),
                 )
+                if (isOffline) {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 6.dp)
+                            .size(8.dp)
+                            .background(MaterialTheme.colorScheme.error, shape = CircleShape)
+                    )
+                }
+            }
             if (label.isNotBlank()) {
                 Text(
                     text = label,

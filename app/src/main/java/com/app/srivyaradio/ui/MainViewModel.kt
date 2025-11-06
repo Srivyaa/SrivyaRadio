@@ -108,6 +108,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         private set
     var isSeekable by mutableStateOf(false)
         private set
+    var offlineStations by mutableStateOf<Set<String>>(setOf())
+        private set
 
     private lateinit var playerFuture: ListenableFuture<MediaBrowser>
     lateinit var player: MediaBrowser
@@ -146,6 +148,12 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 }
             })
     }
+
+    fun markStationOffline(id: String) {
+        offlineStations = offlineStations + id
+    }
+
+    fun isStationOffline(id: String): Boolean = offlineStations.contains(id)
 
     private fun getCurrentItem() {
         try {
@@ -569,7 +577,27 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
-                Toast.makeText(application, "Something went wrong", Toast.LENGTH_SHORT).show()
+                try {
+                    val mediaId = player.currentMediaItem?.mediaId ?: ""
+                    val id = mediaId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
+                    if (id.isNotBlank()) {
+                        markStationOffline(id)
+                    }
+                } catch (_: Exception) { }
+                Toast.makeText(application, "Selected station is offline", Toast.LENGTH_SHORT).show()
+
+                try {
+                    val hasNext = try { player.hasNextMediaItem() } catch (_: Exception) {
+                        player.currentMediaItemIndex < player.mediaItemCount - 1
+                    }
+                    if (hasNext) {
+                        player.seekToNextMediaItem()
+                        if (!player.isPlaying) {
+                            player.prepare()
+                            player.play()
+                        }
+                    }
+                } catch (_: Exception) { }
             }
 
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
