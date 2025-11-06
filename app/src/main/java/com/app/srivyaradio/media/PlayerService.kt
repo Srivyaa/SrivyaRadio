@@ -101,19 +101,7 @@ class PlayerService : MediaLibraryService() {
                     .setSessionCommand(SessionCommand(Constants.CYCLE_REPEAT_COMMAND, Bundle.EMPTY))
                     .build()
 
-                val seekBackButton = CommandButton.Builder()
-                    .setDisplayName("Seek -10s")
-                    .setIconResId(R.drawable.ic_fast_rewind)
-                    .setSessionCommand(SessionCommand(Constants.SEEK_BACK_COMMAND, Bundle.EMPTY))
-                    .build()
-
-                val seekForwardButton = CommandButton.Builder()
-                    .setDisplayName("Seek +10s")
-                    .setIconResId(R.drawable.ic_fast_forward)
-                    .setSessionCommand(SessionCommand(Constants.SEEK_FORWARD_COMMAND, Bundle.EMPTY))
-                    .build()
-
-                mediaLibrarySession.setCustomLayout(listOf(seekBackButton, favButton, shuffleButton, repeatButton, seekForwardButton))
+                mediaLibrarySession.setCustomLayout(listOf(favButton, shuffleButton, repeatButton))
             } catch (_: Exception) {
                 mediaLibrarySession.setCustomLayout(emptyList())
             }
@@ -142,8 +130,6 @@ class PlayerService : MediaLibraryService() {
             .setMediaSourceFactory(mediaSourceFactory)
             .setAudioAttributes(AudioAttributes.DEFAULT, true)
             .setHandleAudioBecomingNoisy(true)
-            .setSeekBackIncrementMs(10_000)
-            .setSeekForwardIncrementMs(10_000)
             .build()
 
         dbRepository = DatabaseRepository(application)
@@ -339,8 +325,7 @@ class PlayerService : MediaLibraryService() {
 
             availableSessionCommands.add(SessionCommand(Constants.TOGGLE_SHUFFLE_COMMAND, Bundle.EMPTY))
             availableSessionCommands.add(SessionCommand(Constants.CYCLE_REPEAT_COMMAND, Bundle.EMPTY))
-            availableSessionCommands.add(SessionCommand(Constants.SEEK_BACK_COMMAND, Bundle.EMPTY))
-            availableSessionCommands.add(SessionCommand(Constants.SEEK_FORWARD_COMMAND, Bundle.EMPTY))
+            // Removed seek custom commands; using shuffle/repeat only in custom layout
 
             return MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(), connectionResult.availablePlayerCommands
@@ -416,13 +401,7 @@ class PlayerService : MediaLibraryService() {
                 service.updateCustomActions()
             }
 
-            if (Constants.SEEK_BACK_COMMAND == customCommand.customAction) {
-                service.player.seekBack()
-            }
-
-            if (Constants.SEEK_FORWARD_COMMAND == customCommand.customAction) {
-                service.player.seekForward()
-            }
+            // Seek custom commands removed
 
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
