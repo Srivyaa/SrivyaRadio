@@ -222,6 +222,29 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
+    fun playSearchResults(selected: Station) {
+        try {
+            selectedStation = selected
+            isRadioLoading = true
+
+            // Build a playlist from current search results and start from the selected item
+            val marker = Bundle().apply { putBoolean("IS_SEARCH_RESULT", true) }
+            val items = searchStations.map { st ->
+                MediaItemFactory.stationToMediaItemWithExtras(st, DISCOVER_ID, marker)
+            }
+            val startIdx = items.indexOfFirst { it.mediaId.endsWith(selected.id) }.let { if (it >= 0) it else 0 }
+
+            player.setMediaItems(items, startIdx, 0)
+            player.prepare()
+            player.play()
+            // Update queue state for UI
+            refreshQueue()
+        } catch (_: Exception) {
+            isRadioLoading = false
+            Toast.makeText(application, "Playback failed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     fun search(query: String) {
         viewModelScope.launch {
             try {
@@ -344,6 +367,17 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             }
             player.repeatMode = next
             repeatMode = next
+        } catch (_: Exception) { }
+    }
+
+    fun playFromQueue(index: Int) {
+        try {
+            if (!this::player.isInitialized) return
+            if (index in 0 until player.mediaItemCount) {
+                player.seekTo(index, 0)
+                player.prepare()
+                player.play()
+            }
         } catch (_: Exception) { }
     }
 
@@ -573,6 +607,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     repeatMode = player.repeatMode
                     isSeekable = player.isCurrentMediaItemSeekable
                 } catch (_: Exception) { }
+                // Keep Up Next/queue in sync with the player
+                refreshQueue()
             }
 
             override fun onPlayerError(error: PlaybackException) {
