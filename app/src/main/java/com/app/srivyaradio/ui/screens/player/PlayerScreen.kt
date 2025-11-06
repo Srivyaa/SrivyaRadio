@@ -1,5 +1,6 @@
 package com.app.srivyaradio.ui.screens.player
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Forward10
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.RepeatOne
@@ -66,6 +68,7 @@ fun PlayerScreen(
 
     LaunchedEffect(Unit) {
         mainViewModel.refreshPlaybackControlsState()
+        mainViewModel.refreshQueue()
     }
 
     LaunchedEffect(mainViewModel.selectedStation) {
@@ -199,7 +202,7 @@ fun PlayerScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Shuffle toggle
+                    // Shuffle toggle (match AA/notification icons)
                     IconButton(onClick = { mainViewModel.toggleShuffle() }) {
                         Icon(
                             imageVector = Icons.Filled.Shuffle,
@@ -279,6 +282,47 @@ fun PlayerScreen(
                     }
                 }
                 Spacer(Modifier.padding(25.dp))
+
+                // Up Next / Queue (similar to Android Auto): tap to play, remove to delete from queue
+                val currentIdx = mainViewModel.queueStations.indexOfFirst { qs ->
+                    qs.id == mainViewModel.selectedStation?.id
+                }
+                val startIndex = if (currentIdx >= 0) currentIdx + 1 else 0
+                val upcoming = mainViewModel.queueStations.drop(startIndex).take(15)
+                if (upcoming.isNotEmpty()) {
+                    Text(
+                        text = "Up Next",
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    )
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        upcoming.forEachIndexed { idx, station ->
+                            val queueIndex = startIndex + idx
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { mainViewModel.playFromQueue(queueIndex) }
+                                    .padding(horizontal = 16.dp, vertical = 10.dp)
+                            ) {
+                                RadioLogoSmall(imageUrl = station.favicon, size = 36)
+                                Text(
+                                    text = station.name,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 12.dp)
+                                )
+                                IconButton(onClick = { mainViewModel.removeFromQueue(queueIndex) }) {
+                                    Icon(Icons.Filled.Delete, contentDescription = "Remove from queue")
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
