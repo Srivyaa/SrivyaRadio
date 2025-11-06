@@ -107,6 +107,7 @@ fun FavoriteScreen(
                     name = station.name,
                     image = station.favicon,
                     label = station.country,
+                    isOffline = mainViewModel.isStationOffline(station.id),
                     isFavorite = true,
                     onToggleFavorite = {
                         scope.launch { mainViewModel.addOrRemoveFromFavorites(station.id) }
