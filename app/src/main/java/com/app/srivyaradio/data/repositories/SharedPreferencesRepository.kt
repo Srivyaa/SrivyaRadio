@@ -1,6 +1,7 @@
 package com.app.srivyaradio.data.repositories
 
 import android.content.SharedPreferences
+import com.app.srivyaradio.data.models.CountryEntry
 import com.app.srivyaradio.utils.Constants.COUNTRY_CODE
 import com.app.srivyaradio.utils.Constants.DEFAULT_SCREEN
 import com.app.srivyaradio.utils.Constants.IS_FIRST_START
@@ -103,20 +104,42 @@ class SharedPreferencesRepository(private val sharedPreferences: SharedPreferenc
         }
     }
 
-    // User-managed countries (serialize as name|code;name|code;...)
+    // User-managed countries
+    // Storage format: name|code|active;name|code|active;...
+    // Backward compatible with older entries stored as name|code (assumes active=true)
     fun getUserCountries(): List<Pair<String, String>> {
+        return getUserCountryEntries()
+            .filter { it.active }
+            .map { it.name to it.code }
+    }
+
+    fun setUserCountries(countries: List<Pair<String, String>>) {
+        setUserCountryEntries(countries.map { CountryEntry(it.first, it.second, true) })
+    }
+
+    fun getUserCountryEntries(): List<CountryEntry> {
         val raw = sharedPreferences.getString(USER_COUNTRIES, "") ?: ""
         if (raw.isBlank()) return emptyList()
         return raw.split(';').mapNotNull { entry ->
             val parts = entry.split('|')
             val name = parts.getOrNull(0)?.trim().orEmpty()
             val code = parts.getOrNull(1)?.trim().orEmpty()
-            if (name.isNotBlank() && code.isNotBlank()) name to code else null
+            val active = parts.getOrNull(2)?.trim()?.lowercase()
+                ?.let { it == "true" || it == "1" || it == "y" } ?: true
+            if (name.isNotBlank() && code.isNotBlank()) CountryEntry(
+                name,
+                code.uppercase(),
+                active
+            ) else null
         }
     }
 
-    fun setUserCountries(countries: List<Pair<String, String>>) {
-        val serialized = countries.joinToString(";") { (n, c) -> "$n|$c" }
+    fun setUserCountryEntries(entries: List<CountryEntry>) {
+        // Basic sanitization to avoid breaking the delimiter format
+        fun sanitize(input: String): String = input.replace("|", " ").replace(";", " ")
+        val serialized = entries.joinToString(";") { e ->
+            "${sanitize(e.name)}|${sanitize(e.code.uppercase())}|${if (e.active) "true" else "false"}"
+        }
         sharedPreferences.edit().apply {
             putString(USER_COUNTRIES, serialized)
             apply()

@@ -15,6 +15,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +38,7 @@ import com.app.srivyaradio.R
 import com.app.srivyaradio.data.api.stations.StationsClient
 import com.app.srivyaradio.data.models.Favorite
 import com.app.srivyaradio.data.models.Station
+import com.app.srivyaradio.data.models.CountryEntry
 import com.app.srivyaradio.data.repositories.DatabaseRepository
 import com.app.srivyaradio.data.repositories.SharedPreferencesRepository
 import com.app.srivyaradio.media.MediaItemFactory
@@ -48,6 +51,7 @@ import com.app.srivyaradio.utils.Constants.FAVORITES_ID
 import com.app.srivyaradio.utils.Constants.SHARED_PREF
 import com.app.srivyaradio.utils.ThemeMode
 import com.app.srivyaradio.utils.countryList
+import com.app.srivyaradio.utils.CountryIO
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -88,6 +92,11 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     var searchStations by mutableStateOf<List<Station>>(listOf())
     var recentStations by mutableStateOf<List<Station>>(listOf())
     var queueStations by mutableStateOf<List<Station>>(listOf())
+
+    // Import/Export status message
+    var importExportMessage by mutableStateOf<String?>(null)
+
+    private val MAX_IMPORT_BYTES = 10L * 1024L * 1024L // 10MB
 
     var isRadioPlaying by mutableStateOf(false)
     var isRadioLoading by mutableStateOf(false)
@@ -189,10 +198,35 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
-    // Dynamic country list for UI
+    // Dynamic country list for UI with user overrides and soft-delete
     fun getCountryListForUI(): List<Pair<String, String>> {
-        val user = repository.getUserCountries()
-        return countryList + user
+        val entries = getCombinedCountryEntries()
+        return entries.filter { it.active }.map { it.name to it.code }
+    }
+
+    private fun getCombinedCountryEntries(): List<CountryEntry> {
+        val user = repository.getUserCountryEntries()
+        val byCode = user.associateBy { it.code.uppercase() }.toMutableMap()
+
+        // Start with static countries, overridden by user entries if present
+        val result = mutableListOf<CountryEntry>()
+        countryList.forEach { (name, code) ->
+            val key = code.uppercase()
+            val override = byCode[key]
+            if (override != null) {
+                if (override.active) {
+                    result.add(CountryEntry(override.name, key, true))
+                } // else skip (soft-deleted)
+                byCode.remove(key)
+            } else {
+                result.add(CountryEntry(name, key, true))
+            }
+        }
+        // Append remaining user-defined entries (non-static), only if active
+        byCode.values.filter { it.active }.forEach { e ->
+            result.add(CountryEntry(e.name, e.code.uppercase(), true))
+        }
+        return result.distinctBy { it.code.uppercase() }
     }
 
     fun setCountryCodeByCode(code: String) {
@@ -533,25 +567,113 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         val trimmedName = name.trim()
         val trimmedCode = code.trim().uppercase()
         if (trimmedName.isBlank() || trimmedCode.isBlank()) return
-        val current = repository.getUserCountries().toMutableList()
-        if (current.any { it.second.equals(trimmedCode, ignoreCase = true) }) return
-        current.add(trimmedName to trimmedCode)
-        repository.setUserCountries(current)
+        val entries = repository.getUserCountryEntries().toMutableList()
+        val idx = entries.indexOfFirst { it.code.equals(trimmedCode, true) }
+        if (idx >= 0) {
+            entries[idx] = CountryEntry(trimmedName, trimmedCode, true)
+        } else {
+            entries.add(CountryEntry(trimmedName, trimmedCode, true))
+        }
+        repository.setUserCountryEntries(entries)
     }
 
     fun updateUserCountry(oldName: String, oldCode: String, newName: String, newCode: String) {
-        val current = repository.getUserCountries().toMutableList()
-        val idx = current.indexOfFirst { it.first == oldName && it.second.equals(oldCode, true) }
+        val codeKey = oldCode.trim().uppercase()
+        val entries = repository.getUserCountryEntries().toMutableList()
+        val idx = entries.indexOfFirst { it.code.equals(codeKey, true) }
         if (idx >= 0) {
-            current[idx] = newName.trim() to newCode.trim().uppercase()
-            repository.setUserCountries(current)
+            entries[idx] = CountryEntry(newName.trim(), newCode.trim().uppercase(), entries[idx].active)
+            repository.setUserCountryEntries(entries)
         }
     }
 
     fun removeUserCountry(name: String, code: String) {
-        val current = repository.getUserCountries().toMutableList()
-        current.removeAll { it.first == name && it.second.equals(code, true) }
-        repository.setUserCountries(current)
+        val codeKey = code.trim().uppercase()
+        val entries = repository.getUserCountryEntries().toMutableList()
+        val idx = entries.indexOfFirst { it.code.equals(codeKey, true) }
+        if (idx >= 0) {
+            // Soft delete
+            entries[idx] = entries[idx].copy(active = false)
+            repository.setUserCountryEntries(entries)
+        }
+    }
+
+    // Import countries from CSV via SAF Uri
+    fun importCountriesFromUri(uri: Uri) {
+        try {
+            val cr = application.contentResolver
+            // size check
+            val size = cr.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)
+                ?.use { c -> if (c.moveToFirst()) c.getLong(0) else null } ?: 0L
+            if (size > MAX_IMPORT_BYTES) {
+                importExportMessage = "File too large (>${MAX_IMPORT_BYTES / (1024*1024)}MB)"
+                return
+            }
+
+            val name = cr.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                ?.use { c -> if (c.moveToFirst()) c.getString(0) else "" } ?: ""
+            val entries: List<CountryEntry> = cr.openInputStream(uri)?.use { ins ->
+                CountryIO.readCsv(ins)
+            } ?: emptyList()
+
+            if (entries.isEmpty()) {
+                importExportMessage = "No rows found"
+                return
+            }
+
+            // Upsert by code
+            val current = repository.getUserCountryEntries().associateBy { it.code.uppercase() }.toMutableMap()
+            var created = 0
+            var updated = 0
+            entries.forEach { e ->
+                val key = e.code.uppercase()
+                val existing = current[key]
+                if (existing == null) {
+                    current[key] = CountryEntry(e.name.trim(), key, e.active)
+                    created++
+                } else {
+                    if (existing != e) {
+                        current[key] = CountryEntry(e.name.trim(), key, e.active)
+                        updated++
+                    }
+                }
+            }
+            repository.setUserCountryEntries(current.values.toList())
+            importExportMessage = "Imported: ${entries.size} rows (created=$created, updated=$updated)"
+        } catch (e: Exception) {
+            importExportMessage = "Import failed: ${e.message ?: "unknown"}"
+        }
+    }
+
+    // Export combined active countries to CSV
+    fun exportCountriesToUri(uri: Uri) {
+        try {
+            val cr = application.contentResolver
+            val name = cr.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                ?.use { c -> if (c.moveToFirst()) c.getString(0) else "" } ?: ""
+            val list = getCombinedCountryEntries().filter { it.active }
+            cr.openOutputStream(uri, "w")?.use { out ->
+                CountryIO.writeCsv(out, list, includeBom = true)
+            }
+            importExportMessage = "Exported ${list.size} entries to $name"
+        } catch (e: Exception) {
+            importExportMessage = "Export failed: ${e.message ?: "unknown"}"
+        }
+    }
+
+    // Save template
+    fun saveTemplateToUri(uri: Uri) {
+        try {
+            val cr = application.contentResolver
+            val name = cr.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                ?.use { c -> if (c.moveToFirst()) c.getString(0) else "" } ?: ""
+            cr.openOutputStream(uri, "w")?.use { out ->
+                CountryIO.writeTemplateCsv(out)
+            }
+            importExportMessage = "Template saved: $name"
+        } catch (e: Exception) {
+            importExportMessage = "Template save failed: ${e.message ?: "unknown"}"
+        }
     }
 
     private fun getCountryCode() {

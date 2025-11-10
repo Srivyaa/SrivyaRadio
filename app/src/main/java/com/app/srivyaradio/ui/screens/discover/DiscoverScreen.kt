@@ -79,7 +79,7 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
             showBottomSheet = true
             optionsStation = it
         }, onClick = {
-            mainViewModel.playStation(it, DISCOVER_ID)
+            mainViewModel.playSearchResults(it)
             keyboardController?.hide()
         })
 
