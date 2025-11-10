@@ -21,8 +21,8 @@ The app is built entirely with **Jetpack Compose**, and follows the **MVVM** arc
 - **Material You design** – The app follows your system’s theme and color palette  
 - **Custom stations** – Add your own stream URL if it’s not already listed  
 - **Android Auto support** – Use it safely while driving  
-- **In-app purchases** – Upgrade to remove ads or support the app  
-- **AdMob integration** – Ads are included by default and can be removed  
+- **No Ads** – No Ads 
+- **Category Selection** – Category can be selected on Android Auto UI
 
 ---
 
@@ -38,8 +38,6 @@ The app is built entirely with **Jetpack Compose**, and follows the **MVVM** arc
 - WorkManager  
 - MVVM architecture  
 - Material You  
-- AdMob  
-- RevenueCat (In-App Purchases)  
 - Android Auto support  
 
 ---
