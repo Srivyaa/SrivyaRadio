@@ -1,5 +1,6 @@
 package com.app.srivyaradio.media
 
+import android.content.Context.MODE_PRIVATE
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Intent
@@ -59,6 +60,8 @@ class PlayerService : MediaLibraryService() {
     private var lastBrowsePageSize: Int = 20
 
     private var timer: CountDownTimer? = null
+    private val timerOptions = intArrayOf(0, 15, 30, 60, 90)
+    private var timerIndex = 0
 
     private val retrofit = LocationClient.getInstance()
     var apiInterface: LocationInterface = retrofit.create(LocationInterface::class.java)
@@ -101,7 +104,34 @@ class PlayerService : MediaLibraryService() {
                     .setSessionCommand(SessionCommand(Constants.CYCLE_REPEAT_COMMAND, Bundle.EMPTY))
                     .build()
 
-                mediaLibrarySession.setCustomLayout(listOf(favButton, shuffleButton, repeatButton))
+                val seekBackButton = CommandButton.Builder()
+                    .setDisplayName("Seek -10s")
+                    .setIconResId(R.drawable.ic_fast_rewind)
+                    .setSessionCommand(SessionCommand(Constants.SEEK_BACK_COMMAND, Bundle.EMPTY))
+                    .build()
+
+                val seekForwardButton = CommandButton.Builder()
+                    .setDisplayName("Seek +10s")
+                    .setIconResId(R.drawable.ic_fast_forward)
+                    .setSessionCommand(SessionCommand(Constants.SEEK_FORWARD_COMMAND, Bundle.EMPTY))
+                    .build()
+
+                val timerButton = CommandButton.Builder()
+                    .setDisplayName("Timer")
+                    .setIconResId(R.drawable.ic_timer)
+                    .setSessionCommand(SessionCommand(Constants.SET_TIMER_COMMAND, Bundle.EMPTY))
+                    .build()
+
+                // Order matters: first items are more likely to appear on the primary AA screen
+                mediaLibrarySession.setCustomLayout(listOf(
+                    favButton,
+                    shuffleButton,
+                    // Place the rest in overflow/additional actions
+                    repeatButton,
+                    seekBackButton,
+                    seekForwardButton,
+                    timerButton,
+                ))
             } catch (_: Exception) {
                 mediaLibrarySession.setCustomLayout(emptyList())
             }
@@ -130,6 +160,8 @@ class PlayerService : MediaLibraryService() {
             .setMediaSourceFactory(mediaSourceFactory)
             .setAudioAttributes(AudioAttributes.DEFAULT, true)
             .setHandleAudioBecomingNoisy(true)
+            .setSeekBackIncrementMs(10_000)
+            .setSeekForwardIncrementMs(10_000)
             .build()
 
         dbRepository = DatabaseRepository(application)
@@ -325,7 +357,9 @@ class PlayerService : MediaLibraryService() {
 
             availableSessionCommands.add(SessionCommand(Constants.TOGGLE_SHUFFLE_COMMAND, Bundle.EMPTY))
             availableSessionCommands.add(SessionCommand(Constants.CYCLE_REPEAT_COMMAND, Bundle.EMPTY))
-            // Removed seek custom commands; using shuffle/repeat only in custom layout
+            // Re-add seek custom commands for Android Auto additional actions
+            availableSessionCommands.add(SessionCommand(Constants.SEEK_BACK_COMMAND, Bundle.EMPTY))
+            availableSessionCommands.add(SessionCommand(Constants.SEEK_FORWARD_COMMAND, Bundle.EMPTY))
 
             return MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(), connectionResult.availablePlayerCommands
@@ -371,18 +405,29 @@ class PlayerService : MediaLibraryService() {
             }
 
             if (Constants.SET_TIMER_COMMAND == customCommand.customAction) {
-                val stopTimeMillis = args.getLong(Constants.SET_TIMER_KEY)
-
-                service.timer?.cancel()
-
-                if (stopTimeMillis.toInt() != 0) {
+                // If explicit millis provided, respect it; else cycle through preset durations
+                val hasKey = args.containsKey(Constants.SET_TIMER_KEY)
+                if (hasKey) {
+                    val stopTimeMillis = args.getLong(Constants.SET_TIMER_KEY)
                     service.timer?.cancel()
-                    service.timer = object : CountDownTimer(stopTimeMillis, 1000) {
-                        override fun onTick(millisUntilFinished: Long) {}
-                        override fun onFinish() {
-                            service.player.pause()
-                        }
-                    }.start()
+                    if (stopTimeMillis.toInt() != 0) {
+                        service.timer = object : CountDownTimer(stopTimeMillis, 1000) {
+                            override fun onTick(millisUntilFinished: Long) {}
+                            override fun onFinish() { service.player.pause() }
+                        }.start()
+                    }
+                } else {
+                    // Cycle: Off -> 15 -> 30 -> 60 -> 90 -> Off
+                    service.timerIndex = (service.timerIndex + 1) % service.timerOptions.size
+                    val minutes = service.timerOptions[service.timerIndex]
+                    service.timer?.cancel()
+                    if (minutes > 0) {
+                        val millis = minutes * 60_000L
+                        service.timer = object : CountDownTimer(millis, 1000) {
+                            override fun onTick(millisUntilFinished: Long) {}
+                            override fun onFinish() { service.player.pause() }
+                        }.start()
+                    }
                 }
             }
 
@@ -401,7 +446,13 @@ class PlayerService : MediaLibraryService() {
                 service.updateCustomActions()
             }
 
-            // Seek custom commands removed
+            if (Constants.SEEK_BACK_COMMAND == customCommand.customAction) {
+                service.player.seekBack()
+            }
+
+            if (Constants.SEEK_FORWARD_COMMAND == customCommand.customAction) {
+                service.player.seekForward()
+            }
 
             return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS))
         }
@@ -508,11 +559,23 @@ class PlayerService : MediaLibraryService() {
                     service.lastBrowsePage = page
                     service.lastBrowsePageSize = pageSize
 
-                    // If requesting Countries, include user-managed countries along with static list
+                    // If requesting Countries, include user-managed countries with overrides and soft-deletes
                     if (parentId == com.app.srivyaradio.utils.Constants.COUNTRIES_ID) {
-                        val user = service.repository.getUserCountries()
-                        val combined = (countryList + user).distinctBy { it.second.uppercase() }
-                        val items = combined.map { (name, code) ->
+                        val userEntries = service.repository.getUserCountryEntries()
+                        val byCode = userEntries.associateBy { it.code.uppercase() }.toMutableMap()
+                        val combinedPairs = mutableListOf<Pair<String, String>>()
+                        countryList.forEach { (name, code) ->
+                            val key = code.uppercase()
+                            val override = byCode[key]
+                            if (override != null) {
+                                if (override.active) combinedPairs.add(override.name to key)
+                                byCode.remove(key)
+                            } else {
+                                combinedPairs.add(name to key)
+                            }
+                        }
+                        byCode.values.filter { it.active }.forEach { e -> combinedPairs.add(e.name to e.code.uppercase()) }
+                        val items = combinedPairs.distinctBy { it.second.uppercase() }.map { (name, code) ->
                             MediaItem.Builder()
                                 .setMediaId(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX + code.uppercase())
                                 .setMediaMetadata(
@@ -591,11 +654,23 @@ class PlayerService : MediaLibraryService() {
                     service.lastBrowsePage = 1
                     service.lastBrowsePageSize = 20
 
-                    // If subscribing to Countries, notify with combined size (static + user-managed)
+                    // If subscribing to Countries, notify with combined size (static + user-managed with overrides)
                     if (parentId == com.app.srivyaradio.utils.Constants.COUNTRIES_ID) {
-                        val total = (countryList + service.repository.getUserCountries())
-                            .distinctBy { it.second.uppercase() }
-                            .size
+                        val userEntries = service.repository.getUserCountryEntries()
+                        val byCode = userEntries.associateBy { it.code.uppercase() }.toMutableMap()
+                        val combined = mutableListOf<Pair<String, String>>()
+                        countryList.forEach { (name, code) ->
+                            val key = code.uppercase()
+                            val override = byCode[key]
+                            if (override != null) {
+                                if (override.active) combined.add(override.name to key)
+                                byCode.remove(key)
+                            } else {
+                                combined.add(name to key)
+                            }
+                        }
+                        byCode.values.filter { it.active }.forEach { e -> combined.add(e.name to e.code.uppercase()) }
+                        val total = combined.distinctBy { it.second.uppercase() }.size
                         future.set(LibraryResult.ofVoid())
                         session.notifyChildrenChanged(browser, parentId, total, params)
                         return@launch
@@ -642,6 +717,15 @@ class PlayerService : MediaLibraryService() {
             if (mediaItems.isEmpty()) {
                 return Futures.immediateFuture(
                     MediaSession.MediaItemsWithStartPosition(emptyList(), 0, 0)
+                )
+            }
+
+            // If selection originated from in-app search results, the app sent the full queue.
+            // Accept the provided list as-is to replace the current queue.
+            val fromSearchList = try { mediaItems.any { it.mediaMetadata.extras?.getBoolean("IS_SEARCH_RESULT") == true } } catch (_: Exception) { false }
+            if (fromSearchList) {
+                return Futures.immediateFuture(
+                    MediaSession.MediaItemsWithStartPosition(mediaItems, startIndex, startPositionMs)
                 )
             }
 

@@ -29,4 +29,9 @@ object Constants {
     const val DEFAULT_SCREEN = "defaultScreen" // values: Favorites, Discover, Recents
     const val USER_COUNTRIES = "userCountries" // serialized as name|code;name|code;...
     const val RECENTS_LIST = "recentsList" // comma-separated station IDs
+    // Playback commands
+    const val TOGGLE_SHUFFLE_COMMAND = "COMMAND_TOGGLE_SHUFFLE"
+    const val CYCLE_REPEAT_COMMAND = "COMMAND_CYCLE_REPEAT"
+    const val SEEK_BACK_COMMAND = "COMMAND_SEEK_BACK"
+    const val SEEK_FORWARD_COMMAND = "COMMAND_SEEK_FORWARD"
 }
