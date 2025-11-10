@@ -535,6 +535,249 @@ public final class EntityDao_Impl implements EntityDao {
   }
 
   @Override
+  public Object advancedSearchStations(final String title, final String artist, final String album,
+      final String genre, final String country, final String state, final String year,
+      final String free, final Continuation<? super List<Station>> $completion) {
+    final String _sql = "\n"
+            + "        SELECT * FROM radio_stations \n"
+            + "        WHERE \n"
+            + "            (? IS NULL OR name LIKE '%' || ? || '%' COLLATE NOCASE)\n"
+            + "            AND (? IS NULL OR tags LIKE '%' || ? || '%' COLLATE NOCASE)\n"
+            + "            AND (? IS NULL OR tags LIKE '%' || ? || '%' COLLATE NOCASE)\n"
+            + "            AND (? IS NULL OR tags LIKE '%' || ? || '%' COLLATE NOCASE)\n"
+            + "            AND (? IS NULL OR country LIKE '%' || ? || '%' COLLATE NOCASE OR countrycode LIKE '%' || ? || '%' COLLATE NOCASE)\n"
+            + "            AND (? IS NULL OR state LIKE '%' || ? || '%' COLLATE NOCASE)\n"
+            + "            AND (\n"
+            + "                ? IS NULL OR \n"
+            + "                name LIKE '%' || ? || '%' COLLATE NOCASE OR \n"
+            + "                tags LIKE '%' || ? || '%' COLLATE NOCASE OR \n"
+            + "                homepage LIKE '%' || ? || '%' COLLATE NOCASE\n"
+            + "            )\n"
+            + "            AND (\n"
+            + "                ? IS NULL OR (\n"
+            + "                    name LIKE '%' || ? || '%' COLLATE NOCASE OR \n"
+            + "                    tags LIKE '%' || ? || '%' COLLATE NOCASE OR \n"
+            + "                    country LIKE '%' || ? || '%' COLLATE NOCASE OR \n"
+            + "                    state LIKE '%' || ? || '%' COLLATE NOCASE\n"
+            + "                )\n"
+            + "            )\n"
+            + "        ORDER BY name COLLATE NOCASE ASC\n"
+            + "        ";
+    return DBUtil.performSuspending(__db, true, false, (_connection) -> {
+      final SQLiteStatement _stmt = _connection.prepare(_sql);
+      try {
+        int _argIndex = 1;
+        if (title == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, title);
+        }
+        _argIndex = 2;
+        if (title == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, title);
+        }
+        _argIndex = 3;
+        if (artist == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, artist);
+        }
+        _argIndex = 4;
+        if (artist == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, artist);
+        }
+        _argIndex = 5;
+        if (album == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, album);
+        }
+        _argIndex = 6;
+        if (album == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, album);
+        }
+        _argIndex = 7;
+        if (genre == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, genre);
+        }
+        _argIndex = 8;
+        if (genre == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, genre);
+        }
+        _argIndex = 9;
+        if (country == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, country);
+        }
+        _argIndex = 10;
+        if (country == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, country);
+        }
+        _argIndex = 11;
+        if (country == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, country);
+        }
+        _argIndex = 12;
+        if (state == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, state);
+        }
+        _argIndex = 13;
+        if (state == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, state);
+        }
+        _argIndex = 14;
+        if (year == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, year);
+        }
+        _argIndex = 15;
+        if (year == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, year);
+        }
+        _argIndex = 16;
+        if (year == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, year);
+        }
+        _argIndex = 17;
+        if (year == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, year);
+        }
+        _argIndex = 18;
+        if (free == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, free);
+        }
+        _argIndex = 19;
+        if (free == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, free);
+        }
+        _argIndex = 20;
+        if (free == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, free);
+        }
+        _argIndex = 21;
+        if (free == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, free);
+        }
+        _argIndex = 22;
+        if (free == null) {
+          _stmt.bindNull(_argIndex);
+        } else {
+          _stmt.bindText(_argIndex, free);
+        }
+        final int _columnIndexOfId = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "id");
+        final int _columnIndexOfFavicon = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "favicon");
+        final int _columnIndexOfName = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "name");
+        final int _columnIndexOfCountry = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "country");
+        final int _columnIndexOfTags = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "tags");
+        final int _columnIndexOfCountrycode = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "countrycode");
+        final int _columnIndexOfUrlResolved = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "url_resolved");
+        final int _columnIndexOfState = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "state");
+        final int _columnIndexOfHomepage = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "homepage");
+        final int _columnIndexOfRank = SQLiteStatementUtil.getColumnIndexOrThrow(_stmt, "rank");
+        final List<Station> _result = new ArrayList<Station>();
+        while (_stmt.step()) {
+          final Station _item;
+          final String _tmpId;
+          if (_stmt.isNull(_columnIndexOfId)) {
+            _tmpId = null;
+          } else {
+            _tmpId = _stmt.getText(_columnIndexOfId);
+          }
+          final String _tmpFavicon;
+          if (_stmt.isNull(_columnIndexOfFavicon)) {
+            _tmpFavicon = null;
+          } else {
+            _tmpFavicon = _stmt.getText(_columnIndexOfFavicon);
+          }
+          final String _tmpName;
+          if (_stmt.isNull(_columnIndexOfName)) {
+            _tmpName = null;
+          } else {
+            _tmpName = _stmt.getText(_columnIndexOfName);
+          }
+          final String _tmpCountry;
+          if (_stmt.isNull(_columnIndexOfCountry)) {
+            _tmpCountry = null;
+          } else {
+            _tmpCountry = _stmt.getText(_columnIndexOfCountry);
+          }
+          final String _tmpTags;
+          if (_stmt.isNull(_columnIndexOfTags)) {
+            _tmpTags = null;
+          } else {
+            _tmpTags = _stmt.getText(_columnIndexOfTags);
+          }
+          final String _tmpCountrycode;
+          if (_stmt.isNull(_columnIndexOfCountrycode)) {
+            _tmpCountrycode = null;
+          } else {
+            _tmpCountrycode = _stmt.getText(_columnIndexOfCountrycode);
+          }
+          final String _tmpUrl_resolved;
+          if (_stmt.isNull(_columnIndexOfUrlResolved)) {
+            _tmpUrl_resolved = null;
+          } else {
+            _tmpUrl_resolved = _stmt.getText(_columnIndexOfUrlResolved);
+          }
+          final String _tmpState;
+          if (_stmt.isNull(_columnIndexOfState)) {
+            _tmpState = null;
+          } else {
+            _tmpState = _stmt.getText(_columnIndexOfState);
+          }
+          final String _tmpHomepage;
+          if (_stmt.isNull(_columnIndexOfHomepage)) {
+            _tmpHomepage = null;
+          } else {
+            _tmpHomepage = _stmt.getText(_columnIndexOfHomepage);
+          }
+          final int _tmpRank;
+          _tmpRank = (int) (_stmt.getLong(_columnIndexOfRank));
+          _item = new Station(_tmpId,_tmpFavicon,_tmpName,_tmpCountry,_tmpTags,_tmpCountrycode,_tmpUrl_resolved,_tmpState,_tmpHomepage,_tmpRank);
+          _result.add(_item);
+        }
+        return _result;
+      } finally {
+        _stmt.close();
+      }
+    }, $completion);
+  }
+
+  @Override
   public Object getStationByName(final String search,
       final Continuation<? super List<Station>> $completion) {
     final String _sql = "SELECT * FROM radio_stations WHERE name LIKE '%' || ? || '%' COLLATE NOCASE";

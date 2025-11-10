@@ -8,6 +8,8 @@ color purple_700
 color teal_200
 color teal_700
 color white
+drawable ic_fast_forward
+drawable ic_fast_rewind
 drawable ic_favorite_filled
 drawable ic_favorite_outlined
 drawable ic_instagram
@@ -18,6 +20,11 @@ drawable ic_pause
 drawable ic_play_circle
 drawable ic_radio_filled
 drawable ic_radio_outlined
+drawable ic_repeat
+drawable ic_repeat_one
+drawable ic_shuffle
+drawable ic_shuffle_off
+drawable ic_timer
 drawable icon_launcher
 id videoView
 layout activity_splash

@@ -1,5 +1,6 @@
 package com.app.srivyaradio.ui.screens.countries
 
+import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,10 +18,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import com.app.srivyaradio.ui.MainViewModel
 import com.app.srivyaradio.utils.countryList
 
@@ -30,7 +34,62 @@ fun ManageCountriesScreen(mainViewModel: MainViewModel) {
     val (code, setCode) = remember { mutableStateOf("") }
     val userCountries = mainViewModel.getCountryListForUI().filter { it !in countryList }
 
+    // Import launcher (CSV and common CSV MIME variants)
+    val importLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri ->
+            if (uri != null) {
+                mainViewModel.importCountriesFromUri(uri)
+            }
+        }
+    )
+
+    // Export CSV launcher
+    val exportCsvLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/csv"),
+        onResult = { uri -> if (uri != null) mainViewModel.exportCountriesToUri(uri) }
+    )
+
+    // Template launcher (CSV)
+    val templateCsvLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/csv"),
+        onResult = { uri -> if (uri != null) mainViewModel.saveTemplateToUri(uri) }
+    )
+
     Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
+        // Import/Export controls
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = {
+                val mimes = arrayOf(
+                    "text/csv",
+                    "text/comma-separated-values",
+                    "application/csv",
+                    "application/vnd.ms-excel",
+                    "text/plain"
+                )
+                try {
+                    importLauncher.launch(mimes)
+                } catch (_: Exception) {
+                    importLauncher.launch(arrayOf("*/*"))
+                }
+            }) { Text("Import CSV") }
+            Button(onClick = {
+                val filename = "countries.csv"
+                exportCsvLauncher.launch(filename)
+            }) { Text("Export CSV") }
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+            Button(onClick = {
+                val filename = "countries-template.csv"
+                templateCsvLauncher.launch(filename)
+            }) { Text("Download Template (CSV)") }
+        }
+
+        // Status line
+        mainViewModel.importExportMessage?.let { msg ->
+            Text(msg, modifier = Modifier.padding(vertical = 8.dp))
+        }
+
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(value = name, onValueChange = setName, label = { Text("Name") }, modifier = Modifier.weight(1f))
             OutlinedTextField(value = code, onValueChange = setCode, label = { Text("Code") }, modifier = Modifier.weight(1f))

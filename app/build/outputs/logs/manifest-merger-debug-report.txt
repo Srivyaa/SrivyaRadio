@@ -11,37 +11,33 @@ MERGED from [androidx.navigation:navigation-common-android:2.9.3] C:\Users\Srivy
 MERGED from [androidx.navigation:navigation-compose-android:2.9.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\5c16e851390ce63d6e470d9c1027a812\transformed\jetified-navigation-compose-release\AndroidManifest.xml:2:1-7:12
 MERGED from [io.github.mertceyhan:compose-inappreviews:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\a9d263eaf81232451d325df41a7434bf\transformed\jetified-compose-inappreviews-1.0.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b035168507b9cf3658360fcf1b46eb05\transformed\material-1.8.0\AndroidManifest.xml:17:1-26:12
+MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\465ded5b45c86534312f4171cba2b519\transformed\jetified-coil-compose-2.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b5bd7041a6956ee78455b68572ad33a0\transformed\jetified-coil-compose-base-2.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9f628e20c409fc275042b171e27cfd47\transformed\jetified-coil-2.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\74932729c5b644416ba7a4e6c711c67e\transformed\jetified-coil-base-2.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\99411fac7123fd64333558b4d3eade79\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-exoplayer-dash:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\ef0ee37c9e39ab02800c919b95358ca1\transformed\jetified-media3-exoplayer-dash-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-exoplayer-hls:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3aeec3f0af3b588dee633f0b1f57508a\transformed\jetified-media3-exoplayer-hls-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-exoplayer-rtsp:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\20c18c5220bee3babd52fc034062e90e\transformed\jetified-media3-exoplayer-rtsp-1.8.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:17:1-31:12
 MERGED from [androidx.media3:media3-exoplayer-workmanager:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\98ad3853216fa0c0bd09d5841c511e7f\transformed\jetified-media3-exoplayer-workmanager-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-test-utils:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5968bc9e27d906731795ad6ffa2ef799\transformed\jetified-media3-test-utils-1.8.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.media3:media3-transformer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\712dfb845cd4f28786b9b434cb84fc4b\transformed\jetified-media3-transformer-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-exoplayer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2c62adfe5d77e1e512a2431be178bc88\transformed\jetified-media3-exoplayer-1.8.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.media3:media3-session:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08580fad2f04592f39bceae86b52658a\transformed\jetified-media3-session-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-datasource-cronet:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0eec01641cde96c496194d8c5c39a23c\transformed\jetified-media3-datasource-cronet-1.8.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.media3:media3-datasource-okhttp:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\fb672393b665292254f340c73b1827b6\transformed\jetified-media3-datasource-okhttp-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-datasource-rtmp:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\daeb84cf1fd4abddbfee2affeba929fe\transformed\jetified-media3-datasource-rtmp-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-ui:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c4b3cf46a15143d84bc884dadaf9ee89\transformed\jetified-media3-ui-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-ui-leanback:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\d3025029d712f73545d6b9a30c18d691\transformed\jetified-media3-ui-leanback-1.8.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.media3:media3-session:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08580fad2f04592f39bceae86b52658a\transformed\jetified-media3-session-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-extractor:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\cbcc1d78b81526a396396f0a5baed24b\transformed\jetified-media3-extractor-1.8.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.media3:media3-effect:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2ff69bf907291fb8b5d8005fe81ff2df\transformed\jetified-media3-effect-1.8.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.media3:media3-datasource:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\607f5ff5ebc36908f061c975cabfce2e\transformed\jetified-media3-datasource-1.8.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.media3:media3-database:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\de3ef5722764a21199eed7d4a0fe3638\transformed\jetified-media3-database-1.8.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.media3:media3-decoder:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5f08a537ebd7fda9b5b6b3ce5de90196\transformed\jetified-media3-decoder-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-muxer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\58a9c4143aa5c854c2df59b5a099e7f6\transformed\jetified-media3-muxer-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-container:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\d4c69012ea7dd15a44aebb0b986ace83\transformed\jetified-media3-container-1.8.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.media3:media3-effect:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2ff69bf907291fb8b5d8005fe81ff2df\transformed\jetified-media3-effect-1.8.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.media3:media3-datasource:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\607f5ff5ebc36908f061c975cabfce2e\transformed\jetified-media3-datasource-1.8.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.media3:media3-decoder:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5f08a537ebd7fda9b5b6b3ce5de90196\transformed\jetified-media3-decoder-1.8.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.media3:media3-database:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\de3ef5722764a21199eed7d4a0fe3638\transformed\jetified-media3-database-1.8.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.media3:media3-common:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\81b19b659aff067a94a63dd53f121a8e\transformed\jetified-media3-common-1.8.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.media3:media3-cast:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\56730482aaa2de4f0d1720b1da7ada90\transformed\jetified-media3-cast-1.8.0\AndroidManifest.xml:17:1-22:12
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:2:1-20:12
-MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\465ded5b45c86534312f4171cba2b519\transformed\jetified-coil-compose-2.7.0\AndroidManifest.xml:2:1-7:12
-MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b5bd7041a6956ee78455b68572ad33a0\transformed\jetified-coil-compose-base-2.7.0\AndroidManifest.xml:2:1-7:12
-MERGED from [io.coil-kt:coil:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9f628e20c409fc275042b171e27cfd47\transformed\jetified-coil-2.7.0\AndroidManifest.xml:2:1-7:12
-MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\74932729c5b644416ba7a4e6c711c67e\transformed\jetified-coil-base-2.7.0\AndroidManifest.xml:2:1-7:12
-MERGED from [com.google.android.gms:play-services-cast:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\34f67576fe22e8ef1208984c4714f205\transformed\jetified-play-services-cast-21.5.0\AndroidManifest.xml:2:1-8:12
-MERGED from [androidx.mediarouter:mediarouter:1.6.0-beta01] C:\Users\Srivya\.gradle\caches\8.13\transforms\7b9270e91af87189d4a9f461b168759b\transformed\mediarouter-1.6.0-beta01\AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\99411fac7123fd64333558b4d3eade79\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:17:1-31:12
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:2:1-33:12
 MERGED from [androidx.preference:preference:1.1.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\1a8938c29bb74253de4bc765e6e7bf67\transformed\preference-1.1.1\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:2:1-35:12
@@ -77,9 +73,9 @@ MERGED from [androidx.compose.material3:material3-android:1.3.2] C:\Users\Srivya
 MERGED from [androidx.browser:browser:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c0dd914eca956583a1b4672db6847d2e\transformed\browser-1.8.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.webkit:webkit:1.11.0-alpha02] C:\Users\Srivya\.gradle\caches\8.13\transforms\7b0e4525c60cec27bfb1061faf436b80\transformed\webkit-1.11.0-alpha02\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-gcm:17.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\6fc9927f5be355a4f94783cccbd92aab\transformed\jetified-play-services-gcm-17.0.0\AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.media:media:1.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2ea2cd1a3d768b5a83a1fe279eea46c\transformed\media-1.7.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\cf5f2a710481703928c69315896ad23c\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.recyclerview:recyclerview:1.3.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09a76d20217b761ef1a0d62941916ab0\transformed\recyclerview-1.3.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.media:media:1.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2ea2cd1a3d768b5a83a1fe279eea46c\transformed\media-1.7.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.gms:play-services-measurement:23.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\98d3b9a4204899c1406405213b89e8fd\transformed\jetified-play-services-measurement-23.0.0\AndroidManifest.xml:17:1-46:12
 MERGED from [com.google.android.gms:play-services-measurement-sdk:23.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\31796eaae87047ac8584b045df8879fa\transformed\jetified-play-services-measurement-sdk-23.0.0\AndroidManifest.xml:17:1-25:12
 MERGED from [com.google.android.gms:play-services-measurement-impl:23.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\dd182e7d9214f983c56560480fa28083\transformed\jetified-play-services-measurement-impl-23.0.0\AndroidManifest.xml:17:1-32:12
@@ -87,7 +83,6 @@ MERGED from [com.google.android.gms:play-services-iid:17.0.0] C:\Users\Srivya\.g
 MERGED from [com.google.android.gms:play-services-stats:17.0.2] C:\Users\Srivya\.gradle\caches\8.13\transforms\57794c11cf019b9efd650432ca948ffd\transformed\jetified-play-services-stats-17.0.2\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\6e15a5e1d1dce1f2355a4d48bc523b8d\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7dd65055890cd0dede7e70d56320969\transformed\legacy-support-core-ui-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.palette:palette:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\103ee4e921e4b476cb9d8c4320402ba3\transformed\palette-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2d23992667d4c192b564b8cfdf4a0cc\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\73e11a2d13be96464e9ecdb43493d669\transformed\drawerlayout-1.1.1\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\4115936f98a49bd04c2b2db9eb1c0cd7\transformed\coordinatorlayout-1.1.0\AndroidManifest.xml:17:1-24:12
@@ -99,7 +94,6 @@ MERGED from [androidx.loader:loader:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\t
 MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\298a45746b8ef7cb4f1f9172258ea47c\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.gms:play-services-pal:20.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\683816b976baa6d606a078db90cd741e\transformed\jetified-play-services-pal-20.0.1\AndroidManifest.xml:2:1-11:12
 MERGED from [com.google.android.gms:play-services-appset:16.0.2] C:\Users\Srivya\.gradle\caches\8.13\transforms\4c88fd5bbdbf326c8e87134407868387\transformed\jetified-play-services-appset-16.0.2\AndroidManifest.xml:2:1-9:12
-MERGED from [com.google.android.gms:play-services-flags:18.1.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9c32999965d3408578b144b4e11e76e9\transformed\jetified-play-services-flags-18.1.0\AndroidManifest.xml:2:1-6:12
 MERGED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\29b0a71a3e28bddc2623a59996c6226f\transformed\jetified-play-services-base-18.5.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c593feafc7be12902466a02cdd82dd9a\transformed\jetified-accompanist-drawablepainter-0.32.0\AndroidManifest.xml:17:1-23:12
 MERGED from [androidx.compose.material:material-ripple-android:1.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\8f157d99fd9ebc782b32983cf26e56b3\transformed\jetified-material-ripple-release\AndroidManifest.xml:2:1-7:12
@@ -260,8 +254,6 @@ MERGED from [androidx.media3:media3-datasource-cronet:1.8.0] C:\Users\Srivya\.gr
 MERGED from [androidx.media3:media3-datasource-cronet:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0eec01641cde96c496194d8c5c39a23c\transformed\jetified-media3-datasource-cronet-1.8.0\AndroidManifest.xml:22:5-79
 MERGED from [androidx.media3:media3-common:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\81b19b659aff067a94a63dd53f121a8e\transformed\jetified-media3-common-1.8.0\AndroidManifest.xml:22:5-79
 MERGED from [androidx.media3:media3-common:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\81b19b659aff067a94a63dd53f121a8e\transformed\jetified-media3-common-1.8.0\AndroidManifest.xml:22:5-79
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:6:5-79
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:6:5-79
 MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:19:5-79
 MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:19:5-79
 MERGED from [com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:25:5-79
@@ -288,8 +280,6 @@ MERGED from [org.chromium.net:cronet-api:72.3626.96] C:\Users\Srivya\.gradle\cac
 		ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:5:22-76
 uses-permission#android.permission.FOREGROUND_SERVICE
 ADDED from C:\Users\Srivya\StudioProjects\SrivyaRadio\app\src\main\AndroidManifest.xml:6:5-77
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:8:5-77
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:8:5-77
 MERGED from [androidx.work:work-runtime:2.10.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\fa03afdda4a7e47b741a1c66ca506fa8\transformed\work-runtime-2.10.3\AndroidManifest.xml:26:5-77
 MERGED from [androidx.work:work-runtime:2.10.3] C:\Users\Srivya\.gradle\caches\8.13\transforms\fa03afdda4a7e47b741a1c66ca506fa8\transformed\work-runtime-2.10.3\AndroidManifest.xml:26:5-77
 	android:name
@@ -345,10 +335,6 @@ MERGED from [com.google.android.material:material:1.8.0] C:\Users\Srivya\.gradle
 MERGED from [com.google.android.material:material:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b035168507b9cf3658360fcf1b46eb05\transformed\material-1.8.0\AndroidManifest.xml:24:5-20
 MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:22:5-29:19
 MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:22:5-29:19
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:14:5-18:19
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:14:5-18:19
-MERGED from [com.google.android.gms:play-services-cast:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\34f67576fe22e8ef1208984c4714f205\transformed\jetified-play-services-cast-21.5.0\AndroidManifest.xml:6:5-20
-MERGED from [com.google.android.gms:play-services-cast:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\34f67576fe22e8ef1208984c4714f205\transformed\jetified-play-services-cast-21.5.0\AndroidManifest.xml:6:5-20
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:31:5-58
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:31:5-58
 MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:27:5-33:19
@@ -601,14 +587,22 @@ MERGED from [io.github.mertceyhan:compose-inappreviews:1.0.0] C:\Users\Srivya\.g
 MERGED from [io.github.mertceyhan:compose-inappreviews:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\a9d263eaf81232451d325df41a7434bf\transformed\jetified-compose-inappreviews-1.0.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.material:material:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b035168507b9cf3658360fcf1b46eb05\transformed\material-1.8.0\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.material:material:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b035168507b9cf3658360fcf1b46eb05\transformed\material-1.8.0\AndroidManifest.xml:20:5-22:41
+MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\465ded5b45c86534312f4171cba2b519\transformed\jetified-coil-compose-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\465ded5b45c86534312f4171cba2b519\transformed\jetified-coil-compose-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b5bd7041a6956ee78455b68572ad33a0\transformed\jetified-coil-compose-base-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b5bd7041a6956ee78455b68572ad33a0\transformed\jetified-coil-compose-base-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9f628e20c409fc275042b171e27cfd47\transformed\jetified-coil-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9f628e20c409fc275042b171e27cfd47\transformed\jetified-coil-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\74932729c5b644416ba7a4e6c711c67e\transformed\jetified-coil-base-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\74932729c5b644416ba7a4e6c711c67e\transformed\jetified-coil-base-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\99411fac7123fd64333558b4d3eade79\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\99411fac7123fd64333558b4d3eade79\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer-dash:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\ef0ee37c9e39ab02800c919b95358ca1\transformed\jetified-media3-exoplayer-dash-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer-dash:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\ef0ee37c9e39ab02800c919b95358ca1\transformed\jetified-media3-exoplayer-dash-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer-hls:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3aeec3f0af3b588dee633f0b1f57508a\transformed\jetified-media3-exoplayer-hls-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer-hls:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3aeec3f0af3b588dee633f0b1f57508a\transformed\jetified-media3-exoplayer-hls-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer-rtsp:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\20c18c5220bee3babd52fc034062e90e\transformed\jetified-media3-exoplayer-rtsp-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer-rtsp:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\20c18c5220bee3babd52fc034062e90e\transformed\jetified-media3-exoplayer-rtsp-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer-workmanager:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\98ad3853216fa0c0bd09d5841c511e7f\transformed\jetified-media3-exoplayer-workmanager-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer-workmanager:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\98ad3853216fa0c0bd09d5841c511e7f\transformed\jetified-media3-exoplayer-workmanager-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-test-utils:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5968bc9e27d906731795ad6ffa2ef799\transformed\jetified-media3-test-utils-1.8.0\AndroidManifest.xml:20:5-44
@@ -617,6 +611,8 @@ MERGED from [androidx.media3:media3-transformer:1.8.0] C:\Users\Srivya\.gradle\c
 MERGED from [androidx.media3:media3-transformer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\712dfb845cd4f28786b9b434cb84fc4b\transformed\jetified-media3-transformer-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2c62adfe5d77e1e512a2431be178bc88\transformed\jetified-media3-exoplayer-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-exoplayer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2c62adfe5d77e1e512a2431be178bc88\transformed\jetified-media3-exoplayer-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-session:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08580fad2f04592f39bceae86b52658a\transformed\jetified-media3-session-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-session:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08580fad2f04592f39bceae86b52658a\transformed\jetified-media3-session-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-datasource-cronet:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0eec01641cde96c496194d8c5c39a23c\transformed\jetified-media3-datasource-cronet-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-datasource-cronet:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\0eec01641cde96c496194d8c5c39a23c\transformed\jetified-media3-datasource-cronet-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-datasource-okhttp:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\fb672393b665292254f340c73b1827b6\transformed\jetified-media3-datasource-okhttp-1.8.0\AndroidManifest.xml:20:5-44
@@ -627,42 +623,24 @@ MERGED from [androidx.media3:media3-ui:1.8.0] C:\Users\Srivya\.gradle\caches\8.1
 MERGED from [androidx.media3:media3-ui:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c4b3cf46a15143d84bc884dadaf9ee89\transformed\jetified-media3-ui-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-ui-leanback:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\d3025029d712f73545d6b9a30c18d691\transformed\jetified-media3-ui-leanback-1.8.0\AndroidManifest.xml:22:5-44
 MERGED from [androidx.media3:media3-ui-leanback:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\d3025029d712f73545d6b9a30c18d691\transformed\jetified-media3-ui-leanback-1.8.0\AndroidManifest.xml:22:5-44
-MERGED from [androidx.media3:media3-session:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08580fad2f04592f39bceae86b52658a\transformed\jetified-media3-session-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-session:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\08580fad2f04592f39bceae86b52658a\transformed\jetified-media3-session-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-extractor:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\cbcc1d78b81526a396396f0a5baed24b\transformed\jetified-media3-extractor-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-extractor:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\cbcc1d78b81526a396396f0a5baed24b\transformed\jetified-media3-extractor-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-effect:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2ff69bf907291fb8b5d8005fe81ff2df\transformed\jetified-media3-effect-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-effect:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2ff69bf907291fb8b5d8005fe81ff2df\transformed\jetified-media3-effect-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-datasource:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\607f5ff5ebc36908f061c975cabfce2e\transformed\jetified-media3-datasource-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-datasource:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\607f5ff5ebc36908f061c975cabfce2e\transformed\jetified-media3-datasource-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-database:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\de3ef5722764a21199eed7d4a0fe3638\transformed\jetified-media3-database-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-database:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\de3ef5722764a21199eed7d4a0fe3638\transformed\jetified-media3-database-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-decoder:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5f08a537ebd7fda9b5b6b3ce5de90196\transformed\jetified-media3-decoder-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-decoder:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5f08a537ebd7fda9b5b6b3ce5de90196\transformed\jetified-media3-decoder-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-muxer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\58a9c4143aa5c854c2df59b5a099e7f6\transformed\jetified-media3-muxer-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-muxer:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\58a9c4143aa5c854c2df59b5a099e7f6\transformed\jetified-media3-muxer-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-container:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\d4c69012ea7dd15a44aebb0b986ace83\transformed\jetified-media3-container-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-container:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\d4c69012ea7dd15a44aebb0b986ace83\transformed\jetified-media3-container-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-effect:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2ff69bf907291fb8b5d8005fe81ff2df\transformed\jetified-media3-effect-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-effect:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2ff69bf907291fb8b5d8005fe81ff2df\transformed\jetified-media3-effect-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-datasource:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\607f5ff5ebc36908f061c975cabfce2e\transformed\jetified-media3-datasource-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-datasource:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\607f5ff5ebc36908f061c975cabfce2e\transformed\jetified-media3-datasource-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-decoder:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5f08a537ebd7fda9b5b6b3ce5de90196\transformed\jetified-media3-decoder-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-decoder:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\5f08a537ebd7fda9b5b6b3ce5de90196\transformed\jetified-media3-decoder-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-database:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\de3ef5722764a21199eed7d4a0fe3638\transformed\jetified-media3-database-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-database:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\de3ef5722764a21199eed7d4a0fe3638\transformed\jetified-media3-database-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-common:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\81b19b659aff067a94a63dd53f121a8e\transformed\jetified-media3-common-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.media3:media3-common:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\81b19b659aff067a94a63dd53f121a8e\transformed\jetified-media3-common-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-cast:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\56730482aaa2de4f0d1720b1da7ada90\transformed\jetified-media3-cast-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media3:media3-cast:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\56730482aaa2de4f0d1720b1da7ada90\transformed\jetified-media3-cast-1.8.0\AndroidManifest.xml:20:5-44
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:4:5-74
-MERGED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:4:5-74
-MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\465ded5b45c86534312f4171cba2b519\transformed\jetified-coil-compose-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\465ded5b45c86534312f4171cba2b519\transformed\jetified-coil-compose-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b5bd7041a6956ee78455b68572ad33a0\transformed\jetified-coil-compose-base-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b5bd7041a6956ee78455b68572ad33a0\transformed\jetified-coil-compose-base-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [io.coil-kt:coil:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9f628e20c409fc275042b171e27cfd47\transformed\jetified-coil-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [io.coil-kt:coil:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9f628e20c409fc275042b171e27cfd47\transformed\jetified-coil-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\74932729c5b644416ba7a4e6c711c67e\transformed\jetified-coil-base-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\74932729c5b644416ba7a4e6c711c67e\transformed\jetified-coil-base-2.7.0\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-cast:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\34f67576fe22e8ef1208984c4714f205\transformed\jetified-play-services-cast-21.5.0\AndroidManifest.xml:4:5-44
-MERGED from [com.google.android.gms:play-services-cast:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\34f67576fe22e8ef1208984c4714f205\transformed\jetified-play-services-cast-21.5.0\AndroidManifest.xml:4:5-44
-MERGED from [androidx.mediarouter:mediarouter:1.6.0-beta01] C:\Users\Srivya\.gradle\caches\8.13\transforms\7b9270e91af87189d4a9f461b168759b\transformed\mediarouter-1.6.0-beta01\AndroidManifest.xml:5:5-44
-MERGED from [androidx.mediarouter:mediarouter:1.6.0-beta01] C:\Users\Srivya\.gradle\caches\8.13\transforms\7b9270e91af87189d4a9f461b168759b\transformed\mediarouter-1.6.0-beta01\AndroidManifest.xml:5:5-44
-MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\99411fac7123fd64333558b4d3eade79\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
-MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\99411fac7123fd64333558b4d3eade79\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:20:5-44
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:8:5-10:61
 MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:8:5-10:61
 MERGED from [androidx.preference:preference:1.1.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\1a8938c29bb74253de4bc765e6e7bf67\transformed\preference-1.1.1\AndroidManifest.xml:20:5-22:41
@@ -733,12 +711,12 @@ MERGED from [androidx.webkit:webkit:1.11.0-alpha02] C:\Users\Srivya\.gradle\cach
 MERGED from [androidx.webkit:webkit:1.11.0-alpha02] C:\Users\Srivya\.gradle\caches\8.13\transforms\7b0e4525c60cec27bfb1061faf436b80\transformed\webkit-1.11.0-alpha02\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-gcm:17.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\6fc9927f5be355a4f94783cccbd92aab\transformed\jetified-play-services-gcm-17.0.0\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-gcm:17.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\6fc9927f5be355a4f94783cccbd92aab\transformed\jetified-play-services-gcm-17.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.media:media:1.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2ea2cd1a3d768b5a83a1fe279eea46c\transformed\media-1.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.media:media:1.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2ea2cd1a3d768b5a83a1fe279eea46c\transformed\media-1.7.0\AndroidManifest.xml:5:5-44
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\cf5f2a710481703928c69315896ad23c\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\cf5f2a710481703928c69315896ad23c\transformed\jetified-viewpager2-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.recyclerview:recyclerview:1.3.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09a76d20217b761ef1a0d62941916ab0\transformed\recyclerview-1.3.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.recyclerview:recyclerview:1.3.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09a76d20217b761ef1a0d62941916ab0\transformed\recyclerview-1.3.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.media:media:1.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2ea2cd1a3d768b5a83a1fe279eea46c\transformed\media-1.7.0\AndroidManifest.xml:5:5-44
-MERGED from [androidx.media:media:1.7.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2ea2cd1a3d768b5a83a1fe279eea46c\transformed\media-1.7.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-measurement:23.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\98d3b9a4204899c1406405213b89e8fd\transformed\jetified-play-services-measurement-23.0.0\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-measurement:23.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\98d3b9a4204899c1406405213b89e8fd\transformed\jetified-play-services-measurement-23.0.0\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.gms:play-services-measurement-sdk:23.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\31796eaae87047ac8584b045df8879fa\transformed\jetified-play-services-measurement-sdk-23.0.0\AndroidManifest.xml:20:5-44
@@ -753,8 +731,6 @@ MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\Srivya\.
 MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\6e15a5e1d1dce1f2355a4d48bc523b8d\transformed\dynamicanimation-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7dd65055890cd0dede7e70d56320969\transformed\legacy-support-core-ui-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7dd65055890cd0dede7e70d56320969\transformed\legacy-support-core-ui-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.palette:palette:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\103ee4e921e4b476cb9d8c4320402ba3\transformed\palette-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.palette:palette:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\103ee4e921e4b476cb9d8c4320402ba3\transformed\palette-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2d23992667d4c192b564b8cfdf4a0cc\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c2d23992667d4c192b564b8cfdf4a0cc\transformed\legacy-support-core-utils-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\73e11a2d13be96464e9ecdb43493d669\transformed\drawerlayout-1.1.1\AndroidManifest.xml:20:5-22:41
@@ -777,8 +753,6 @@ MERGED from [com.google.android.gms:play-services-pal:20.0.1] C:\Users\Srivya\.g
 MERGED from [com.google.android.gms:play-services-pal:20.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\683816b976baa6d606a078db90cd741e\transformed\jetified-play-services-pal-20.0.1\AndroidManifest.xml:6:5-44
 MERGED from [com.google.android.gms:play-services-appset:16.0.2] C:\Users\Srivya\.gradle\caches\8.13\transforms\4c88fd5bbdbf326c8e87134407868387\transformed\jetified-play-services-appset-16.0.2\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.gms:play-services-appset:16.0.2] C:\Users\Srivya\.gradle\caches\8.13\transforms\4c88fd5bbdbf326c8e87134407868387\transformed\jetified-play-services-appset-16.0.2\AndroidManifest.xml:5:5-44
-MERGED from [com.google.android.gms:play-services-flags:18.1.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9c32999965d3408578b144b4e11e76e9\transformed\jetified-play-services-flags-18.1.0\AndroidManifest.xml:4:5-44
-MERGED from [com.google.android.gms:play-services-flags:18.1.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\9c32999965d3408578b144b4e11e76e9\transformed\jetified-play-services-flags-18.1.0\AndroidManifest.xml:4:5-44
 MERGED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\29b0a71a3e28bddc2623a59996c6226f\transformed\jetified-play-services-base-18.5.0\AndroidManifest.xml:3:5-44
 MERGED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\29b0a71a3e28bddc2623a59996c6226f\transformed\jetified-play-services-base-18.5.0\AndroidManifest.xml:3:5-44
 MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\c593feafc7be12902466a02cdd82dd9a\transformed\jetified-accompanist-drawablepainter-0.32.0\AndroidManifest.xml:21:5-44
@@ -1007,32 +981,6 @@ MERGED from [com.google.android.gms:play-services-basement:18.5.0] C:\Users\Sriv
 		ADDED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:28:13-66
 	android:name
 		ADDED from [androidx.media3:media3-exoplayer-ima:1.8.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\09be8c32c02cb4ae318fc408d05a96c3\transformed\jetified-media3-exoplayer-ima-1.8.0\AndroidManifest.xml:27:13-58
-queries
-ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:10:5-12:15
-MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:18:5-29:15
-MERGED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:18:5-29:15
-MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:21:5-25:15
-MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:21:5-25:15
-MERGED from [com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:35:5-68:15
-MERGED from [com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:35:5-68:15
-MERGED from [com.android.billingclient:billing:6.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d5acc6fdec41e20ca6b85ea7623ce84\transformed\jetified-billing-6.0.1\AndroidManifest.xml:12:5-16:15
-MERGED from [com.android.billingclient:billing:6.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d5acc6fdec41e20ca6b85ea7623ce84\transformed\jetified-billing-6.0.1\AndroidManifest.xml:12:5-16:15
-package#com.google.android.gms.policy_cast_dynamite
-ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:11:9-79
-	android:name
-		ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:11:18-76
-receiver#com.google.android.gms.cast.framework.media.MediaIntentReceiver
-ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:15:9-125
-	android:exported
-		ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:15:98-122
-	android:name
-		ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:15:19-97
-service#com.google.android.gms.cast.framework.ReconnectionService
-ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:17:9-118
-	android:exported
-		ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:17:91-115
-	android:name
-		ADDED from [com.google.android.gms:play-services-cast-framework:21.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\2e4a125cb1298708b27a5563e59e0a85\transformed\jetified-play-services-cast-framework-21.5.0\AndroidManifest.xml:17:18-90
 uses-permission#android.permission.ACCESS_ADSERVICES_ATTRIBUTION
 ADDED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:14:5-88
 MERGED from [com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:28:5-88
@@ -1057,6 +1005,14 @@ uses-permission#android.permission.AD_SERVICES_CONFIG
 ADDED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:16:5-77
 	android:name
 		ADDED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:16:22-74
+queries
+ADDED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:18:5-29:15
+MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:21:5-25:15
+MERGED from [com.google.android.tv:tv-ads:1.0.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\3f63badfeb382038f3eac4f3c80fbf9b\transformed\jetified-tv-ads-1.0.0\AndroidManifest.xml:21:5-25:15
+MERGED from [com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:35:5-68:15
+MERGED from [com.google.android.gms:play-services-ads-api:24.5.0] C:\Users\Srivya\.gradle\caches\8.13\transforms\72c914aa17b5852935e99396993ad578\transformed\jetified-play-services-ads-api-24.5.0\AndroidManifest.xml:35:5-68:15
+MERGED from [com.android.billingclient:billing:6.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d5acc6fdec41e20ca6b85ea7623ce84\transformed\jetified-billing-6.0.1\AndroidManifest.xml:12:5-16:15
+MERGED from [com.android.billingclient:billing:6.0.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\0d5acc6fdec41e20ca6b85ea7623ce84\transformed\jetified-billing-6.0.1\AndroidManifest.xml:12:5-16:15
 intent#action:name:android.intent.action.VIEW+data:scheme:https
 ADDED from [com.google.ads.interactivemedia.v3:interactivemedia:3.35.1] C:\Users\Srivya\.gradle\caches\8.13\transforms\b7c7d1e41ce6f680b37bb4dd54ce745c\transformed\jetified-interactivemedia-3.35.1\AndroidManifest.xml:19:9-23:18
 intent#action:name:android.intent.action.VIEW+data:scheme:http
