@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="gcm_defaultSenderId" translatable="false">360485101947</string>
-    <string name="google_api_key" translatable="false">AIzaSyDuBThA4u5QPLtiRmwaUiNYTkUe0gjYqr0</string>
-    <string name="google_app_id" translatable="false">1:360485101947:android:2801fe4f5e05fef6041dde</string>
-    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDuBThA4u5QPLtiRmwaUiNYTkUe0gjYqr0</string>
-    <string name="google_storage_bucket" translatable="false">test-radio-time-app.firebasestorage.app</string>
-    <string name="project_id" translatable="false">test-radio-time-app</string>
-</resources>
