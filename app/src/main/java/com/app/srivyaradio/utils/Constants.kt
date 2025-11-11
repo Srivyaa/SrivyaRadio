@@ -34,4 +34,14 @@ object Constants {
     const val CYCLE_REPEAT_COMMAND = "COMMAND_CYCLE_REPEAT"
     const val SEEK_BACK_COMMAND = "COMMAND_SEEK_BACK"
     const val SEEK_FORWARD_COMMAND = "COMMAND_SEEK_FORWARD"
+
+    // Wear OS Data Layer paths and actions
+    const val WEAR_CONTROL_PATH = "/srivyaradio/control"
+    const val WEAR_ACTION_PLAY_PAUSE = "PLAY_PAUSE"
+    const val WEAR_ACTION_NEXT = "NEXT"
+    const val WEAR_ACTION_PREV = "PREV"
+    const val WEAR_ACTION_SEEK_BACK = "SEEK_BACK"
+    const val WEAR_ACTION_SEEK_FORWARD = "SEEK_FORWARD"
+    const val WEAR_ACTION_TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE"
+    const val WEAR_ACTION_CYCLE_REPEAT = "CYCLE_REPEAT"
 }

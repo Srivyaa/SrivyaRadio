@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "RadioTime V3"
 include(":app")
- 
+include(":wear")
