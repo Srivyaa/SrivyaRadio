@@ -566,6 +566,43 @@ class PlayerService : MediaLibraryService() {
                     service.lastBrowsePage = page
                     service.lastBrowsePageSize = pageSize
 
+                    // If requesting Favorites, include favorite country folders as browsable nodes before stations
+                    if (parentId == com.app.srivyaradio.utils.Constants.FAVORITES_ID) {
+                        val raw = service.dbRepository.getFavoriteEntries()
+                        val codes = raw.mapNotNull { fav ->
+                            val id = fav.id
+                            if (id.startsWith(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX))
+                                id.removePrefix(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX).uppercase()
+                            else null
+                        }.distinct()
+
+                        // Map codes to names using static list first, then user-managed overrides
+                        val userEntries = service.repository.getUserCountryEntries()
+                        val userByCode = userEntries.associateBy { it.code.uppercase() }
+                        val folderItems = codes.map { code ->
+                            val name = countryList.find { it.second.equals(code, true) }?.first
+                                ?: userByCode[code]?.name
+                                ?: code
+                            MediaItem.Builder()
+                                .setMediaId(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX + code)
+                                .setMediaMetadata(
+                                    MediaMetadata.Builder()
+                                        .setIsBrowsable(true)
+                                        .setIsPlayable(false)
+                                        .setTitle(name)
+                                        .setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                                        .setExtras(Bundle().apply { putString("COUNTRY_CODE", code) })
+                                        .build()
+                                )
+                                .build()
+                        }.sortedBy { it.mediaMetadata.title?.toString() ?: "" }
+
+                        val stationItems = MediaItemFactory.getFavorite()
+                        val items = folderItems + stationItems
+                        future.set(LibraryResult.ofItemList(ImmutableList.copyOf(items), null))
+                        return@launch
+                    }
+
                     // If requesting Countries, include user-managed countries with overrides and soft-deletes
                     if (parentId == com.app.srivyaradio.utils.Constants.COUNTRIES_ID) {
                         val userEntries = service.repository.getUserCountryEntries()
@@ -660,6 +697,17 @@ class PlayerService : MediaLibraryService() {
                     service.lastBrowseParentId = parentId
                     service.lastBrowsePage = 1
                     service.lastBrowsePageSize = 20
+
+                    // If subscribing to Favorites, include folders + station items
+                    if (parentId == com.app.srivyaradio.utils.Constants.FAVORITES_ID) {
+                        val raw = service.dbRepository.getFavoriteEntries()
+                        val folderCount = raw.count { it.id.startsWith(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX) }
+                        val stationCount = MediaItemFactory.getFavorite().size
+                        val total = folderCount + stationCount
+                        future.set(LibraryResult.ofVoid())
+                        session.notifyChildrenChanged(browser, parentId, total, params)
+                        return@launch
+                    }
 
                     // If subscribing to Countries, notify with combined size (static + user-managed with overrides)
                     if (parentId == com.app.srivyaradio.utils.Constants.COUNTRIES_ID) {

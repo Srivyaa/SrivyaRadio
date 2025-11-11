@@ -57,6 +57,11 @@ class DatabaseRepository(application: Application) {
         entityDao.updateFavoriteItem(item)
     }
 
+    // --- New helpers for raw favorites (folders etc.) ---
+    suspend fun getFavoriteEntries(): List<Favorite> = entityDao.getFavoriteEntries()
+    suspend fun getFavoritesCount(): Long = entityDao.getFavoritesCount()
+    suspend fun deleteFavoriteById(id: String) = entityDao.deleteFavoriteById(id)
+
     /**
      * Search for stations by name, tags, country, or state (case-insensitive)
      * Supports wildcard: '*' -> any sequence, '?' -> single char. Spaces are treated as wildcards.

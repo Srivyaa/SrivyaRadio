@@ -93,6 +93,9 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     var recentStations by mutableStateOf<List<Station>>(listOf())
     var queueStations by mutableStateOf<List<Station>>(listOf())
 
+    // Favorite country folders (ISO-2 codes)
+    var favoriteFolderCodes by mutableStateOf<List<String>>(listOf())
+
     // Import/Export status message
     var importExportMessage by mutableStateOf<String?>(null)
 
@@ -175,9 +178,11 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     // Update recents list
                     repository.addRecent(id)
                     loadRecents()
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
             }
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun setCountryCode(index: Int) {
@@ -266,7 +271,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             val items = searchStations.map { st ->
                 MediaItemFactory.stationToMediaItemWithExtras(st, DISCOVER_ID, marker)
             }
-            val startIdx = items.indexOfFirst { it.mediaId.endsWith(selected.id) }.let { if (it >= 0) it else 0 }
+            val startIdx = items.indexOfFirst { it.mediaId.endsWith(selected.id) }
+                .let { if (it >= 0) it else 0 }
 
             player.setMediaItems(items, startIdx, 0)
             player.prepare()
@@ -319,9 +325,11 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                         )
                     }
                     discoverStations = newItems.toMutableList()
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
             }, ContextCompat.getMainExecutor(application))
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun refreshFavorites() {
@@ -330,9 +338,12 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 val updated = dbRepository.getFavoriteStations().keys.toList()
                 favoritesStations = updated
                 hasSaved = updated.isNotEmpty()
+                // update favorite folders as well
+                loadFavoriteFolders()
             } catch (_: Exception) {
                 favoritesStations = listOf()
                 hasSaved = false
+                favoriteFolderCodes = listOf()
             }
         }
     }
@@ -344,7 +355,9 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 val ids = repository.getRecents()
                 val list = ids.mapNotNull { dbRepository.getRadioStationByID(it) }
                 recentStations = list
-            } catch (_: Exception) { recentStations = listOf() }
+            } catch (_: Exception) {
+                recentStations = listOf()
+            }
         }
     }
 
@@ -375,13 +388,16 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     Bundle.EMPTY
                 ), Bundle.EMPTY
             )
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     suspend fun getFavoriteItem(id: String): Favorite? {
         return try {
             dbRepository.getFavoriteItemById(id)
-        } catch (_: Exception) { null }
+        } catch (_: Exception) {
+            null
+        }
     }
 
     suspend fun addOrRemoveFromFavorites(id: String) {
@@ -404,7 +420,10 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     Bundle.EMPTY
                 ), Bundle.EMPTY
             )
-        } catch (_: Exception) { }
+            // Also refresh folders list in case a folder was removed/added via station context
+            loadFavoriteFolders()
+        } catch (_: Exception) {
+        }
     }
 
     fun skipToPrevious() {
@@ -413,7 +432,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 player.seekToPreviousMediaItem()
                 if (!player.isPlaying) player.play()
             }
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun skipToNext() {
@@ -422,7 +442,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 player.seekToNextMediaItem()
                 if (!player.isPlaying) player.play()
             }
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun toggleShuffle() {
@@ -431,7 +452,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             val newVal = !player.shuffleModeEnabled
             player.shuffleModeEnabled = newVal
             shuffleEnabled = newVal
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun cycleRepeatMode() {
@@ -444,7 +466,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             }
             player.repeatMode = next
             repeatMode = next
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun playFromQueue(index: Int) {
@@ -455,7 +478,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 player.prepare()
                 player.play()
             }
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun refreshPlaybackControlsState() {
@@ -464,21 +488,24 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             shuffleEnabled = player.shuffleModeEnabled
             repeatMode = player.repeatMode
             isSeekable = player.isCurrentMediaItemSeekable
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun seekBack() {
         try {
             if (!this::player.isInitialized) return
             player.seekBack()
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun seekForward() {
         try {
             if (!this::player.isInitialized) return
             player.seekForward()
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun resetPlayer() {
@@ -547,7 +574,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                         Bundle.EMPTY
                     ), Bundle.EMPTY
                 )
-            } catch (_: Exception) { }
+            } catch (_: Exception) {
+            }
         }
     }
 
@@ -557,7 +585,9 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
     // Default screen preference
     fun getDefaultScreen(): String? = repository.getDefaultScreen()
-    fun setDefaultScreen(screenRoute: String) { repository.setDefaultScreen(screenRoute) }
+    fun setDefaultScreen(screenRoute: String) {
+        repository.setDefaultScreen(screenRoute)
+    }
 
     fun getStartDestinationRoute(): String {
         val pref = getDefaultScreen()
@@ -565,6 +595,59 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             pref != null -> pref
             hasSaved -> com.app.srivyaradio.ui.navigation.NavigationItem.Favorites.route
             else -> com.app.srivyaradio.ui.navigation.NavigationItem.Discover.route
+        }
+    }
+
+    // ----- Favorite country folders -----
+    private fun folderIdForCountry(code: String) = Constants.COUNTRY_PREFIX + code.uppercase()
+
+    fun isCountryFavorited(code: String): Boolean =
+        favoriteFolderCodes.any { it.equals(code, ignoreCase = true) }
+
+    fun toggleFavoriteCountry(code: String) {
+        viewModelScope.launch {
+            try {
+                val id = folderIdForCountry(code)
+                val existing = dbRepository.getFavoriteItemById(id)
+                if (existing != null) {
+                    dbRepository.deleteFavoriteItem(existing)
+                } else {
+                    val order = dbRepository.getFavoritesCount()
+                    dbRepository.insertFavoriteItem(Favorite(null, id, order))
+                }
+                loadFavoriteFolders()
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    fun loadFavoriteFolders() {
+        viewModelScope.launch {
+            try {
+                val raw = dbRepository.getFavoriteEntries()
+                favoriteFolderCodes = raw.mapNotNull {
+                    val id = it.id
+                    if (id.startsWith(Constants.COUNTRY_PREFIX)) id.removePrefix(Constants.COUNTRY_PREFIX)
+                        .uppercase() else null
+                }
+            } catch (_: Exception) {
+                favoriteFolderCodes = listOf()
+            }
+        }
+    }
+
+    suspend fun getStationsForCountry(code: String): List<Station> = try {
+        dbRepository.getAllStations(code)
+    } catch (_: Exception) {
+        listOf()
+    }
+
+    fun getCountryNameByCode(code: String): String {
+        return try {
+            getCountryListForUI().firstOrNull { it.second.equals(code, true) }?.first
+                ?: code.uppercase()
+        } catch (_: Exception) {
+            code.uppercase()
         }
     }
 
@@ -581,28 +664,33 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 val stations = items.mapNotNull { dbRepository.getRadioStationByID(it) }
                 queueStations = stations
             }
-        } catch (_: Exception) { queueStations = listOf() }
+        } catch (_: Exception) {
+            queueStations = listOf()
+        }
     }
 
     fun moveInQueue(from: Int, to: Int) {
         try {
             player.moveMediaItem(from, to)
             refreshQueue()
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun removeFromQueue(index: Int) {
         try {
             player.removeMediaItem(index)
             refreshQueue()
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     fun clearQueue() {
         try {
             player.clearMediaItems()
             refreshQueue()
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
     }
 
     // Manage user countries
@@ -625,7 +713,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         val entries = repository.getUserCountryEntries().toMutableList()
         val idx = entries.indexOfFirst { it.code.equals(codeKey, true) }
         if (idx >= 0) {
-            entries[idx] = CountryEntry(newName.trim(), newCode.trim().uppercase(), entries[idx].active)
+            entries[idx] =
+                CountryEntry(newName.trim(), newCode.trim().uppercase(), entries[idx].active)
             repository.setUserCountryEntries(entries)
         }
     }
@@ -649,7 +738,7 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             val size = cr.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)
                 ?.use { c -> if (c.moveToFirst()) c.getLong(0) else null } ?: 0L
             if (size > MAX_IMPORT_BYTES) {
-                importExportMessage = "File too large (>${MAX_IMPORT_BYTES / (1024*1024)}MB)"
+                importExportMessage = "File too large (>${MAX_IMPORT_BYTES / (1024 * 1024)}MB)"
                 return
             }
 
@@ -665,7 +754,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             }
 
             // Upsert by code
-            val current = repository.getUserCountryEntries().associateBy { it.code.uppercase() }.toMutableMap()
+            val current = repository.getUserCountryEntries().associateBy { it.code.uppercase() }
+                .toMutableMap()
             var created = 0
             var updated = 0
             entries.forEach { e ->
@@ -682,7 +772,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 }
             }
             repository.setUserCountryEntries(current.values.toList())
-            importExportMessage = "Imported: ${entries.size} rows (created=$created, updated=$updated)"
+            importExportMessage =
+                "Imported: ${entries.size} rows (created=$created, updated=$updated)"
         } catch (e: Exception) {
             importExportMessage = "Import failed: ${e.message ?: "unknown"}"
         }
@@ -760,7 +851,10 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 if (playbackState == PlaybackState.STATE_PLAYING) {
                     isRadioLoading = false
                 }
-                try { isSeekable = player.isCurrentMediaItemSeekable } catch (_: Exception) { }
+                try {
+                    isSeekable = player.isCurrentMediaItemSeekable
+                } catch (_: Exception) {
+                }
             }
 
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -771,7 +865,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     shuffleEnabled = player.shuffleModeEnabled
                     repeatMode = player.repeatMode
                     isSeekable = player.isCurrentMediaItemSeekable
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
                 // Keep Up Next/queue in sync with the player
                 refreshQueue()
             }
@@ -784,11 +879,15 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     if (id.isNotBlank()) {
                         markStationOffline(id)
                     }
-                } catch (_: Exception) { }
-                Toast.makeText(application, "Selected station is offline", Toast.LENGTH_SHORT).show()
+                } catch (_: Exception) {
+                }
+                Toast.makeText(application, "Selected station is offline", Toast.LENGTH_SHORT)
+                    .show()
 
                 try {
-                    val hasNext = try { player.hasNextMediaItem() } catch (_: Exception) {
+                    val hasNext = try {
+                        player.hasNextMediaItem()
+                    } catch (_: Exception) {
                         player.currentMediaItemIndex < player.mediaItemCount - 1
                     }
                     if (hasNext) {
@@ -798,7 +897,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                             player.play()
                         }
                     }
-                } catch (_: Exception) { }
+                } catch (_: Exception) {
+                }
             }
 
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
@@ -811,6 +911,7 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
         })
     }
+
     private fun initPlayer() {
         playerFuture = MediaBrowser.Builder(
             application,
@@ -931,7 +1032,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                         discoverStations = list
                         page = nextPage
                     }
-                } catch (_: Exception) { } finally {
+                } catch (_: Exception) {
+                } finally {
                     isLoadingMore = false
                 }
             }, ContextCompat.getMainExecutor(application))
@@ -1038,6 +1140,7 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
+
     init {
         Purchases.sharedInstance.updatedCustomerInfoListener = purchaseListener
         Purchases.sharedInstance.syncPurchases()
@@ -1046,5 +1149,6 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         getTheme()
         initPlayer()
         loadRecents()
+        loadFavoriteFolders()
     }
 }

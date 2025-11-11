@@ -4,6 +4,7 @@ import android.Manifest.permission.POST_NOTIFICATIONS
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,8 +14,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -133,6 +138,17 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                                 mainViewModel.setCountryCodeByCode(countries[index].second)
                             },
                         )
+                        // Toggle favorite country folder
+                        val code = countries.getOrNull(selectedIndex)?.second ?: ""
+                        val isFav = if (code.isNotBlank()) mainViewModel.isCountryFavorited(code) else false
+                        Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { if (code.isNotBlank()) mainViewModel.toggleFavoriteCountry(code) }) {
+                                if (isFav) Icon(Icons.Filled.Favorite, contentDescription = null) else Icon(
+                                    Icons.Outlined.FavoriteBorder, contentDescription = null
+                                )
+                            }
+                            Text(if (isFav) "Remove country from Favorites" else "Add country to Favorites")
+                        }
                     }
                     if (mainViewModel.discoverStations.isEmpty()) {
                         items(15) { ShimmerStation() }
