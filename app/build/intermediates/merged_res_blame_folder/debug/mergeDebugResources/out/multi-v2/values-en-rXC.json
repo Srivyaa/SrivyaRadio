@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.app.srivyaradio.app-mergeDebugResources-113:/values-en-rXC/values-en-rXC.xml",
+            "outputFile": "com.app.srivyaradio.app-mergeDebugResources-112:/values-en-rXC/values-en-rXC.xml",
             "map": [
                 {
                     "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\227f71dcabfac611d8ee6470f8a4e8cf\\transformed\\leanback-1.0.0\\res\\values-en-rXC\\values-en-rXC.xml",
@@ -55,7 +55,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\4139d7591b031a0cf1c30243ce1caa0b\\transformed\\jetified-material3-release\\res\\values-en-rXC\\values-en-rXC.xml",
+                    "source": "C:\\Users\\Srivya\\.gradle\\caches\\8.13\\transforms\\ab9bd03a21cb26050714382547831a67\\transformed\\jetified-material3-release\\res\\values-en-rXC\\values-en-rXC.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",

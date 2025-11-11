@@ -4,7 +4,7 @@ package com.app.srivyaradio.ui.screens.favorites;
 public final class FavoriteScreenKt {
     
     @android.annotation.SuppressLint(value = {"UnnecessaryComposedModifier"})
-    @kotlin.OptIn(markerClass = {androidx.compose.foundation.ExperimentalFoundationApi.class})
+    @kotlin.OptIn(markerClass = {androidx.compose.foundation.ExperimentalFoundationApi.class, androidx.compose.material3.ExperimentalMaterial3Api.class})
     @androidx.compose.runtime.Composable()
     public static final void FavoriteScreen(@org.jetbrains.annotations.NotNull()
     com.app.srivyaradio.ui.MainViewModel mainViewModel) {

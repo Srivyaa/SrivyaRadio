@@ -294,6 +294,49 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
+    // Pull-to-refresh helpers
+    fun refreshDiscover() {
+        try {
+            if (!this::player.isInitialized) return
+            page = 1
+            isLoadingMore = false
+
+            val future = player.getChildren(DISCOVER_ID, /*page=*/1, pageSize, null)
+            future.addListener({
+                try {
+                    val result = future.get()!!
+                    val children = result.value!!
+                    val newItems = children.map {
+                        Station(
+                            it.mediaId.replace(DISCOVER_ID, ""),
+                            it.mediaMetadata.extras?.getString("ARTWORK")!!,
+                            it.mediaMetadata.extras?.getString("NAME")!!,
+                            it.mediaMetadata.extras?.getString("COUNTRY")!!,
+                            it.mediaMetadata.extras?.getString("GENRE")!!,
+                            it.mediaMetadata.extras?.getString("COUNTRY_CODE")!!,
+                            it.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")!!,
+                            it.mediaMetadata.extras?.getString("STATE")!!
+                        )
+                    }
+                    discoverStations = newItems.toMutableList()
+                } catch (_: Exception) { }
+            }, ContextCompat.getMainExecutor(application))
+        } catch (_: Exception) { }
+    }
+
+    fun refreshFavorites() {
+        viewModelScope.launch {
+            try {
+                val updated = dbRepository.getFavoriteStations().keys.toList()
+                favoritesStations = updated
+                hasSaved = updated.isNotEmpty()
+            } catch (_: Exception) {
+                favoritesStations = listOf()
+                hasSaved = false
+            }
+        }
+    }
+
     // Recents
     fun loadRecents() {
         viewModelScope.launch {
