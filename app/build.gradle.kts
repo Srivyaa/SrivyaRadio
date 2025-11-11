@@ -63,26 +63,24 @@ android {
     }
 }
 
-// Migrate from deprecated kotlinOptions.jvmTarget to the new compilerOptions DSL
 kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
     }
 }
 
-dependencies {
-    implementation(platform("androidx.compose:compose-bom:2024.10.01"))
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("com.google.android.gms:play-services-ads:24.5.0")
-    implementation("com.google.firebase:firebase-crashlytics:20.0.0")
-    implementation("com.google.firebase:firebase-analytics:23.0.0")
-    testImplementation("junit:junit:4.13.2")
+    dependencies {
+        implementation(platform("androidx.compose:compose-bom:2024.10.01"))
+        implementation("androidx.core:core-ktx:1.16.0")
+        implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
+        implementation("androidx.compose.ui:ui")
+        implementation("androidx.compose.ui:ui-graphics")
+        implementation("androidx.compose.ui:ui-tooling-preview")
+        implementation("androidx.compose.material3:material3")
+        implementation("com.google.android.gms:play-services-ads:24.5.0")
+        implementation("com.google.android.gms:play-services-wearable:18.1.0")
+        implementation("com.google.firebase:firebase-crashlytics:20.0.0")
+        implementation("com.google.firebase:firebase-analytics:23.0.0")
     //androidTestImplementation("androidx.test.ext:junit:1.3.0")
     testImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.10.01"))
@@ -134,3 +132,4 @@ dependencies {
     // CSV import-export
     implementation("com.opencsv:opencsv:5.9")
 }
+

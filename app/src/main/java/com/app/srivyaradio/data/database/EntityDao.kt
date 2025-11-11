@@ -88,6 +88,16 @@ interface EntityDao {
     @Query("SELECT * FROM saved_items WHERE id = (:id)")
     suspend fun getFavoriteStationById(id: String): Favorite?
 
+    // New: raw favorites list to support non-station favorites (e.g., country folders)
+    @Query("SELECT * FROM saved_items ORDER BY `order`")
+    suspend fun getFavoriteEntries(): List<Favorite>
+
+    @Query("SELECT COUNT(*) FROM saved_items")
+    suspend fun getFavoritesCount(): Long
+
+    @Query("DELETE FROM saved_items WHERE id = (:id)")
+    suspend fun deleteFavoriteById(id: String)
+
     @Update
     suspend fun updateFavoriteItem(item:Favorite)
 
