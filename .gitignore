@@ -31,3 +31,8 @@ local.properties
 *.ipr
 *~
 *.swp
+
+# Android/Gradle build outputs
+build/
+**/build/
+app/build/
