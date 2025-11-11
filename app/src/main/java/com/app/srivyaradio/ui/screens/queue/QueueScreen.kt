@@ -14,8 +14,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,11 +31,17 @@ import com.app.srivyaradio.ui.components.RadioLogoSmall
 import com.app.srivyaradio.ui.components.rememberDragDropListState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QueueScreen(mainViewModel: MainViewModel) {
     val scope = rememberCoroutineScope()
     var overscrollJob by remember { mutableStateOf<Job?>(null) }
+    var refreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(mainViewModel.queueStations) { if (refreshing) refreshing = false }
 
     LaunchedEffect(Unit) { mainViewModel.refreshQueue() }
 
@@ -45,6 +51,14 @@ fun QueueScreen(mainViewModel: MainViewModel) {
         mainViewModel.refreshQueue()
     })
 
+    PullToRefreshBox(
+        state = rememberPullToRefreshState(),
+        isRefreshing = refreshing,
+        onRefresh = {
+            refreshing = true
+            mainViewModel.refreshQueue()
+        }
+    ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -87,5 +101,6 @@ fun QueueScreen(mainViewModel: MainViewModel) {
                 }
             }
         }
+    }
     }
 }

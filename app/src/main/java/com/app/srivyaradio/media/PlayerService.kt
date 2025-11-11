@@ -529,7 +529,14 @@ class PlayerService : MediaLibraryService() {
                     val size = if (pageSize > 0) pageSize else results.size
                     val from = (if (page >= 0) page else 0) * size
                     val pageItems = if (from >= results.size) emptyList() else results.drop(from).take(size)
-                    val mediaItems = pageItems.map { MediaItemFactory.stationToMediaItem(it, DISCOVER_ID) }
+                    // Mark items as originating from a search along with the query so we can rebuild the queue on play
+                    val mediaItems = pageItems.map { st ->
+                        val extras = Bundle().apply {
+                            putBoolean("IS_SEARCH_RESULT", true)
+                            putString("SEARCH_QUERY", q)
+                        }
+                        MediaItemFactory.stationToMediaItemWithExtras(st, DISCOVER_ID, extras)
+                    }
                     Log.d("AA-Search", "onGetSearchResult query='${q}', page=${page}, size=${size}, returned=${mediaItems.size}")
                     future.set(LibraryResult.ofItemList(ImmutableList.copyOf(mediaItems), null))
                 } catch (e: Exception) {
@@ -720,37 +727,47 @@ class PlayerService : MediaLibraryService() {
                 )
             }
 
-            // If selection originated from in-app search results, the app sent the full queue.
-            // Accept the provided list as-is to replace the current queue.
-            val fromSearchList = try { mediaItems.any { it.mediaMetadata.extras?.getBoolean("IS_SEARCH_RESULT") == true } } catch (_: Exception) { false }
-            if (fromSearchList) {
+            // If selection came from search results, mirror app behavior:
+            // - App sends a fully built list flagged with IS_SEARCH_RESULT, but without SEARCH_QUERY. Accept as-is.
+            // - Android Auto sends one selected item with IS_SEARCH_RESULT + SEARCH_QUERY, or requestMetadata.searchQuery set. Build full queue from query.
+            val selected = mediaItems.getOrNull(startIndex) ?: mediaItems[0]
+            val selectedExtras = selected.mediaMetadata.extras
+            val aaSearchQuery = try { selectedExtras?.getString("SEARCH_QUERY") } catch (_: Exception) { null }
+            val isFlaggedSearch = try { selectedExtras?.getBoolean("IS_SEARCH_RESULT") == true } catch (_: Exception) { false }
+            val hasRequestQuery = try { mediaItems.firstOrNull()?.requestMetadata?.searchQuery != null } catch (_: Exception) { false }
+
+            // If it's an app-provided full search queue (flagged, but no query and no request query), accept as-is
+            if (isFlaggedSearch && aaSearchQuery.isNullOrEmpty() && !hasRequestQuery && mediaItems.size > 1) {
                 return Futures.immediateFuture(
                     MediaSession.MediaItemsWithStartPosition(mediaItems, startIndex, startPositionMs)
                 )
             }
 
-            if (mediaItems[0].requestMetadata.searchQuery != null) {
+            // If it's an AA search selection (has query), rebuild full queue based on the query
+            if ((isFlaggedSearch && !aaSearchQuery.isNullOrEmpty()) || hasRequestQuery) {
                 val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
-
                 service.serviceScope.launch {
                     try {
-                        val mediaItem = MediaItemFactory.getItemFromDBByName(
-                            service.dbRepository,
-                            mediaItems[0].requestMetadata.searchQuery.toString()
-                                .substringBefore("on").substringBefore("from").trim().lowercase()
-                        )
-                        val result = MediaSession.MediaItemsWithStartPosition(
-                            listOf(mediaItem), C.INDEX_UNSET, 0
-                        )
-                        future.set(result)
+                        val queryText = aaSearchQuery ?: mediaItems.first().requestMetadata.searchQuery.toString()
+                        val stations = service.dbRepository.searchStations(queryText)
+                        val marker = Bundle().apply {
+                            putBoolean("IS_SEARCH_RESULT", true)
+                            putString("SEARCH_QUERY", queryText)
+                        }
+                        val queue = stations.map { st ->
+                            MediaItemFactory.stationToMediaItemWithExtras(st, DISCOVER_ID, marker)
+                        }
+                        val selId = selected.mediaId.removePrefix(DISCOVER_ID).removePrefix(FAVORITES_ID)
+                        val idx = queue.indexOfFirst { it.mediaId.endsWith(selId) }.let { if (it >= 0) it else 0 }
+                        future.set(MediaSession.MediaItemsWithStartPosition(queue, idx, 0))
                     } catch (e: Exception) {
                         future.setException(e)
                     }
                 }
-
                 return future
-
             }
+
+            // (legacy single-item search handling removed; handled by the branch above)
             val selectedItem = mediaItems.getOrNull(startIndex)?.let { it } ?: mediaItems[0]
             val future = SettableFuture.create<MediaSession.MediaItemsWithStartPosition>()
 
