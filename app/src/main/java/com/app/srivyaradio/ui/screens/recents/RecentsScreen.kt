@@ -8,9 +8,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.TextUnit
@@ -22,47 +25,63 @@ import com.app.srivyaradio.ui.components.OptionsBottomSheet
 import com.app.srivyaradio.ui.components.Station
 import com.app.srivyaradio.utils.Constants
 import kotlinx.coroutines.launch
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecentsScreen(mainViewModel: MainViewModel) {
     val recents = mainViewModel.recentStations
     val scope = rememberCoroutineScope()
-    val (optionsStation, setOptionsStation) = remember { mutableStateOf<Station?>(null) }
+    var optionsStation by remember { mutableStateOf<Station?>(null) }
+    var refreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(mainViewModel.recentStations) { if (refreshing) refreshing = false }
 
-    if (recents.isEmpty()) {
-        androidx.compose.foundation.layout.Box(
-            contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()
-        ) {
-            Text(
-                "No recent stations",
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = TextUnit(22f, TextUnitType.Sp)
-            )
+    PullToRefreshBox(
+        state = rememberPullToRefreshState(),
+        isRefreshing = refreshing,
+        onRefresh = {
+            refreshing = true
+            mainViewModel.loadRecents()
         }
-    } else {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(recents) { station ->
-                Station(
-                    name = station.name,
-                    image = station.favicon,
-                    label = station.country,
-                    isFavorite = mainViewModel.favoritesStations.any { it.id == station.id },
-                    onToggleFavorite = { scope.launch { mainViewModel.addOrRemoveFromFavorites(station.id) } },
-                    onClick = { mainViewModel.playStation(station, Constants.DISCOVER_ID) },
-                    onOptions = { setOptionsStation(station) },
-                    modifier = Modifier
+    ) {
+        if (recents.isEmpty()) {
+            androidx.compose.foundation.layout.Box(
+                contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    "No recent stations",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = TextUnit(22f, TextUnitType.Sp)
                 )
             }
-            item { Spacer(modifier = Modifier.padding(bottom = 80.dp)) }
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(recents) { station ->
+                    Station(
+                        name = station.name,
+                        image = station.favicon,
+                        label = station.country,
+                        isFavorite = mainViewModel.favoritesStations.any { it.id == station.id },
+                        onToggleFavorite = { scope.launch { mainViewModel.addOrRemoveFromFavorites(station.id) } },
+                        onClick = { mainViewModel.playStation(station, Constants.DISCOVER_ID) },
+                        onOptions = { optionsStation = station },
+                        modifier = Modifier
+                    )
+                }
+                item { Spacer(modifier = Modifier.padding(bottom = 80.dp)) }
+            }
         }
     }
 
     optionsStation?.let {
         OptionsBottomSheet(
             station = it,
-            onDismiss = { setOptionsStation(null) },
+            onDismiss = { optionsStation = null },
             mainViewModel = mainViewModel,
-            onSleepTimer = { setOptionsStation(null) }
+            onSleepTimer = { optionsStation = null }
         )
     }
 }
+

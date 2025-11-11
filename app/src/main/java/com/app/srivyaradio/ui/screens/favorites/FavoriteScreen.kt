@@ -35,13 +35,19 @@ import com.app.srivyaradio.ui.components.rememberDragDropListState
 import com.app.srivyaradio.utils.Constants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 
 @SuppressLint("UnnecessaryComposedModifier")
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreen(
     mainViewModel: MainViewModel
 ) {
+    var refreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(mainViewModel.favoritesStations) { if (refreshing) refreshing = false }
     var showSleepSheet by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var optionsStation by remember {
@@ -59,23 +65,31 @@ fun FavoriteScreen(
             mainViewModel.reorderStations()
         }
     })
-    if (mainViewModel.favoritesStations.isEmpty()) {
-        Box(
-            contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()
-        ) {
-            Text(
-                "No favorite stations yet",
-                modifier = Modifier.align(Alignment.Center),
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = TextUnit(
-                    22f, TextUnitType.Sp
-                )
-            )
+    PullToRefreshBox(
+        state = rememberPullToRefreshState(),
+        isRefreshing = refreshing,
+        onRefresh = {
+            refreshing = true
+            mainViewModel.refreshFavorites()
         }
-    } else {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
+    ) {
+        if (mainViewModel.favoritesStations.isEmpty()) {
+            Box(
+                contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    "No favorite stations yet",
+                    modifier = Modifier.align(Alignment.Center),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = TextUnit(
+                        22f, TextUnitType.Sp
+                    )
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
 
                 .pointerInput(Unit) {
                     detectDragGesturesAfterLongPress(
@@ -100,8 +114,8 @@ fun FavoriteScreen(
                         onDragCancel = { dragDropListState.onDragInterrupted() }
                     )
                 }, state = dragDropListState.lazyListState
-        ) {
-            itemsIndexed(mainViewModel.favoritesStations) { index, station ->
+            ) {
+                itemsIndexed(mainViewModel.favoritesStations) { index, station ->
 
                 Station(
                     name = station.name,
@@ -129,6 +143,7 @@ fun FavoriteScreen(
                         }
                     }
                 )
+                }
             }
         }
     }
