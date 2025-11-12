@@ -36,3 +36,4 @@ local.properties
 build/
 **/build/
 app/build/
+app/google-services.json
