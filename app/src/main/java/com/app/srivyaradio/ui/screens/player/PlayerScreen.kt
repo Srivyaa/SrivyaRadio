@@ -106,7 +106,9 @@ fun PlayerScreen(
                     )
                 } else {
                     val label =
-                        (it.tags.split(",").take(4).joinToString(separator = ", ")).capitalize()
+                        (it.tags.split(",").take(4).joinToString(separator = ", ")).replaceFirstChar { char -> 
+                            if (char.isLowerCase()) char.titlecase() else char.toString() 
+                        }
                     Text(
                         text = label,
                         style = MaterialTheme.typography.bodyLarge,
@@ -115,8 +117,10 @@ fun PlayerScreen(
                     )
                 }
                 Spacer(Modifier.padding(15.dp))
+                
+                // Playback controls row
                 Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -136,13 +140,14 @@ fun PlayerScreen(
 
                     IconButton(
                         onClick = {
-                            scope.launch {
-                                mainViewModel.addOrRemoveFromFavorites(it.id)
-                                isFavorite = !isFavorite
+                            try {
+                                mainViewModel.queueManager.playPrevious()
+                            } catch (e: UninitializedPropertyAccessException) {
+                                // Queue not initialized yet
                             }
-                        }, modifier = Modifier
-                            .size(100.dp)
-                            .padding(5.dp)
+                        },
+                        enabled = try { mainViewModel.queueManager.hasPrevious() } catch (e: Exception) { false },
+                        modifier = Modifier.size(60.dp)
                     ) {
                         Icon(
                             painterResource(id = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outlined),
@@ -150,6 +155,7 @@ fun PlayerScreen(
                             modifier = Modifier.size(35.dp)
                         )
                     }
+                    
                     FilledTonalIconButton(
                         onClick = {
                             mainViewModel.playOrPause()
@@ -168,6 +174,54 @@ fun PlayerScreen(
                                 modifier = Modifier.size(35.dp)
                             )
                         }
+                    }
+                    
+                    IconButton(
+                        onClick = {
+                            try {
+                                mainViewModel.queueManager.playNext()
+                            } catch (e: UninitializedPropertyAccessException) {
+                                // Queue not initialized yet
+                            }
+                        },
+                        enabled = try { mainViewModel.queueManager.hasNext() } catch (e: Exception) { false },
+                        modifier = Modifier.size(60.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.SkipNext,
+                            contentDescription = "Next",
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                }
+                
+                Spacer(Modifier.padding(10.dp))
+                
+                // Additional controls row
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                mainViewModel.addOrRemoveFromFavorites(it.id)
+                                isFavorite = !isFavorite
+                            }
+                        }, modifier = Modifier
+                            .size(80.dp)
+                            .padding(5.dp)
+                    ) {
+                        if (isFavorite) Icon(
+                            Icons.Outlined.Favorite,
+                            contentDescription = "Remove from favorites",
+                            modifier = Modifier.size(30.dp)
+                        ) else Icon(
+                            Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Add to favorites",
+                            modifier = Modifier.size(30.dp)
+                        )
                     }
 
                     // Next
@@ -193,7 +247,7 @@ fun PlayerScreen(
                             .size(100.dp)
                             .padding(5.dp),
                     ) {
-                        Icon(Icons.Default.Refresh, null, modifier = Modifier.size(35.dp))
+                        Icon(Icons.Default.Refresh, contentDescription = "Reset player", modifier = Modifier.size(30.dp))
                     }
                 }
                 Spacer(Modifier.padding(6.dp))

@@ -95,9 +95,10 @@ fun MoreScreen(
                 }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
-            ) {
+            )
+            {
                 Text("Submit radio station")
-            }
+            }*/
             ListItem(headlineContent = {
                 Text(text = "Update changelog")
             }, leadingContent = {

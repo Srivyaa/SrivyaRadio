@@ -20,6 +20,8 @@ import com.app.srivyaradio.data.models.Station
 import com.app.srivyaradio.data.repositories.DatabaseRepository
 import com.app.srivyaradio.data.repositories.SharedPreferencesRepository
 import com.app.srivyaradio.utils.Constants
+import com.app.srivyaradio.utils.Constants.COUNTRIES_ID
+import com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX
 import com.app.srivyaradio.utils.Constants.DISCOVER_ID
 import com.app.srivyaradio.utils.Constants.FAVORITES_ID
 import com.app.srivyaradio.utils.Constants.ROOT_ID
@@ -33,10 +35,11 @@ import com.app.srivyaradio.utils.countryList
 object MediaItemFactory {
     var discoverList: List<Station> = listOf()
     private var favoriteList: List<Station> = listOf()
-
+    
     var onFinishedLoading: (() -> Unit)? = null
     var onFinishedReadingDiscover: (() -> Unit)? = null
     var onFinishedReadingFavorite: (() -> Unit)? = null
+    var onCountryStationsLoaded: ((String) -> Unit)? = null
 
     val retrofit = StationsClient.getInstance()
     val apiInterface: StationsInterface = retrofit.create(StationsInterface::class.java)
@@ -268,8 +271,8 @@ object MediaItemFactory {
         dbRepository: DatabaseRepository,
         countryCode: String
     ): List<MediaItem> {
-        return when (parentId) {
-            FAVORITES_ID -> {
+        return when {
+            parentId == FAVORITES_ID -> {
                 getFavorite()
             }
 
@@ -282,7 +285,19 @@ object MediaItemFactory {
                 pageItems.map { stationToMediaItem(it, DISCOVER_ID) }
             }
 
-            ROOT_ID -> {
+            parentId == COUNTRIES_ID -> {
+                getCountryItems()
+            }
+
+            parentId.startsWith(COUNTRY_PREFIX) -> {
+                // Extract country code from the parent ID
+                val selectedCountryCode = parentId.removePrefix(COUNTRY_PREFIX)
+                dbRepository.getAllStations(selectedCountryCode.uppercase()).reversed().take(pageSize).map {
+                    stationToMediaItem(it, DISCOVER_ID)
+                }
+            }
+
+            parentId == ROOT_ID -> {
                 listOf(
                     getDiscoverBrowsable(),
                     getFavoritesBrowsable(),
