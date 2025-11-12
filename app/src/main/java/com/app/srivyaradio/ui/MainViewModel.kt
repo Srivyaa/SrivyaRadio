@@ -963,22 +963,26 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                             val result = favoritesFuture.get()!!
                             val children = result.value!!
 
-                            favoritesStations = children.map {
-                                Station(
-                                    it.mediaId.replace(FAVORITES_ID, ""),
-                                    it.mediaMetadata.extras?.getString("ARTWORK")!!,
-                                    it.mediaMetadata.extras?.getString("NAME")!!,
-                                    it.mediaMetadata.extras?.getString("COUNTRY")!!,
-                                    it.mediaMetadata.extras?.getString("GENRE")!!,
-                                    it.mediaMetadata.extras?.getString("COUNTRY_CODE")!!,
-                                    it.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")!!,
-                                    it.mediaMetadata.extras?.getString("STATE")!!
-                                )
-                            }
+                            // Favorites can contain both folders (browsable) and station items (playable).
+                            // Filter to playable items and use safe accessors to avoid NPEs.
+                            favoritesStations = children
+                                .filter { it.mediaMetadata.isPlayable == true }
+                                .map { mi ->
+                                    val ex = mi.mediaMetadata.extras
+                                    Station(
+                                        mi.mediaId.replace(FAVORITES_ID, ""),
+                                        ex?.getString("ARTWORK")?.orEmpty() ?: "",
+                                        ex?.getString("NAME")?.orEmpty() ?: mi.mediaMetadata.title?.toString().orEmpty(),
+                                        ex?.getString("COUNTRY")?.orEmpty() ?: "",
+                                        ex?.getString("GENRE")?.orEmpty() ?: "",
+                                        ex?.getString("COUNTRY_CODE")?.orEmpty() ?: "",
+                                        ex?.getString("STREAMING_URL_RESOLVED")?.orEmpty() ?: "",
+                                        ex?.getString("STATE")?.orEmpty() ?: ""
+                                    )
+                                }
                         }, ContextCompat.getMainExecutor(application)
                     )
                 }
-
             }
         ).buildAsync()
 

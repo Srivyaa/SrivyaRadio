@@ -116,15 +116,21 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
         }
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            AppSearchBar(mainViewModel.searchStations, onSearch = {
-                mainViewModel.search(it)
-            }, onOptions = {
-                showBottomSheet = true
-                optionsStation = it
-            }, onClick = {
-                mainViewModel.playSearchResults(it)
-                keyboardController?.hide()
-            })
+            AppSearchBar(
+                mainViewModel.searchStations,
+                onSearch = { mainViewModel.search(it) },
+                onClick = {
+                    mainViewModel.playSearchResults(it)
+                    keyboardController?.hide()
+                },
+                onOptions = {
+                    showBottomSheet = true
+                    optionsStation = it
+                },
+                isFavorite = { st -> mainViewModel.favoritesStations.any { it.id == st.id } },
+                onToggleFavorite = { st -> scope.launch { mainViewModel.addOrRemoveFromFavorites(st.id) } },
+                isOffline = { st -> mainViewModel.isStationOffline(st.id) }
+            )
 
             Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxSize()) {
                 LazyColumn(state = state) {

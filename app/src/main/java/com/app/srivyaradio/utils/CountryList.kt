@@ -46,6 +46,7 @@ val countryList = listOf(
     Pair("TMS_Murugan_Songs 🕉️", "TMS"),
     Pair("TR_Hits_Radios 🔥", "TRHITS"),
     Pair("TV_Serials 🎵", "SERIALS"),
+    Pair("Tamil Musics 🎵", "MP3_LINKS"),
     Pair("Unplugged_Radios 🎸", "UNPLUGGED"),
     Pair("Vikram_Radios 🦹", "VIKRAM"),
     Pair("🏹 Mahabharat_Radios", "MAHABHARAT"),
