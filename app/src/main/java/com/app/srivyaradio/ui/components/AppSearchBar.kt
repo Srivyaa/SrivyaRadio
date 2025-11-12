@@ -36,7 +36,10 @@ fun AppSearchBar(
     searchStations: List<RadioStation>,
     onSearch: (query: String) -> Unit,
     onClick: (RadioStation) -> Unit,
-    onOptions: (RadioStation) -> Unit
+    onOptions: (RadioStation) -> Unit,
+    isFavorite: (RadioStation) -> Boolean,
+    onToggleFavorite: (RadioStation) -> Unit,
+    isOffline: (RadioStation) -> Boolean = { false }
 ) {
     var queryString by remember {
         mutableStateOf("")
@@ -128,6 +131,9 @@ fun AppSearchBar(
                             name = station.name,
                             image = station.favicon,
                             label = if (label.isNotBlank()) label else station.country,
+                            isOffline = isOffline(station),
+                            isFavorite = isFavorite(station),
+                            onToggleFavorite = { onToggleFavorite(station) },
                             onClick = {
                                 onClick(station)
                             },
