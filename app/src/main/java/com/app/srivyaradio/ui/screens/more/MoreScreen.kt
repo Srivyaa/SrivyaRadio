@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SecurityUpdateGood
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.SecurityUpdateGood
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.ThumbUp
@@ -80,6 +81,12 @@ fun MoreScreen(
             }, leadingContent = {
                 Icon(Icons.Outlined.Settings, contentDescription = null)
             },modifier = Modifier.clickable { navController.navigate(Screen.MANAGE_COUNTRIES.name) })
+
+            ListItem(headlineContent = {
+                Text(text = "Refresh all stations")
+            }, leadingContent = {
+                Icon(Icons.Outlined.Refresh, contentDescription = null)
+            }, modifier = Modifier.clickable { mainViewModel.refreshAllStations() })
 
             OutlinedButton(
                 onClick = {

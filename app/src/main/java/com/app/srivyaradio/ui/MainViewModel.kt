@@ -348,6 +348,23 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
+    fun refreshAllStations() {
+        viewModelScope.launch {
+            try {
+                val entries = getCountryListForUI()
+                entries.forEach { (_, code) ->
+                    try {
+                        MediaItemFactory.getStations(code.uppercase(), application, "refresh_all")
+                    } catch (_: Exception) {
+                    }
+                }
+                Toast.makeText(application, "Refreshing all stations in background", Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+                Toast.makeText(application, "Failed to start refresh", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     // Recents
     fun loadRecents() {
         viewModelScope.launch {
