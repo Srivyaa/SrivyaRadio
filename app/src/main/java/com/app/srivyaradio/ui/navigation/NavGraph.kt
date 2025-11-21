@@ -13,6 +13,7 @@ import com.app.srivyaradio.ui.screens.more.MoreScreen
 import com.app.srivyaradio.ui.screens.recents.RecentsScreen
 import com.app.srivyaradio.ui.screens.queue.QueueScreen
 import com.app.srivyaradio.ui.screens.countries.ManageCountriesScreen
+import com.app.srivyaradio.ui.screens.offline.OfflineScreen
 
 @Composable
 fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
@@ -37,6 +38,9 @@ fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
         }
         composable(Screen.MANAGE_COUNTRIES.name) {
             ManageCountriesScreen(mainViewModel)
+        }
+        composable(Screen.OFFLINE.name) {
+            OfflineScreen(mainViewModel)
         }
     }
 }

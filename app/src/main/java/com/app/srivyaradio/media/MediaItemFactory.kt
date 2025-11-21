@@ -26,6 +26,7 @@ import com.app.srivyaradio.utils.Constants.ROOT_ID
 import com.app.srivyaradio.utils.Constants.COUNTRIES_ID
 import com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX
 import com.app.srivyaradio.utils.Constants.ALPHABET_PREFIX
+import com.app.srivyaradio.utils.Constants.OFFLINE_ID
 import com.app.srivyaradio.utils.Constants.SHARED_PREF
 import com.app.srivyaradio.utils.DownloadStationsWorker
 import com.app.srivyaradio.utils.countryList
@@ -229,6 +230,14 @@ object MediaItemFactory {
             ).build()
     }
 
+    private fun getOfflineBrowsable(): MediaItem {
+        return MediaItem.Builder().setMediaId(OFFLINE_ID).setMediaMetadata(
+                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                    .setTitle("Offline").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .build()
+            ).build()
+    }
+
     private fun countryToBrowsable(name: String, code: String): MediaItem {
         return MediaItem.Builder().setMediaId(COUNTRY_PREFIX + code.uppercase()).setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
@@ -286,7 +295,8 @@ object MediaItemFactory {
                 listOf(
                     getDiscoverBrowsable(),
                     getFavoritesBrowsable(),
-                    getCountriesBrowsable()
+                    getCountriesBrowsable(),
+                    getOfflineBrowsable()
                 )
             }
 
@@ -299,6 +309,23 @@ object MediaItemFactory {
 
             else -> {
                 when {
+                    parentId == OFFLINE_ID -> {
+                        dbRepository.getDownloadedItems().map { di ->
+                            MediaItem.Builder()
+                                .setMediaId(OFFLINE_ID + ":" + (di.id ?: di.sourceUrl))
+                                .setUri(di.fileUri)
+                                .setMediaMetadata(
+                                    MediaMetadata.Builder()
+                                        .setTitle(di.name)
+                                        .setArtist(di.countrycode)
+                                        .setIsPlayable(true)
+                                        .setIsBrowsable(false)
+                                        .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                                        .build()
+                                )
+                                .build()
+                        }
+                    }
                     parentId.startsWith(COUNTRY_PREFIX) -> {
                         val code = parentId.removePrefix(COUNTRY_PREFIX).uppercase()
                         // For ISO-2 country codes, show A-Z nodes

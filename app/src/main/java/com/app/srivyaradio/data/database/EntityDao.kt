@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.app.srivyaradio.data.models.Favorite
 import com.app.srivyaradio.data.models.Station
+import com.app.srivyaradio.data.models.DownloadedItem
 
 @Dao
 interface EntityDao {
@@ -109,4 +110,20 @@ interface EntityDao {
 
     @Delete
     suspend fun deleteFavoriteStations(favItems:List<Favorite>)
+
+    // --- Downloaded items (offline) ---
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertDownloadedItem(item: DownloadedItem)
+
+    @Query("SELECT * FROM downloaded_items ORDER BY createdAt DESC")
+    suspend fun getDownloadedItems(): List<DownloadedItem>
+
+    @Query("SELECT * FROM downloaded_items WHERE LOWER(countrycode) = LOWER(:countryCode) ORDER BY createdAt DESC")
+    suspend fun getDownloadedItemsByCountry(countryCode: String): List<DownloadedItem>
+
+    @Query("SELECT * FROM downloaded_items WHERE sourceUrl = :sourceUrl LIMIT 1")
+    suspend fun getDownloadedItemBySourceUrl(sourceUrl: String): DownloadedItem?
+
+    @Delete
+    suspend fun deleteDownloadedItem(item: DownloadedItem)
 }

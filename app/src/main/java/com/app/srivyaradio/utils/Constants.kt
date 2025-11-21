@@ -15,6 +15,7 @@ object Constants {
     const val DISCOVER_ID = "discover"
     const val ROOT_ID = "root"
     const val COUNTRIES_ID = "countries"
+    const val OFFLINE_ID = "offline"
     const val ALPHABET_PREFIX = "alpha:"
     const val COUNTRY_PREFIX = "country:"
     const val CHANGE_COUNTRY_KEY = "KEY_CHANGE_COUNTRY"

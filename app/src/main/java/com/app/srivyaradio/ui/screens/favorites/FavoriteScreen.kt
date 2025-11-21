@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -159,6 +160,12 @@ fun FavoriteScreen(
                                     contentDescription = null
                                 )
                             }
+                            IconButton(onClick = { mainViewModel.downloadAllForCountry(code) }) {
+                                Icon(
+                                    Icons.Outlined.FileDownload,
+                                    contentDescription = null
+                                )
+                            }
                             IconButton(onClick = { mainViewModel.refreshCountry(code) }) {
                                 Icon(
                                     Icons.Outlined.Refresh,
@@ -199,6 +206,7 @@ fun FavoriteScreen(
                                             label = station.country,
                                             isOffline = mainViewModel.isStationOffline(station.id),
                                             isFavorite = mainViewModel.favoritesStations.any { it.id == station.id },
+                                            onDownload = if (station.url_resolved.lowercase().endsWith(".mp3")) ({ mainViewModel.downloadStationMp3(station) }) else null,
                                             onToggleFavorite = {
                                                 scope.launch {
                                                     mainViewModel.addOrRemoveFromFavorites(
@@ -234,6 +242,7 @@ fun FavoriteScreen(
                             label = station.country,
                             isOffline = mainViewModel.isStationOffline(station.id),
                             isFavorite = true,
+                            onDownload = if (station.url_resolved.lowercase().endsWith(".mp3")) ({ mainViewModel.downloadStationMp3(station) }) else null,
                             onToggleFavorite = {
                                 scope.launch { mainViewModel.addOrRemoveFromFavorites(station.id) }
                             },

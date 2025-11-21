@@ -63,6 +63,13 @@ import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
 import kotlinx.coroutines.launch
 import java.util.UUID
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.app.srivyaradio.data.models.DownloadedItem
+import com.app.srivyaradio.utils.DownloadMp3Worker
 
 class MainViewModel(private val application: Application) : AndroidViewModel(application) {
 
@@ -121,6 +128,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     var isSeekable by mutableStateOf(false)
         private set
     var offlineStations by mutableStateOf<Set<String>>(setOf())
+        private set
+    var downloadedItems by mutableStateOf<List<DownloadedItem>>(listOf())
         private set
 
     private lateinit var playerFuture: ListenableFuture<MediaBrowser>
@@ -182,6 +191,20 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 }
             }
         } catch (_: Exception) {
+        }
+    }
+
+    fun deleteDownloaded(item: DownloadedItem) {
+        viewModelScope.launch {
+            try {
+                try {
+                    application.contentResolver.delete(Uri.parse(item.fileUri), null, null)
+                } catch (_: Exception) {}
+                dbRepository.deleteDownloadedItem(item)
+            } catch (_: Exception) {
+            } finally {
+                loadDownloads()
+            }
         }
     }
 
@@ -375,6 +398,81 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             } catch (_: Exception) {
                 Toast.makeText(application, "Failed to refresh", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    // ----- Offline downloads -----
+    fun loadDownloads() {
+        viewModelScope.launch {
+            try {
+                downloadedItems = dbRepository.getDownloadedItems()
+            } catch (_: Exception) {
+                downloadedItems = listOf()
+            }
+        }
+    }
+
+    fun downloadStationMp3(station: Station) {
+        try {
+            val url = station.url_resolved
+            if (!url.lowercase().endsWith(".mp3")) {
+                Toast.makeText(application, "Only MP3 links can be downloaded", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val input = Data.Builder()
+                .putString("url", url)
+                .putString("name", station.name)
+                .putString("countryCode", station.countrycode)
+                .putString("image", station.favicon)
+                .build()
+            val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+            val req = OneTimeWorkRequestBuilder<DownloadMp3Worker>()
+                .setConstraints(constraints)
+                .addTag("dl:" + url)
+                .setInputData(input)
+                .build()
+            WorkManager.getInstance(application).enqueue(req)
+            Toast.makeText(application, "Downloading ${station.name}", Toast.LENGTH_SHORT).show()
+        } catch (_: Exception) {
+            Toast.makeText(application, "Failed to start download", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun downloadAllForCountry(code: String) {
+        viewModelScope.launch {
+            try {
+                val cc = code.uppercase()
+                val all = dbRepository.getAllStations(cc)
+                val mp3s = all.filter { it.url_resolved.lowercase().endsWith(".mp3") }
+                mp3s.forEach { downloadStationMp3(it) }
+                if (mp3s.isEmpty()) {
+                    Toast.makeText(application, "No MP3 items found to download", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(application, "Downloading ${mp3s.size} items in background", Toast.LENGTH_SHORT).show()
+                }
+            } catch (_: Exception) {
+                Toast.makeText(application, "Failed to start downloads", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun playDownloaded(item: DownloadedItem) {
+        try {
+            val mediaItem = androidx.media3.common.MediaItem.Builder()
+                .setUri(item.fileUri)
+                .setMediaMetadata(
+                    androidx.media3.common.MediaMetadata.Builder()
+                        .setTitle(item.name)
+                        .setArtist(item.countrycode)
+                        .setIsPlayable(true)
+                        .build()
+                )
+                .build()
+            player.setMediaItem(mediaItem)
+            player.prepare()
+            player.play()
+        } catch (_: Exception) {
+            Toast.makeText(application, "Unable to play file", Toast.LENGTH_SHORT).show()
         }
     }
 

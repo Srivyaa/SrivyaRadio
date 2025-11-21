@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import com.app.srivyaradio.R
+import androidx.compose.material.icons.outlined.FileDownload
 
 @Composable
 fun Station(
@@ -34,6 +35,7 @@ fun Station(
     isOffline: Boolean = false,
     isFavorite: Boolean = false,
     onToggleFavorite: () -> Unit = {},
+    onDownload: (() -> Unit)? = null,
     onClick: () -> Unit,
     onOptions: () -> Unit,
     modifier: Modifier
@@ -82,6 +84,15 @@ fun Station(
             }
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
+            if (onDownload != null) {
+                IconButton(onClick = { onDownload() }) {
+                    Icon(
+                        imageVector = androidx.compose.material.icons.Icons.Outlined.FileDownload,
+                        modifier = Modifier.size(24.dp),
+                        contentDescription = null
+                    )
+                }
+            }
             IconButton(onClick = { onToggleFavorite() }) {
                 Icon(
                     painter = painterResource(id = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_outlined),

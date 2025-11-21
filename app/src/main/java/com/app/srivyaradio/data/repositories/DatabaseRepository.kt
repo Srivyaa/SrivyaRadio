@@ -5,6 +5,7 @@ import com.app.srivyaradio.data.database.AppDatabase
 import com.app.srivyaradio.data.database.EntityDao
 import com.app.srivyaradio.data.models.Favorite
 import com.app.srivyaradio.data.models.Station
+import com.app.srivyaradio.data.models.DownloadedItem
 
 class DatabaseRepository(application: Application) {
 
@@ -174,4 +175,11 @@ class DatabaseRepository(application: Application) {
         val t = v.trim()
         if (t.isEmpty()) null else toSqlLikePattern(t)
     }
+
+    // ----- Downloaded items (offline) -----
+    suspend fun insertDownloadedItem(item: DownloadedItem) = entityDao.insertDownloadedItem(item)
+    suspend fun getDownloadedItems(): List<DownloadedItem> = entityDao.getDownloadedItems()
+    suspend fun getDownloadedItemsByCountry(code: String): List<DownloadedItem> = entityDao.getDownloadedItemsByCountry(code)
+    suspend fun getDownloadedItemBySourceUrl(url: String): DownloadedItem? = entityDao.getDownloadedItemBySourceUrl(url)
+    suspend fun deleteDownloadedItem(item: DownloadedItem) = entityDao.deleteDownloadedItem(item)
 }

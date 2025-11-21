@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -152,6 +153,9 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                             IconButton(onClick = { if (code.isNotBlank()) mainViewModel.refreshCountry(code) }) {
                                 Icon(Icons.Outlined.Refresh, contentDescription = null)
                             }
+                            IconButton(onClick = { if (code.isNotBlank()) mainViewModel.downloadAllForCountry(code) }) {
+                                Icon(Icons.Outlined.FileDownload, contentDescription = null)
+                            }
                             IconButton(onClick = { if (code.isNotBlank()) mainViewModel.toggleFavoriteCountry(code) }) {
                                 if (isFav) Icon(Icons.Filled.Favorite, contentDescription = null) else Icon(
                                     Icons.Outlined.FavoriteBorder, contentDescription = null
@@ -174,6 +178,7 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                                 label = if (label.isNotBlank()) label else station.country,
                                 isOffline = mainViewModel.isStationOffline(station.id),
                                 isFavorite = mainViewModel.favoritesStations.any { it.id == station.id },
+                                onDownload = if (station.url_resolved.lowercase().endsWith(".mp3")) ({ mainViewModel.downloadStationMp3(station) }) else null,
                                 onToggleFavorite = {
                                     scope.launch {
                                         mainViewModel.addOrRemoveFromFavorites(

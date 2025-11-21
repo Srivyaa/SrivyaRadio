@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.SecurityUpdateGood
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.SecurityUpdateGood
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.ThumbUp
@@ -87,6 +88,12 @@ fun MoreScreen(
             }, leadingContent = {
                 Icon(Icons.Outlined.Refresh, contentDescription = null)
             }, modifier = Modifier.clickable { mainViewModel.refreshAllStations() })
+
+            ListItem(headlineContent = {
+                Text(text = "Offline mode")
+            }, leadingContent = {
+                Icon(Icons.Outlined.FileDownload, contentDescription = null)
+            }, modifier = Modifier.clickable { navController.navigate(Screen.OFFLINE.name) })
 
             OutlinedButton(
                 onClick = {
