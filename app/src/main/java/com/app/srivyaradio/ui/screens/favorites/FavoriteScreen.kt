@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -155,6 +156,12 @@ fun FavoriteScreen(
                             }) {
                                 Icon(
                                     if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                                    contentDescription = null
+                                )
+                            }
+                            IconButton(onClick = { mainViewModel.refreshCountry(code) }) {
+                                Icon(
+                                    Icons.Outlined.Refresh,
                                     contentDescription = null
                                 )
                             }

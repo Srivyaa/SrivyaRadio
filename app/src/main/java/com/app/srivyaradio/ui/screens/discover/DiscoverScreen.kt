@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -148,11 +149,15 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                         val code = countries.getOrNull(selectedIndex)?.second ?: ""
                         val isFav = if (code.isNotBlank()) mainViewModel.isCountryFavorited(code) else false
                         Row(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { if (code.isNotBlank()) mainViewModel.refreshCountry(code) }) {
+                                Icon(Icons.Outlined.Refresh, contentDescription = null)
+                            }
                             IconButton(onClick = { if (code.isNotBlank()) mainViewModel.toggleFavoriteCountry(code) }) {
                                 if (isFav) Icon(Icons.Filled.Favorite, contentDescription = null) else Icon(
                                     Icons.Outlined.FavoriteBorder, contentDescription = null
                                 )
                             }
+
                             Text(if (isFav) "Remove country from Favorites" else "Add country to Favorites")
                         }
                     }

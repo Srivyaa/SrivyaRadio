@@ -19,6 +19,10 @@ class DatabaseRepository(application: Application) {
         return entityDao.getStations(countryCode)
     }
 
+    suspend fun deleteStationsByCountry(countryCode: String) {
+        entityDao.deleteStationsByCountry(countryCode)
+    }
+
     suspend fun insertStations(radioStations: List<Station>) {
         entityDao.insertStation(radioStations)
     }

@@ -365,6 +365,19 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
+    fun refreshCountry(code: String) {
+        viewModelScope.launch {
+            try {
+                val cc = code.uppercase()
+                dbRepository.deleteStationsByCountry(cc)
+                MediaItemFactory.getStations(cc, application, "refresh_country")
+                Toast.makeText(application, "Refreshing $cc in background", Toast.LENGTH_SHORT).show()
+            } catch (_: Exception) {
+                Toast.makeText(application, "Failed to refresh", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     // Recents
     fun loadRecents() {
         viewModelScope.launch {

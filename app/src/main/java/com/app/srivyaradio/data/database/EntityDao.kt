@@ -14,6 +14,9 @@ interface EntityDao {
     @Query("SELECT * FROM radio_stations WHERE LOWER(countrycode) = LOWER(:countryCode) ORDER BY name COLLATE NOCASE ASC")
     suspend fun getStations(countryCode: String): List<Station>
 
+    @Query("DELETE FROM radio_stations WHERE LOWER(countrycode) = LOWER(:countryCode)")
+    suspend fun deleteStationsByCountry(countryCode: String)
+
     @Query("SELECT * FROM radio_stations WHERE id = (:id)")
     suspend fun getStationById(id: String): Station?
 
