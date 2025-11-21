@@ -153,8 +153,11 @@ class PlayerService : MediaLibraryService() {
             .setUserAgent("SrivyaRadio/3.0 (ExoPlayer)")
             .setDefaultRequestProperties(mapOf("Icy-MetaData" to "1"))
 
+        // Wrap OkHttp in DefaultDataSource so content:// and file:// URIs work for offline playback
+        val dataSourceFactory = androidx.media3.datasource.DefaultDataSource.Factory(this, httpFactory)
+
         val mediaSourceFactory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(this)
-            .setDataSourceFactory(httpFactory)
+            .setDataSourceFactory(dataSourceFactory)
 
         player = ExoPlayer.Builder(this)
             .setMediaSourceFactory(mediaSourceFactory)
