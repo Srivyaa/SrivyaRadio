@@ -24,12 +24,29 @@ class DownloadMp3Worker(appContext: Context, params: WorkerParameters) : Corouti
         val country = inputData.getString("countryCode") ?: ""
         val image = inputData.getString("image") ?: ""
 
-        if (!url.lowercase().endsWith(".mp3")) return@withContext Result.failure()
+        val baseUrl = url.substringBefore('?')
+        val lower = baseUrl.lowercase()
+        val ext = when {
+            lower.endsWith(".mp3") -> ".mp3"
+            lower.endsWith(".aac") -> ".aac"
+            lower.endsWith(".m4a") -> ".m4a"
+            lower.endsWith(".wav") -> ".wav"
+            lower.endsWith(".flac") -> ".flac"
+            else -> return@withContext Result.failure()
+        }
+        val mime = when (ext) {
+            ".mp3" -> "audio/mpeg"
+            ".aac" -> "audio/aac"
+            ".m4a" -> "audio/mp4"
+            ".wav" -> "audio/wav"
+            ".flac" -> "audio/flac"
+            else -> "application/octet-stream"
+        }
 
         val resolver = applicationContext.contentResolver
         val values = ContentValues().apply {
-            put(MediaStore.Downloads.DISPLAY_NAME, sanitizeFilename("$name.mp3"))
-            put(MediaStore.Downloads.MIME_TYPE, "audio/mpeg")
+            put(MediaStore.Downloads.DISPLAY_NAME, sanitizeFilename("$name$ext"))
+            put(MediaStore.Downloads.MIME_TYPE, mime)
             // Relative path inside Downloads
             put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/SrivyaRadio")
             put(MediaStore.Downloads.IS_PENDING, 1)

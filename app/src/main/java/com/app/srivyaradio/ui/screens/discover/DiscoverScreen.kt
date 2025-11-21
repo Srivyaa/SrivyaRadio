@@ -178,7 +178,10 @@ fun DiscoverScreen(mainViewModel: MainViewModel) {
                                 label = if (label.isNotBlank()) label else station.country,
                                 isOffline = mainViewModel.isStationOffline(station.id),
                                 isFavorite = mainViewModel.favoritesStations.any { it.id == station.id },
-                                onDownload = if (station.url_resolved.lowercase().endsWith(".mp3")) ({ mainViewModel.downloadStationMp3(station) }) else null,
+                                onDownload = run {
+                                    val u = station.url_resolved.lowercase()
+                                    if (u.endsWith(".mp3") || u.endsWith(".aac") || u.endsWith(".m4a") || u.endsWith(".wav") || u.endsWith(".flac")) ({ mainViewModel.downloadStationMp3(station) }) else null
+                                },
                                 onToggleFavorite = {
                                     scope.launch {
                                         mainViewModel.addOrRemoveFromFavorites(

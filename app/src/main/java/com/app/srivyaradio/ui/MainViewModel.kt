@@ -415,8 +415,10 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     fun downloadStationMp3(station: Station) {
         try {
             val url = station.url_resolved
-            if (!url.lowercase().endsWith(".mp3")) {
-                Toast.makeText(application, "Only MP3 links can be downloaded", Toast.LENGTH_SHORT).show()
+            val u = url.lowercase()
+            val allowed = u.endsWith(".mp3") || u.endsWith(".aac") || u.endsWith(".m4a") || u.endsWith(".wav") || u.endsWith(".flac")
+            if (!allowed) {
+                Toast.makeText(application, "Only audio file links (mp3, aac, m4a, wav, flac) can be downloaded", Toast.LENGTH_SHORT).show()
                 return
             }
             val input = Data.Builder()
@@ -443,12 +445,15 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             try {
                 val cc = code.uppercase()
                 val all = dbRepository.getAllStations(cc)
-                val mp3s = all.filter { it.url_resolved.lowercase().endsWith(".mp3") }
-                mp3s.forEach { downloadStationMp3(it) }
-                if (mp3s.isEmpty()) {
-                    Toast.makeText(application, "No MP3 items found to download", Toast.LENGTH_SHORT).show()
+                val items = all.filter {
+                    val u = it.url_resolved.lowercase()
+                    u.endsWith(".mp3") || u.endsWith(".aac") || u.endsWith(".m4a") || u.endsWith(".wav") || u.endsWith(".flac")
+                }
+                items.forEach { downloadStationMp3(it) }
+                if (items.isEmpty()) {
+                    Toast.makeText(application, "No audio items found to download", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(application, "Downloading ${mp3s.size} items in background", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(application, "Downloading ${items.size} items in background", Toast.LENGTH_SHORT).show()
                 }
             } catch (_: Exception) {
                 Toast.makeText(application, "Failed to start downloads", Toast.LENGTH_SHORT).show()
