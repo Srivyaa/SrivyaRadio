@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0.0-Alpha] - 2025-12-11
+
+### Removed
+- **Splash Screen**: Removed the splash screen to improve app launch time and provide a more direct user experience
+- **Unused Resources**: Cleaned up unused splash screen resources and activities
+
+### Changed
+- **App Launch Flow**: Updated the app to launch directly into the main activity
+- **Version Bump**: Updated versionCode to 3 and versionName to 1.2.0.0-Devotional
+
+### Fixed
+- **Build Warnings**: Resolved any build warnings related to the removed splash screen components
+
 ## [1.1.0.0-Devotional] - 2025-12-03
 
 ### Added
