@@ -11,6 +11,10 @@
     <uses-permission android:name="android.permission.MANAGE_SHORTCUTS" />
     <uses-permission android:name="android.permission.MANAGE_PIN_SHORTCUTS" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+    <!-- Read audio media (Android 13+) and legacy external storage for older devices -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:targetApi="33" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
