@@ -683,6 +683,62 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
+    fun scanAudioInFolder(treeUri: android.net.Uri) {
+        viewModelScope.launch {
+            try {
+                Toast.makeText(application, "Scanning folder...", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.IO) {
+                    val toInsert = mutableListOf<DownloadedItem>()
+                    val existing = try { dbRepository.getDownloadedItems() } catch (_: Exception) { emptyList() }
+                    val seenUris = existing.map { it.fileUri }.toMutableSet()
+
+                    val docFile = androidx.documentfile.provider.DocumentFile.fromTreeUri(application, treeUri)
+                    if (docFile != null && docFile.isDirectory) {
+                        docFile.listFiles().forEach { file ->
+                            if (file.isFile) {
+                                val name = file.name ?: ""
+                                val type = file.type ?: ""
+                                val lower = name.lowercase()
+                                val isAudio = type.startsWith("audio/") || 
+                                              lower.endsWith(".mp3") || 
+                                              lower.endsWith(".aac") || 
+                                              lower.endsWith(".m4a") || 
+                                              lower.endsWith(".wav") || 
+                                              lower.endsWith(".flac")
+                                
+                                if (isAudio) {
+                                    val uriStr = file.uri.toString()
+                                    if (!seenUris.contains(uriStr)) {
+                                        toInsert.add(
+                                            DownloadedItem(
+                                                id = null,
+                                                name = name,
+                                                countrycode = "Local File",
+                                                sourceUrl = uriStr,
+                                                fileUri = uriStr,
+                                                image = "",
+                                                sizeBytes = file.length(),
+                                                createdAt = System.currentTimeMillis()
+                                            )
+                                        )
+                                        seenUris.add(uriStr)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    toInsert.forEach { dbRepository.insertDownloadedItem(item = it) }
+                }
+                loadDownloads()
+                Toast.makeText(application, "Folder scan complete", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(application, "Folder scan failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     fun downloadStationMp3(station: Station) {
         try {
             val url = station.url_resolved

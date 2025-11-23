@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -53,6 +54,14 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
         else mainViewModel.downloadedItems.filter { it.name.contains(q, ignoreCase = true) }
     }
 
+    val folderLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) {
+            val flags = android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
+            context.contentResolver.takePersistableUriPermission(uri, flags)
+            mainViewModel.scanAudioInFolder(uri)
+        }
+    }
+
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item {
             Row(
@@ -66,6 +75,9 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
+                IconButton(onClick = { folderLauncher.launch(null) }) {
+                    Icon(Icons.Filled.Folder, contentDescription = "Scan Folder")
+                }
                 IconButton(onClick = {
                     val granted = ContextCompat.checkSelfPermission(context, permission) == android.content.pm.PackageManager.PERMISSION_GRANTED
                     if (granted) mainViewModel.scanDeviceForAudio() else launcher.launch(permission)
