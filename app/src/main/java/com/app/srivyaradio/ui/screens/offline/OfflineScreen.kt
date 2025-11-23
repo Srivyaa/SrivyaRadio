@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -65,6 +66,12 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
+                IconButton(onClick = {
+                    val granted = ContextCompat.checkSelfPermission(context, permission) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                    if (granted) mainViewModel.scanDeviceForAudio() else launcher.launch(permission)
+                }) {
+                    Icon(Icons.Filled.Search, contentDescription = "Scan Device")
+                }
                 IconButton(onClick = {
                     val granted = ContextCompat.checkSelfPermission(context, permission) == android.content.pm.PackageManager.PERMISSION_GRANTED
                     if (granted) mainViewModel.loadDownloads() else launcher.launch(permission)
