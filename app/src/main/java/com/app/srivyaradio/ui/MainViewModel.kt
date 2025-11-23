@@ -68,19 +68,6 @@ import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import com.app.srivyaradio.data.models.DownloadedItem
-import com.app.srivyaradio.utils.DownloadMp3Worker
-import java.io.File
-
-class MainViewModel(private val application: Application) : AndroidViewModel(application) {
-
-    private val repository = SharedPreferencesRepository(
-        application.getSharedPreferences(
             SHARED_PREF,
             Context.MODE_PRIVATE
         )
@@ -595,6 +582,89 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 }
             }
         } catch (_: Exception) {
+        }
+    }
+
+    fun scanDeviceForAudio() {
+        viewModelScope.launch {
+            try {
+                Toast.makeText(application, "Scanning device for audio...", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.IO) {
+                    val resolver = application.contentResolver
+                    val toInsert = mutableListOf<DownloadedItem>()
+                    val existing = try { dbRepository.getDownloadedItems() } catch (_: Exception) { emptyList() }
+                    val seenUris = existing.map { it.fileUri }.toMutableSet()
+
+                    // Query MediaStore.Audio.Media for music files
+                    val projection = arrayOf(
+                        MediaStore.Audio.Media._ID,
+                        MediaStore.Audio.Media.DISPLAY_NAME,
+                        MediaStore.Audio.Media.SIZE,
+                        MediaStore.Audio.Media.MIME_TYPE,
+                        MediaStore.Audio.Media.DATA,
+                        MediaStore.Audio.Media.TITLE,
+                        MediaStore.Audio.Media.ARTIST
+                    )
+                    
+                    // Filter for music files
+                    val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
+
+                    resolver.query(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        projection,
+                        selection,
+                        null,
+                        null
+                    )?.use { cursor ->
+                        val idCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
+                        val nameCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
+                        val sizeCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
+                        val dataCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+                        val titleCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
+                        val artistCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
+
+                        while (cursor.moveToNext()) {
+                            val id = cursor.getLong(idCol)
+                            val displayName = cursor.getString(nameCol) ?: "Unknown"
+                            val title = cursor.getString(titleCol) ?: displayName
+                            val artist = cursor.getString(artistCol) ?: "Unknown Artist"
+                            val size = cursor.getLong(sizeCol)
+                            val path = cursor.getString(dataCol)
+                            
+                            val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+                            val fileUri = uri.toString()
+
+                            if (seenUris.contains(fileUri)) continue
+
+                            toInsert.add(
+                                DownloadedItem(
+                                    id = null,
+                                    name = title,
+                                    countrycode = artist, // Using countrycode field for Artist to reuse existing model
+                                    sourceUrl = fileUri,
+                                    fileUri = fileUri,
+                                    image = "",
+                                    sizeBytes = size,
+                                    createdAt = System.currentTimeMillis(),
+                                )
+                            )
+                            seenUris.add(fileUri)
+                        }
+                    }
+
+                    // Insert all found items
+                    toInsert.forEach { item ->
+                        dbRepository.insertDownloadedItem(item)
+                    }
+                }
+                
+                // Refresh list
+                loadDownloads()
+                Toast.makeText(application, "Scan complete", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(application, "Scan failed", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
