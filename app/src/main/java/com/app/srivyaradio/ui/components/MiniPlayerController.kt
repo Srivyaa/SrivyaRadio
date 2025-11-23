@@ -30,7 +30,9 @@ fun MiniPlayerController(
     isFavorite: Boolean,
     onToggleFavorite: () -> Unit,
     onPlay: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    titleOverride: String? = null,
+    artworkOverride: String? = null
 ) {
 
     Card(
@@ -47,11 +49,11 @@ fun MiniPlayerController(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.padding(vertical = 7.dp, horizontal = 10.dp)) {
-                RadioLogoSmall(imageUrl = station.favicon, size = 50)
+                RadioLogoSmall(imageUrl = artworkOverride ?: station.favicon, size = 50)
             }
 
             Text(
-                text = station.name,
+                text = titleOverride ?: station.name,
                 maxLines = 1,
                 modifier = Modifier.weight(1f),
                 overflow = TextOverflow.Ellipsis,

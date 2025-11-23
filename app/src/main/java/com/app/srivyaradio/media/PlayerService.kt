@@ -180,15 +180,18 @@ class PlayerService : MediaLibraryService() {
             serviceScope.launch {
                 if (!stationId.isNullOrEmpty()) {
                     try {
-                        val item = dbRepository.getRadioStationByID(
-                            stationId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
-                        )
-                        if (item != null) {
-                            player.setMediaItem(
-                                MediaItemFactory.stationToMediaItem(
-                                    item, DISCOVER_ID
-                                )
+                        // Only restore last play if the player has no items yet
+                        if (player.mediaItemCount == 0) {
+                            val item = dbRepository.getRadioStationByID(
+                                stationId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
                             )
+                            if (item != null) {
+                                player.setMediaItem(
+                                    MediaItemFactory.stationToMediaItem(
+                                        item, DISCOVER_ID
+                                    )
+                                )
+                            }
                         }
                     } catch (e: Exception) {
                         Log.e("error", e.message.toString())
@@ -328,6 +331,41 @@ class PlayerService : MediaLibraryService() {
     }
 
     private class MediaLibrarySessionCallback(private val service: PlayerService) : MediaLibrarySession.Callback {
+        override fun onAddMediaItems(
+            mediaSession: MediaSession,
+            controller: MediaSession.ControllerInfo,
+            mediaItems: MutableList<MediaItem>
+        ): ListenableFuture<MutableList<MediaItem>> {
+            val future = SettableFuture.create<MutableList<MediaItem>>()
+            service.serviceScope.launch(Dispatchers.IO) {
+                try {
+                    val mapped = mediaItems.map { item ->
+                        try {
+                            val id = item.mediaId
+                            val scheme = try { item.localConfiguration?.uri?.scheme } catch (_: Exception) { null }
+                            val isOffline = id.startsWith(Constants.OFFLINE_ID) || scheme == "content" || scheme == "file"
+                            if (isOffline) {
+                                // Accept offline items as-is so they are not remapped to library stations
+                                item
+                            } else if (id.startsWith(DISCOVER_ID) || id.startsWith(FAVORITES_ID)) {
+                                // Resolve station items through DB to ensure consistent metadata
+                                val fromDb = MediaItemFactory.getItemFromDB(service.dbRepository, id)
+                                if (fromDb != MediaItem.EMPTY) fromDb else item
+                            } else {
+                                // Unknown item: accept as-is
+                                item
+                            }
+                        } catch (_: Exception) {
+                            item
+                        }
+                    }.toMutableList()
+                    future.set(mapped)
+                } catch (e: Exception) {
+                    future.setException(e)
+                }
+            }
+            return future
+        }
         override fun onConnect(
             session: MediaSession, controller: MediaSession.ControllerInfo
         ): MediaSession.ConnectionResult {
@@ -776,6 +814,19 @@ class PlayerService : MediaLibraryService() {
                 return Futures.immediateFuture(
                     MediaSession.MediaItemsWithStartPosition(emptyList(), 0, 0)
                 )
+            }
+
+            // If the selection is a local/offline item, accept the list as-is to avoid remapping
+            run {
+                val selected = mediaItems.getOrNull(startIndex) ?: mediaItems[0]
+                val id = selected.mediaId
+                val scheme = try { selected.localConfiguration?.uri?.scheme } catch (_: Exception) { null }
+                val isOffline = id.startsWith(Constants.OFFLINE_ID) || scheme == "content" || scheme == "file"
+                if (isOffline) {
+                    return Futures.immediateFuture(
+                        MediaSession.MediaItemsWithStartPosition(mediaItems, startIndex, startPositionMs)
+                    )
+                }
             }
 
             // If selection came from search results, mirror app behavior:

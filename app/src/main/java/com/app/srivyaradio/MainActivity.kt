@@ -256,7 +256,9 @@ class MainActivity : ComponentActivity() {
                                                 }
                                             }
                                         },
-                                        onClick = { showPlayerSheet = true }
+                                        onClick = { showPlayerSheet = true },
+                                        titleOverride = if (mainViewModel.isOfflineNow) mainViewModel.currentSong.ifBlank { st.name } else null,
+                                        artworkOverride = if (mainViewModel.isOfflineNow) (mainViewModel.currentArtworkUrl ?: st.favicon) else null
                                     )
                                 }
                             }

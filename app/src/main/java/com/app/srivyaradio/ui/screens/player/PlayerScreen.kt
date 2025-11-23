@@ -89,10 +89,16 @@ fun PlayerScreen(
 
             mainViewModel.selectedStation?.let {
                 Spacer(Modifier.padding(10.dp))
-                RadioLogoSmall(imageUrl = it.favicon, size = 200)
+                val displayArtwork = if (mainViewModel.isOfflineNow) {
+                    mainViewModel.currentArtworkUrl ?: it.favicon
+                } else it.favicon
+                RadioLogoSmall(imageUrl = displayArtwork, size = 200)
                 Spacer(Modifier.padding(10.dp))
+                val displayTitle = if (mainViewModel.isOfflineNow) {
+                    mainViewModel.currentSong.ifBlank { it.name }
+                } else it.name
                 Text(
-                    text = it.name,
+                    text = displayTitle,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(10.dp)

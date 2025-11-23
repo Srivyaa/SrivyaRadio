@@ -13,10 +13,14 @@ import android.graphics.drawable.Icon
 import android.media.session.PlaybackState
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 import android.widget.Toast
 import android.net.Uri
-import android.provider.OpenableColumns
+import android.content.ContentUris
+import android.media.MediaScannerConnection
 import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +65,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.common.util.concurrent.ListenableFuture
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
 import androidx.work.Constraints
@@ -70,6 +75,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.app.srivyaradio.data.models.DownloadedItem
 import com.app.srivyaradio.utils.DownloadMp3Worker
+import java.io.File
 
 class MainViewModel(private val application: Application) : AndroidViewModel(application) {
 
@@ -126,6 +132,10 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     var repeatMode by mutableStateOf(Player.REPEAT_MODE_OFF)
         private set
     var isSeekable by mutableStateOf(false)
+        private set
+    var isOfflineNow by mutableStateOf(false)
+        private set
+    var currentArtworkUrl by mutableStateOf<String?>(null)
         private set
     var offlineStations by mutableStateOf<Set<String>>(setOf())
         private set
@@ -405,10 +415,186 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     fun loadDownloads() {
         viewModelScope.launch {
             try {
+                importLocalFilesFromDownloads()
                 downloadedItems = dbRepository.getDownloadedItems()
             } catch (_: Exception) {
                 downloadedItems = listOf()
             }
+        }
+    }
+
+    private suspend fun importLocalFilesFromDownloads() {
+        try {
+            val resolver = application.contentResolver
+            val existing = try { dbRepository.getDownloadedItems() } catch (_: Exception) { emptyList() }
+            val seenUris = existing.map { it.fileUri }.toMutableSet()
+            val toInsert = mutableListOf<DownloadedItem>()
+
+            // Helper to process a cursor and insert items
+            fun processCursor(cursor: android.database.Cursor, baseUri: android.net.Uri, idColumn: String, nameColumn: String, sizeColumn: String, mimeColumn: String) {
+                val idCol = cursor.getColumnIndexOrThrow(idColumn)
+                val nameCol = cursor.getColumnIndexOrThrow(nameColumn)
+                val sizeCol = cursor.getColumnIndexOrThrow(sizeColumn)
+                val mimeCol = cursor.getColumnIndexOrThrow(mimeColumn)
+                while (cursor.moveToNext()) {
+                    val id = cursor.getLong(idCol)
+                    val name = cursor.getString(nameCol) ?: "Audio"
+                    val size = try { cursor.getLong(sizeCol) } catch (_: Exception) { 0L }
+                    val mime = cursor.getString(mimeCol) ?: ""
+                    val uri = ContentUris.withAppendedId(baseUri, id)
+
+                    val lower = name.lowercase()
+                    val allowedByExt = lower.endsWith(".mp3") || lower.endsWith(".aac") || lower.endsWith(".m4a") || lower.endsWith(".wav") || lower.endsWith(".flac")
+                    val allowedByMime = mime.startsWith("audio/")
+                    if (!(allowedByExt || allowedByMime)) continue
+
+                    val fileUri = uri.toString()
+                    val dup = seenUris.contains(fileUri) || existing.any { it.sourceUrl == fileUri }
+                    if (dup) continue
+
+                    toInsert.add(
+                        DownloadedItem(
+                            id = null,
+                            name = name,
+                            countrycode = "",
+                            sourceUrl = fileUri,
+                            fileUri = fileUri,
+                            image = "",
+                            sizeBytes = size,
+                            createdAt = System.currentTimeMillis(),
+                        )
+                    )
+                    seenUris.add(fileUri)
+                }
+            }
+
+            // Hint the media scanner to index expected folders so new files appear in MediaStore
+            runCatching {
+                val candidates = mutableListOf<String>()
+                try {
+                    val dl = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    candidates.add(File(dl, "SrivyaRadio").absolutePath)
+                } catch (_: Exception) {}
+                try {
+                    val music = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+                    candidates.add(File(music, "SrivyaRadio").absolutePath)
+                } catch (_: Exception) {}
+                if (candidates.isNotEmpty()) {
+                    var completed = false
+                    MediaScannerConnection.scanFile(application, candidates.toTypedArray(), null) { _, _ -> completed = true }
+                    // Give the media scanner a brief moment; continue even if callback doesn't fire
+                    runCatching { delay(500) }
+                }
+            }
+
+            // 1) Query MediaStore.Downloads for any path containing "SrivyaRadio" (API 29+)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                runCatching {
+                    val projection = arrayOf(
+                        MediaStore.Downloads._ID,
+                        MediaStore.Downloads.DISPLAY_NAME,
+                        MediaStore.Downloads.SIZE,
+                        MediaStore.Downloads.MIME_TYPE,
+                        MediaStore.Downloads.RELATIVE_PATH,
+                    )
+                    val selection = "LOWER(" + MediaStore.Downloads.RELATIVE_PATH + ") LIKE ?"
+                    val args = arrayOf("%srivyaradio%")
+                    resolver.query(
+                        MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                        projection,
+                        selection,
+                        args,
+                        null
+                    )?.use { c -> processCursor(c, MediaStore.Downloads.EXTERNAL_CONTENT_URI, MediaStore.Downloads._ID, MediaStore.Downloads.DISPLAY_NAME, MediaStore.Downloads.SIZE, MediaStore.Downloads.MIME_TYPE) }
+                }
+            }
+
+            // 2) Also query MediaStore.Audio.Media for audio files under any SrivyaRadio path (e.g., Music/SrivyaRadio) - API 29+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                runCatching {
+                    val projection = arrayOf(
+                        MediaStore.Audio.Media._ID,
+                        MediaStore.Audio.Media.DISPLAY_NAME,
+                        MediaStore.Audio.Media.SIZE,
+                        MediaStore.Audio.Media.MIME_TYPE,
+                        MediaStore.Audio.Media.RELATIVE_PATH,
+                    )
+                    val selection = "LOWER(" + MediaStore.Audio.Media.RELATIVE_PATH + ") LIKE ?"
+                    val args = arrayOf("%srivyaradio%")
+                    resolver.query(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        projection,
+                        selection,
+                        args,
+                        null
+                    )?.use { c -> processCursor(c, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.MIME_TYPE) }
+                }
+            }
+
+            // 2b) Query MediaStore.Files for any audio in any SrivyaRadio path (API 29+)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                runCatching {
+                    val base = MediaStore.Files.getContentUri("external")
+                    val projection = arrayOf(
+                        MediaStore.Files.FileColumns._ID,
+                        MediaStore.Files.FileColumns.DISPLAY_NAME,
+                        MediaStore.Files.FileColumns.SIZE,
+                        MediaStore.Files.FileColumns.MIME_TYPE,
+                        MediaStore.Files.FileColumns.RELATIVE_PATH,
+                    )
+                    val selection = "LOWER(" + MediaStore.Files.FileColumns.RELATIVE_PATH + ") LIKE ? AND " + MediaStore.Files.FileColumns.MIME_TYPE + " LIKE ?"
+                    val args = arrayOf("%srivyaradio%", "audio/%")
+                    resolver.query(
+                        base,
+                        projection,
+                        selection,
+                        args,
+                        null
+                    )?.use { c -> processCursor(c, base, MediaStore.Files.FileColumns._ID, MediaStore.Files.FileColumns.DISPLAY_NAME, MediaStore.Files.FileColumns.SIZE, MediaStore.Files.FileColumns.MIME_TYPE) }
+                }
+            }
+
+            // 3) Pre-Android 10 fallback: use DATA path for Audio (avoid Downloads APIs on <29)
+            if (Build.VERSION.SDK_INT < 29) {
+                runCatching {
+                    val projection = arrayOf(
+                        MediaStore.Audio.Media._ID,
+                        MediaStore.Audio.Media.DISPLAY_NAME,
+                        MediaStore.Audio.Media.SIZE,
+                        MediaStore.Audio.Media.MIME_TYPE,
+                        MediaStore.MediaColumns.DATA,
+                    )
+                    val selection = "LOWER(" + MediaStore.MediaColumns.DATA + ") LIKE ?"
+                    val args = arrayOf("%/srivyaradio/%")
+                    resolver.query(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        projection,
+                        selection,
+                        args,
+                        null
+                    )?.use { c -> processCursor(c, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.MIME_TYPE) }
+                }
+                runCatching {
+                    val base = MediaStore.Files.getContentUri("external")
+                    val projection = arrayOf(
+                        MediaStore.Files.FileColumns._ID,
+                        MediaStore.Files.FileColumns.DISPLAY_NAME,
+                        MediaStore.Files.FileColumns.SIZE,
+                        MediaStore.Files.FileColumns.MIME_TYPE,
+                        MediaStore.MediaColumns.DATA,
+                    )
+                    val selection = "LOWER(" + MediaStore.MediaColumns.DATA + ") LIKE ? AND " + MediaStore.Files.FileColumns.MIME_TYPE + " LIKE ?"
+                    val args = arrayOf("%/srivyaradio/%", "audio/%")
+                    resolver.query(
+                        base,
+                        projection,
+                        selection,
+                        args,
+                        null
+                    )?.use { c -> processCursor(c, base, MediaStore.Files.FileColumns._ID, MediaStore.Files.FileColumns.DISPLAY_NAME, MediaStore.Files.FileColumns.SIZE, MediaStore.Files.FileColumns.MIME_TYPE) }
+                }
+            }
+        } catch (_: Exception) {
         }
     }
 
@@ -463,17 +649,38 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
     fun playDownloaded(item: DownloadedItem) {
         try {
-            val mediaItem = androidx.media3.common.MediaItem.Builder()
+            val lower = item.fileUri.lowercase()
+            val mime = when {
+                lower.endsWith(".mp3") -> androidx.media3.common.MimeTypes.AUDIO_MPEG
+                lower.endsWith(".aac") -> androidx.media3.common.MimeTypes.AUDIO_AAC
+                lower.endsWith(".m4a") -> "audio/mp4"
+                lower.endsWith(".wav") -> "audio/wav"
+                lower.endsWith(".flac") -> androidx.media3.common.MimeTypes.AUDIO_FLAC
+                else -> null
+            }
+
+            val mediaItemBuilder = androidx.media3.common.MediaItem.Builder()
+                .setMediaId(com.app.srivyaradio.utils.Constants.OFFLINE_ID + ":" + (item.id?.toString() ?: item.sourceUrl))
                 .setUri(item.fileUri)
-                .setMediaMetadata(
-                    androidx.media3.common.MediaMetadata.Builder()
-                        .setTitle(item.name)
-                        .setArtist(item.countrycode)
-                        .setIsPlayable(true)
-                        .build()
-                )
+            if (mime != null) mediaItemBuilder.setMimeType(mime)
+
+            val metaBuilder = androidx.media3.common.MediaMetadata.Builder()
+                .setTitle(item.name)
+                .setArtist(item.countrycode)
+                .setIsPlayable(true)
+            if (item.image.isNotBlank()) metaBuilder.setArtworkUri(item.image.toUri())
+
+            val mediaItem = mediaItemBuilder
+                .setMediaMetadata(metaBuilder.build())
                 .build()
-            player.setMediaItem(mediaItem)
+            // Prevent fallback to an existing queue item if loading fails
+            player.stop()
+            player.clearMediaItems()
+            // Disable shuffle and repeat for single offline item
+            player.shuffleModeEnabled = false
+            player.repeatMode = Player.REPEAT_MODE_OFF
+            // Use a single-item playlist to avoid implicit next
+            player.setMediaItems(listOf(mediaItem), /* resetPosition= */ true)
             player.prepare()
             player.play()
         } catch (_: Exception) {
@@ -993,7 +1200,16 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
                 super.onMediaMetadataChanged(mediaMetadata)
                 currentSong = mediaMetadata.title.toString()
-                getCurrentItem()
+                try {
+                    val id = player.currentMediaItem?.mediaId ?: ""
+                    val scheme = try { player.currentMediaItem?.localConfiguration?.uri?.scheme } catch (_: Exception) { null }
+                    isOfflineNow = id.startsWith(Constants.OFFLINE_ID) || scheme == "content" || scheme == "file"
+                    currentArtworkUrl = try { player.currentMediaItem?.mediaMetadata?.artworkUri?.toString() } catch (_: Exception) { null }
+                    if (id.startsWith(DISCOVER_ID) || id.startsWith(FAVORITES_ID)) {
+                        getCurrentItem()
+                    }
+                } catch (_: Exception) { }
+
                 try {
                     shuffleEnabled = player.shuffleModeEnabled
                     repeatMode = player.repeatMode
@@ -1007,27 +1223,28 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
                 try {
-                    val mediaId = player.currentMediaItem?.mediaId ?: ""
-                    val id = mediaId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
-                    if (id.isNotBlank()) {
-                        markStationOffline(id)
+                    val mediaItem = player.currentMediaItem
+                    val mediaId = mediaItem?.mediaId ?: ""
+                    val uriScheme = try { mediaItem?.localConfiguration?.uri?.scheme } catch (_: Exception) { null }
+                    val isOffline = mediaId.startsWith(com.app.srivyaradio.utils.Constants.OFFLINE_ID) || uriScheme == "content" || uriScheme == "file"
+                    if (!isOffline) {
+                        val id = mediaId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
+                        if (id.isNotBlank()) markStationOffline(id)
                     }
                 } catch (_: Exception) {
                 }
-                Toast.makeText(application, "Selected station is offline", Toast.LENGTH_SHORT)
-                    .show()
+                val mediaItem = player.currentMediaItem
+                val uriScheme = try { mediaItem?.localConfiguration?.uri?.scheme } catch (_: Exception) { null }
+                val isOffline = (mediaItem?.mediaId?.startsWith(com.app.srivyaradio.utils.Constants.OFFLINE_ID) == true) || uriScheme == "content" || uriScheme == "file"
+                Toast.makeText(application, if (isOffline) "Cannot play this file" else "Selected station is offline", Toast.LENGTH_SHORT).show()
 
                 try {
-                    val hasNext = try {
-                        player.hasNextMediaItem()
-                    } catch (_: Exception) {
-                        player.currentMediaItemIndex < player.mediaItemCount - 1
-                    }
-                    if (hasNext) {
-                        player.seekToNextMediaItem()
-                        if (!player.isPlaying) {
-                            player.prepare()
-                            player.play()
+                    val proceedNext = !isOffline
+                    if (proceedNext) {
+                        val hasNext = try { player.hasNextMediaItem() } catch (_: Exception) { player.currentMediaItemIndex < player.mediaItemCount - 1 }
+                        if (hasNext) {
+                            player.seekToNextMediaItem()
+                            if (!player.isPlaying) { player.prepare(); player.play() }
                         }
                     }
                 } catch (_: Exception) {
