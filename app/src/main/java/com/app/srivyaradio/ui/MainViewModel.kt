@@ -663,18 +663,6 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                                     createdAt = System.currentTimeMillis(),
                                 )
                             )
-                            seenUris.add(fileUri)
-                        }
-                    }
-
-                    // Insert all found items
-                    toInsert.forEach { item ->
-                        dbRepository.insertDownloadedItem(item)
-                    }
-                }
-                
-                // Refresh list
-                loadDownloads()
                 Toast.makeText(application, "Scan complete", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -826,6 +814,54 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
             player.play()
         } catch (_: Exception) {
             Toast.makeText(application, "Unable to play file", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun playDownloadedWithQueue(selectedItem: DownloadedItem, allItems: List<DownloadedItem>) {
+        try {
+            // Convert all items to MediaItem list
+            val mediaItems = allItems.mapNotNull { item ->
+                try {
+                    val lower = item.fileUri.lowercase()
+                    val mime = when {
+                        lower.endsWith(".mp3") -> androidx.media3.common.MimeTypes.AUDIO_MPEG
+                        lower.endsWith(".aac") -> androidx.media3.common.MimeTypes.AUDIO_AAC
+                        lower.endsWith(".m4a") -> "audio/mp4"
+                        lower.endsWith(".wav") -> "audio/wav"
+                        lower.endsWith(".flac") -> androidx.media3.common.MimeTypes.AUDIO_FLAC
+                        else -> null
+                    }
+                    val mediaItemBuilder = androidx.media3.common.MediaItem.Builder()
+                        .setMediaId(com.app.srivyaradio.utils.Constants.OFFLINE_ID + ":" + (item.id?.toString() ?: item.sourceUrl))
+                        .setUri(item.fileUri)
+                    if (mime != null) mediaItemBuilder.setMimeType(mime)
+                    val metaBuilder = androidx.media3.common.MediaMetadata.Builder()
+                        .setTitle(item.name)
+                        .setArtist(item.countrycode)
+                        .setIsPlayable(true)
+                    if (item.image.isNotBlank()) metaBuilder.setArtworkUri(item.image.toUri())
+                    mediaItemBuilder
+                        .setMediaMetadata(metaBuilder.build())
+                        .build()
+                } catch (_: Exception) {
+                    null
+                }
+            }
+            if (mediaItems.isEmpty()) {
+                Toast.makeText(application, "No playable items found", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val startIndex = mediaItems.indexOfFirst { it.mediaId.endsWith(selectedItem.id?.toString() ?: selectedItem.sourceUrl) }
+                .let { if (it >= 0) it else 0 }
+            player.stop()
+            player.clearMediaItems()
+            player.setMediaItems(mediaItems, startIndex, 0)
+            player.prepare()
+            player.play()
+            refreshQueue()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(application, "Unable to play files", Toast.LENGTH_SHORT).show()
         }
     }
 

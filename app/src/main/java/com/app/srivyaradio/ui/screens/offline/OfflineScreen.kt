@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -31,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.app.srivyaradio.ui.MainViewModel
+import com.app.srivyaradio.ui.components.Station
 
 @Composable
 fun OfflineScreen(mainViewModel: MainViewModel) {
@@ -112,20 +112,24 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
             }
         } else {
             items(filtered) { di ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                Station(
+                    name = di.name,
+                    image = di.image,
+                    label = di.countrycode,
+                    isOffline = false,
+                    isFavorite = false,
+                    onToggleFavorite = { /* No-op for offline items */ },
+                    onDownload = null, // No download button for offline items
+                    onClick = {
+                        // Play with queue - tap anywhere on the item to play
+                        mainViewModel.playDownloadedWithQueue(di, filtered)
+                    },
+                    onOptions = {
+                        // Delete functionality
+                        mainViewModel.deleteDownloaded(di)
+                    },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
-                ) {
-                    Text(text = di.name, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-                    IconButton(onClick = { mainViewModel.playDownloaded(di) }) {
-                        Icon(Icons.Filled.PlayArrow, contentDescription = null)
-                    }
-                    IconButton(onClick = { mainViewModel.deleteDownloaded(di) }) {
-                        Icon(Icons.Filled.Delete, contentDescription = null)
-                    }
-                }
+                )
             }
         }
     }
