@@ -1,0 +1,74 @@
+// Add this function after the playDownloaded function (around line 830)
+
+fun playDownloadedWithQueue(selectedItem: DownloadedItem, allItems: List<DownloadedItem>) {
+    try {
+        // Convert all items to MediaItem list
+        val mediaItems = allItems.mapNotNull { item ->
+            try {
+                val lower = item.fileUri.lowercase()
+                val mime = when {
+                    lower.endsWith(".mp3") -> androidx.media3.common.MimeTypes.AUDIO_MPEG
+                    lower.endsWith(".aac") -> androidx.media3.common.MimeTypes.AUDIO_AAC
+                    lower.endsWith(".m4a") -> "audio/mp4"
+                    lower.endsWith(".wav") -> "audio/wav"
+                    lower.endsWith(".flac") -> androidx.media3.common.MimeTypes.AUDIO_FLAC
+                    else -> null
+                }
+
+                val mediaItemBuilder = androidx.media3.common.MediaItem.Builder()
+                    .setMediaId(com.app.srivyaradio.utils.Constants.OFFLINE_ID + ":" + (item.id?.toString() ?: item.sourceUrl))
+                    .setUri(item.fileUri)
+                if (mime != null) mediaItemBuilder.setMimeType(mime)
+
+                val metaBuilder = androidx.media3.common.MediaMetadata.Builder()
+                    .setTitle(item.name)
+                    .setArtist(item.countrycode)
+                    .setIsPlayable(true)
+                if (item.image.isNotBlank()) metaBuilder.setArtworkUri(item.image.toUri())
+
+                mediaItemBuilder
+                    .setMediaMetadata(metaBuilder.build())
+                    .build()
+            } catch (_: Exception) {
+                null
+            }
+        }
+
+        if (mediaItems.isEmpty()) {
+            Toast.makeText(application, "No playable items found", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Find the index of the selected item
+        val startIndex = mediaItems.indexOfFirst { 
+            it.mediaId.endsWith(selectedItem.id?.toString() ?: selectedItem.sourceUrl)
+        }.let { if (it >= 0) it else 0 }
+
+        // Queue all items and start from selected
+        player.stop()
+        player.clearMediaItems()
+        player.setMediaItems(mediaItems, startIndex, 0)
+        player.prepare()
+        player.play()
+
+        // Update queue state for UI
+        refreshQueue()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        Toast.makeText(application, "Unable to play files", Toast.LENGTH_SHORT).show()
+    }
+}
+
+
+// Also add deduplication fix in importLocalFilesFromDownloads function
+// Replace the end of the function (around line 598-601) with:
+
+            }
+
+            // Deduplicate toInsert list before inserting to database to prevent duplicates from multiple queries
+            toInsert.distinctBy { it.fileUri }.forEach { item ->
+                dbRepository.insertDownloadedItem(item)
+            }
+        } catch (_: Exception) {
+        }
+    }
