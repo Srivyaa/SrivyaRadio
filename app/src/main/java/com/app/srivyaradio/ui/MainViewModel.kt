@@ -602,8 +602,11 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
     fun scanDeviceForAudio() {
         viewModelScope.launch {
-            try {
+            withContext(Dispatchers.Main) {
                 Toast.makeText(application, "Scanning device for audio...", Toast.LENGTH_SHORT).show()
+            }
+            
+            try {
                 withContext(Dispatchers.IO) {
                     val resolver = application.contentResolver
                     val toInsert = mutableListOf<DownloadedItem>()
@@ -663,10 +666,24 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                                     createdAt = System.currentTimeMillis(),
                                 )
                             )
-                Toast.makeText(application, "Scan complete", Toast.LENGTH_SHORT).show()
+                        }
+                        
+                        // Insert all new items in a single transaction
+                        toInsert.forEach { dbRepository.insertDownloadedItem(it) }
+                        
+                        // Update the UI with the new items
+                        loadDownloads()
+                    }
+                    
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(application, "Scan complete. Found ${toInsert.size} new audio files.", Toast.LENGTH_SHORT).show()
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(application, "Scan failed", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(application, "Scan failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
