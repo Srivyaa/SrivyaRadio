@@ -18,6 +18,8 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import android.widget.Toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import android.net.Uri
 import android.content.ContentUris
 import android.media.MediaScannerConnection
@@ -68,6 +70,19 @@ import com.revenuecat.purchases.interfaces.UpdatedCustomerInfoListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.app.srivyaradio.data.models.DownloadedItem
+import com.app.srivyaradio.utils.DownloadMp3Worker
+import java.io.File
+
+class MainViewModel(private val application: Application) : AndroidViewModel(application) {
+
+    private val repository = SharedPreferencesRepository(
+        application.getSharedPreferences(
             SHARED_PREF,
             Context.MODE_PRIVATE
         )
