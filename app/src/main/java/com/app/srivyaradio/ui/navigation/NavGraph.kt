@@ -14,10 +14,14 @@ import com.app.srivyaradio.ui.screens.recents.RecentsScreen
 import com.app.srivyaradio.ui.screens.queue.QueueScreen
 import com.app.srivyaradio.ui.screens.countries.ManageCountriesScreen
 import com.app.srivyaradio.ui.screens.offline.OfflineScreen
+import com.app.srivyaradio.ui.screens.devotional.DevotionalViewModel
+import com.app.srivyaradio.ui.screens.devotional.FoldersGridScreen
+import com.app.srivyaradio.ui.screens.devotional.FolderSongsScreen
 
 @Composable
 fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
     val mainViewModel: MainViewModel = viewModel()
+    val devotionalViewModel: DevotionalViewModel = viewModel()
     val initialRoute = mainViewModel.getStartDestinationRoute()
 
     NavHost(navController = navHostController, startDestination = initialRoute) {
@@ -40,7 +44,23 @@ fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
             ManageCountriesScreen(mainViewModel)
         }
         composable(Screen.OFFLINE.name) {
-            OfflineScreen(mainViewModel)
+            OfflineScreen(mainViewModel, navHostController)
+        }
+        composable(Screen.BROWSE.name) {
+            FoldersGridScreen(
+                navController = navHostController,
+                devotionalViewModel = devotionalViewModel,
+                mainViewModel = mainViewModel
+            )
+        }
+        composable("BROWSE_FOLDER/{folder_uuid}") { backStackEntry ->
+            val folderUuid = backStackEntry.arguments?.getString("folder_uuid") ?: ""
+            FolderSongsScreen(
+                navController = navHostController,
+                mainViewModel = mainViewModel,
+                devotionalViewModel = devotionalViewModel,
+                folderUuid = folderUuid
+            )
         }
     }
 }

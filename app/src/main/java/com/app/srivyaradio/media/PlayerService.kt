@@ -607,20 +607,20 @@ class PlayerService : MediaLibraryService() {
                     service.lastBrowsePage = page
                     service.lastBrowsePageSize = pageSize
 
-                    // If requesting Favorites, include favorite country folders as browsable nodes before stations
+                    // If requesting Favorites, include favorite country folders, browse folders, browse songs, and stations
                     if (parentId == com.app.srivyaradio.utils.Constants.FAVORITES_ID) {
                         val raw = service.dbRepository.getFavoriteEntries()
+
+                        // Favorite country folders (browsable)
                         val codes = raw.mapNotNull { fav ->
                             val id = fav.id
                             if (id.startsWith(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX))
                                 id.removePrefix(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX).uppercase()
                             else null
                         }.distinct()
-
-                        // Map codes to names using static list first, then user-managed overrides
                         val userEntries = service.repository.getUserCountryEntries()
                         val userByCode = userEntries.associateBy { it.code.uppercase() }
-                        val folderItems = codes.map { code ->
+                        val countryFolderItems = codes.map { code ->
                             val name = countryList.find { it.second.equals(code, true) }?.first
                                 ?: userByCode[code]?.name
                                 ?: code
@@ -638,8 +638,39 @@ class PlayerService : MediaLibraryService() {
                                 .build()
                         }.sortedBy { it.mediaMetadata.title?.toString() ?: "" }
 
+                        // Favorite browse folders (browsable)
+                        val browseFolderIds = raw.mapNotNull { fav ->
+                            val id = fav.id
+                            if (id.startsWith(com.app.srivyaradio.utils.Constants.BROWSE_FOLDER_PREFIX)) id else null
+                        }
+                        val allBrowseFolders = MediaItemFactory.getChildrenWithParent(
+                            com.app.srivyaradio.utils.Constants.BROWSE_ID, 1, 2000, service.dbRepository, service.countryCode
+                        )
+                        val favBrowseFolderItems = allBrowseFolders.filter { mi ->
+                            browseFolderIds.contains(mi.mediaId)
+                        }
+
+                        // Favorite browse songs (playable)
+                        val browseSongIds = raw.mapNotNull { fav ->
+                            val id = fav.id
+                            if (id.startsWith("BROWSE:")) id else null
+                        }
+                        val byFolder = browseSongIds.groupBy { id -> id.removePrefix("BROWSE:").substringBefore(":") }
+                        val favBrowseSongItems = mutableListOf<MediaItem>()
+                        for ((folderUuid, ids) in byFolder) {
+                            val children = MediaItemFactory.getChildrenWithParent(
+                                com.app.srivyaradio.utils.Constants.BROWSE_FOLDER_PREFIX + folderUuid,
+                                1, 2000, service.dbRepository, service.countryCode
+                            )
+                            ids.forEach { wanted ->
+                                children.firstOrNull { it.mediaId == wanted }?.let { favBrowseSongItems.add(it) }
+                            }
+                        }
+
+                        // Favorite stations
                         val stationItems = MediaItemFactory.getFavorite()
-                        val items = folderItems + stationItems
+
+                        val items = countryFolderItems + favBrowseFolderItems + favBrowseSongItems + stationItems
                         future.set(LibraryResult.ofItemList(ImmutableList.copyOf(items), null))
                         return@launch
                     }
@@ -739,12 +770,17 @@ class PlayerService : MediaLibraryService() {
                     service.lastBrowsePage = 1
                     service.lastBrowsePageSize = 20
 
-                    // If subscribing to Favorites, include folders + station items
+                    // If subscribing to Favorites, include country folders, browse folders, browse songs, and stations
                     if (parentId == com.app.srivyaradio.utils.Constants.FAVORITES_ID) {
                         val raw = service.dbRepository.getFavoriteEntries()
-                        val folderCount = raw.count { it.id.startsWith(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX) }
+                        val specialCount = raw.count { fav ->
+                            val id = fav.id
+                            id.startsWith(com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX) ||
+                            id.startsWith(com.app.srivyaradio.utils.Constants.BROWSE_FOLDER_PREFIX) ||
+                            id.startsWith("BROWSE:")
+                        }
                         val stationCount = MediaItemFactory.getFavorite().size
-                        val total = folderCount + stationCount
+                        val total = specialCount + stationCount
                         future.set(LibraryResult.ofVoid())
                         session.notifyChildrenChanged(browser, parentId, total, params)
                         return@launch
@@ -837,6 +873,13 @@ class PlayerService : MediaLibraryService() {
             val aaSearchQuery = try { selectedExtras?.getString("SEARCH_QUERY") } catch (_: Exception) { null }
             val isFlaggedSearch = try { selectedExtras?.getBoolean("IS_SEARCH_RESULT") == true } catch (_: Exception) { false }
             val hasRequestQuery = try { mediaItems.firstOrNull()?.requestMetadata?.searchQuery != null } catch (_: Exception) { false }
+
+            // If it's a Browse (folders) queue provided by the app, accept as-is
+            if (selected.mediaId.startsWith("BROWSE:")) {
+                return Futures.immediateFuture(
+                    MediaSession.MediaItemsWithStartPosition(mediaItems, startIndex, startPositionMs)
+                )
+            }
 
             // If it's an app-provided full search queue (flagged, but no query and no request query), accept as-is
             if (isFlaggedSearch && aaSearchQuery.isNullOrEmpty() && !hasRequestQuery && mediaItems.size > 1) {

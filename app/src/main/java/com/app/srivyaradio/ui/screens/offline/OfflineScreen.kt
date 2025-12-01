@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,13 +43,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.app.srivyaradio.data.models.DownloadedItem
 import com.app.srivyaradio.ui.MainViewModel
 import com.app.srivyaradio.ui.components.RadioLogoSmall
+import androidx.compose.material.icons.filled.ArrowBack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OfflineScreen(mainViewModel: MainViewModel) {
+fun OfflineScreen(mainViewModel: MainViewModel, navController: NavController) {
     val context = LocalContext.current
     val permission = remember {
         if (Build.VERSION.SDK_INT >= 33) Manifest.permission.READ_MEDIA_AUDIO
@@ -76,7 +79,17 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
         else mainViewModel.downloadedItems.filter { it.name.contains(q, ignoreCase = true) }
     }
 
-    PullToRefreshBox(
+    Column(modifier = Modifier.fillMaxSize()) {
+        TopAppBar(
+            title = { Text("Offline") },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                }
+            }
+        )
+
+        PullToRefreshBox(
         state = rememberPullToRefreshState(),
         isRefreshing = refreshing,
         onRefresh = {
@@ -156,6 +169,7 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
                 }
             }
         }
+    }
     }
 }
 

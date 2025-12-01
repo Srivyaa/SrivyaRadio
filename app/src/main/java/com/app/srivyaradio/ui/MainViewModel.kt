@@ -825,6 +825,14 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
+    suspend fun getFavoriteEntries(): List<Favorite> {
+        return try {
+            dbRepository.getFavoriteEntries()
+        } catch (_: Exception) {
+            listOf()
+        }
+    }
+
     suspend fun addOrRemoveFromFavorites(id: String) {
         try {
             val existing = dbRepository.getFavoriteItemById(id)
@@ -1079,18 +1087,86 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     // Queue management
     fun refreshQueue() {
         try {
-            val items = (0 until player.mediaItemCount).mapNotNull { idx ->
-                val mediaId = player.getMediaItemAt(idx).mediaId
-                val id = mediaId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
-                // Will fill on background
-                id
+            val count = player.mediaItemCount
+            val stationIds = mutableListOf<String>()
+            val synthetic = mutableListOf<Station>()
+            for (i in 0 until count) {
+                val mi = try { player.getMediaItemAt(i) } catch (_: Exception) { null } ?: continue
+                val mediaId = mi.mediaId
+                if (mediaId.startsWith(DISCOVER_ID) || mediaId.startsWith(FAVORITES_ID)) {
+                    val id = mediaId.replace(DISCOVER_ID, "").replace(FAVORITES_ID, "")
+                    stationIds.add(id)
+                } else {
+                    synthetic.add(buildSyntheticFromMediaItem(mi))
+                }
             }
             viewModelScope.launch {
-                val stations = items.mapNotNull { dbRepository.getRadioStationByID(it) }
-                queueStations = stations
+                try {
+                    val dbStations = stationIds.mapNotNull { id ->
+                        try { dbRepository.getRadioStationByID(id) } catch (_: Exception) { null }
+                    }
+                    queueStations = dbStations + synthetic
+                } catch (_: Exception) {
+                    queueStations = synthetic
+                }
             }
         } catch (_: Exception) {
             queueStations = listOf()
+        }
+    }
+
+    private fun buildSyntheticFromMediaItem(mi: androidx.media3.common.MediaItem): Station {
+        val mediaId = mi.mediaId
+        val title = mi.mediaMetadata.title?.toString().orEmpty().ifBlank { "Unknown" }
+        val art = try { mi.mediaMetadata.artworkUri?.toString().orEmpty() } catch (_: Exception) { "" }
+        val uri = try { mi.localConfiguration?.uri?.toString().orEmpty() } catch (_: Exception) { "" }
+        return Station(
+            id = mediaId,
+            favicon = art,
+            name = title,
+            country = "",
+            tags = "",
+            countrycode = "",
+            url_resolved = uri,
+            state = "",
+            homepage = "",
+            rank = 0
+        )
+    }
+
+    fun selectFromMediaItem(mi: androidx.media3.common.MediaItem) {
+        try {
+            selectedStation = buildSyntheticFromMediaItem(mi)
+            isOfflineNow = true
+            currentSong = mi.mediaMetadata.title?.toString().orEmpty()
+            currentArtworkUrl = try { mi.mediaMetadata.artworkUri?.toString() } catch (_: Exception) { null }
+        } catch (_: Exception) { }
+    }
+
+    fun downloadAudioUrl(url: String, name: String, image: String = "", country: String = "") {
+        try {
+            val base = url.substringBefore('?').lowercase()
+            val allowed = base.endsWith(".mp3") || base.endsWith(".aac") || base.endsWith(".m4a") || base.endsWith(".wav") || base.endsWith(".flac")
+            if (!allowed) {
+                Toast.makeText(application, "Only audio file links (mp3, aac, m4a, wav, flac) can be downloaded", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val input = Data.Builder()
+                .putString("url", url)
+                .putString("name", name)
+                .putString("countryCode", country)
+                .putString("image", image)
+                .build()
+            val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+            val req = OneTimeWorkRequestBuilder<DownloadMp3Worker>()
+                .setConstraints(constraints)
+                .addTag("dl:" + url)
+                .setInputData(input)
+                .build()
+            WorkManager.getInstance(application).enqueue(req)
+            Toast.makeText(application, "Downloading $name", Toast.LENGTH_SHORT).show()
+        } catch (_: Exception) {
+            Toast.makeText(application, "Failed to start download", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -1288,8 +1364,16 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 try {
                     val id = player.currentMediaItem?.mediaId ?: ""
                     val scheme = try { player.currentMediaItem?.localConfiguration?.uri?.scheme } catch (_: Exception) { null }
-                    isOfflineNow = id.startsWith(Constants.OFFLINE_ID) || scheme == "content" || scheme == "file"
+                    // Treat BROWSE items like non-station sources for UI metadata overrides
+                    val isBrowse = id.startsWith("BROWSE:")
+                    isOfflineNow = id.startsWith(Constants.OFFLINE_ID) || scheme == "content" || scheme == "file" || isBrowse
                     currentArtworkUrl = try { player.currentMediaItem?.mediaMetadata?.artworkUri?.toString() } catch (_: Exception) { null }
+                    if (isBrowse || id.startsWith(Constants.OFFLINE_ID)) {
+                        try {
+                            val mi = player.currentMediaItem
+                            if (mi != null) selectedStation = buildSyntheticFromMediaItem(mi)
+                        } catch (_: Exception) { }
+                    }
                     if (id.startsWith(DISCOVER_ID) || id.startsWith(FAVORITES_ID)) {
                         getCurrentItem()
                     }
@@ -1302,6 +1386,27 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 } catch (_: Exception) {
                 }
                 // Keep Up Next/queue in sync with the player
+                refreshQueue()
+            }
+
+            override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) {
+                super.onMediaItemTransition(mediaItem, reason)
+                try {
+                    val id = mediaItem?.mediaId ?: ""
+                    val scheme = try { mediaItem?.localConfiguration?.uri?.scheme } catch (_: Exception) { null }
+                    val isBrowse = id.startsWith("BROWSE:")
+                    isOfflineNow = id.startsWith(Constants.OFFLINE_ID) || scheme == "content" || scheme == "file" || isBrowse
+                    currentSong = mediaItem?.mediaMetadata?.title?.toString().orEmpty()
+                    currentArtworkUrl = try { mediaItem?.mediaMetadata?.artworkUri?.toString() } catch (_: Exception) { null }
+                    if (isBrowse || id.startsWith(Constants.OFFLINE_ID)) {
+                        try {
+                            if (mediaItem != null) selectedStation = buildSyntheticFromMediaItem(mediaItem)
+                        } catch (_: Exception) { }
+                    }
+                    if (id.startsWith(DISCOVER_ID) || id.startsWith(FAVORITES_ID)) {
+                        getCurrentItem()
+                    }
+                } catch (_: Exception) { }
                 refreshQueue()
             }
 
@@ -1372,21 +1477,24 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                     if (type != FAVORITES_ID) {
                         discoverFuture.addListener(
                             {
-                                val result = discoverFuture.get()!!
-                                val children = result.value!!
+                                val result = try { discoverFuture.get() } catch (_: Exception) { null }
+                                val children: List<androidx.media3.common.MediaItem> = try {
+                                    result?.value ?: emptyList()
+                                } catch (_: Exception) { emptyList() }
 
                                 getCountryCode()
 
                                 discoverStations = children.map {
+                                    val ex = it.mediaMetadata.extras
                                     Station(
                                         it.mediaId.replace(DISCOVER_ID, ""),
-                                        it.mediaMetadata.extras?.getString("ARTWORK")!!,
-                                        it.mediaMetadata.extras?.getString("NAME")!!,
-                                        it.mediaMetadata.extras?.getString("COUNTRY")!!,
-                                        it.mediaMetadata.extras?.getString("GENRE")!!,
-                                        it.mediaMetadata.extras?.getString("COUNTRY_CODE")!!,
-                                        it.mediaMetadata.extras?.getString("STREAMING_URL_RESOLVED")!!,
-                                        it.mediaMetadata.extras?.getString("STATE")!!
+                                        ex?.getString("ARTWORK") ?: "",
+                                        (ex?.getString("NAME") ?: "").ifBlank { it.mediaMetadata.title?.toString() ?: "" },
+                                        ex?.getString("COUNTRY") ?: "",
+                                        ex?.getString("GENRE") ?: "",
+                                        ex?.getString("COUNTRY_CODE") ?: "",
+                                        ex?.getString("STREAMING_URL_RESOLVED") ?: "",
+                                        ex?.getString("STATE") ?: ""
                                     )
                                 }.toMutableList()
                             }, ContextCompat.getMainExecutor(application)
@@ -1395,26 +1503,30 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
                     favoritesFuture.addListener(
                         {
-                            val result = favoritesFuture.get()!!
-                            val children = result.value!!
+                            val result = try { favoritesFuture.get() } catch (_: Exception) { null }
+                            val children: List<androidx.media3.common.MediaItem> = try {
+                                result?.value ?: emptyList()
+                            } catch (_: Exception) { emptyList() }
 
                             // Favorites can contain both folders (browsable) and station items (playable).
                             // Filter to playable items and use safe accessors to avoid NPEs.
-                            favoritesStations = children
-                                .filter { it.mediaMetadata.isPlayable == true }
-                                .map { mi ->
-                                    val ex = mi.mediaMetadata.extras
-                                    Station(
-                                        mi.mediaId.replace(FAVORITES_ID, ""),
-                                        ex?.getString("ARTWORK")?.orEmpty() ?: "",
-                                        ex?.getString("NAME")?.orEmpty() ?: mi.mediaMetadata.title?.toString().orEmpty(),
-                                        ex?.getString("COUNTRY")?.orEmpty() ?: "",
-                                        ex?.getString("GENRE")?.orEmpty() ?: "",
-                                        ex?.getString("COUNTRY_CODE")?.orEmpty() ?: "",
-                                        ex?.getString("STREAMING_URL_RESOLVED")?.orEmpty() ?: "",
-                                        ex?.getString("STATE")?.orEmpty() ?: ""
-                                    )
-                                }
+                            favoritesStations = try {
+                                children
+                                    .filter { it.mediaMetadata.isPlayable == true }
+                                    .map { mi ->
+                                        val ex = mi.mediaMetadata.extras
+                                        Station(
+                                            mi.mediaId.replace(FAVORITES_ID, ""),
+                                            ex?.getString("ARTWORK") ?: "",
+                                            (ex?.getString("NAME") ?: "").ifBlank { mi.mediaMetadata.title?.toString() ?: "" },
+                                            ex?.getString("COUNTRY") ?: "",
+                                            ex?.getString("GENRE") ?: "",
+                                            ex?.getString("COUNTRY_CODE") ?: "",
+                                            ex?.getString("STREAMING_URL_RESOLVED") ?: "",
+                                            ex?.getString("STATE") ?: ""
+                                        )
+                                    }
+                            } catch (_: Exception) { emptyList() }
                         }, ContextCompat.getMainExecutor(application)
                     )
                 }

@@ -84,6 +84,12 @@ fun MoreScreen(
             },modifier = Modifier.clickable { navController.navigate(Screen.MANAGE_COUNTRIES.name) })
 
             ListItem(headlineContent = {
+                Text(text = "Browse")
+            }, leadingContent = {
+                Icon(painterResource(id = R.drawable.ic_radio_outlined), contentDescription = null)
+            }, modifier = Modifier.clickable { navController.navigate(Screen.BROWSE.name) })
+
+            ListItem(headlineContent = {
                 Text(text = "Refresh all stations")
             }, leadingContent = {
                 Icon(Icons.Outlined.Refresh, contentDescription = null)

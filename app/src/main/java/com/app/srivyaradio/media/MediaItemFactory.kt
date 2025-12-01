@@ -28,8 +28,13 @@ import com.app.srivyaradio.utils.Constants.COUNTRY_PREFIX
 import com.app.srivyaradio.utils.Constants.ALPHABET_PREFIX
 import com.app.srivyaradio.utils.Constants.OFFLINE_ID
 import com.app.srivyaradio.utils.Constants.SHARED_PREF
+import com.app.srivyaradio.utils.Constants.BROWSE_ID
+import com.app.srivyaradio.utils.Constants.BROWSE_FOLDER_PREFIX
+import com.app.srivyaradio.utils.Constants.MORE_ID
 import com.app.srivyaradio.utils.DownloadStationsWorker
 import com.app.srivyaradio.utils.countryList
+import com.app.srivyaradio.data.repositories.DevotionalRepository
+import com.app.srivyaradio.data.api.devotional.FoldersResponse
 
 object MediaItemFactory {
     var discoverList: List<Station> = listOf()
@@ -41,6 +46,10 @@ object MediaItemFactory {
 
     val retrofit = StationsClient.getInstance()
     val apiInterface: StationsInterface = retrofit.create(StationsInterface::class.java)
+
+    // Folders (Browse) support
+    private val devotionalRepo = DevotionalRepository()
+    @Volatile private var foldersCache: FoldersResponse? = null
 
 
     private fun getStationLogoURL(station: Station): String {
@@ -143,7 +152,6 @@ object MediaItemFactory {
                 .setArtist(it.name).setDescription(it.country).setSubtitle(it.state)
                 .setWriter(it.countrycode)
                 .setIsBrowsable(false).setIsPlayable(true)
-                .setArtworkUri(getStationLogoURL(it).toUri())
                 .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).setExtras(baseExtras).build()
         ).build()
     }
@@ -222,10 +230,26 @@ object MediaItemFactory {
             ).build()
     }
 
+    private fun getMoreBrowsable(): MediaItem {
+        return MediaItem.Builder().setMediaId(MORE_ID).setMediaMetadata(
+                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                    .setTitle("More").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .build()
+            ).build()
+    }
+
+    private fun getBrowseBrowsable(): MediaItem {
+        return MediaItem.Builder().setMediaId(BROWSE_ID).setMediaMetadata(
+                MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
+                    .setTitle("Browse").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .build()
+            ).build()
+    }
+
     private fun getCountriesBrowsable(): MediaItem {
         return MediaItem.Builder().setMediaId(COUNTRIES_ID).setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
-                    .setTitle("Countries").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .setTitle("Music/Radio").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
                     .build()
             ).build()
     }
@@ -293,11 +317,35 @@ object MediaItemFactory {
 
             ROOT_ID -> {
                 listOf(
-                    getDiscoverBrowsable(),
-                    getFavoritesBrowsable(),
                     getCountriesBrowsable(),
-                    getOfflineBrowsable()
+                    getBrowseBrowsable(),
+                    getFavoritesBrowsable(),
+                    getOfflineBrowsable(),
+                    getMoreBrowsable(),
                 )
+            }
+
+            BROWSE_ID -> {
+                var resp = runCatching { foldersCache ?: devotionalRepo.getFolders(false).also { foldersCache = it } }.getOrNull()
+                var folders = (resp?.folders ?: emptyList()).distinctBy { it.folder_uuid }
+                if (folders.isEmpty()) {
+                    resp = runCatching { devotionalRepo.getFolders(true).also { foldersCache = it } }.getOrNull()
+                    folders = (resp?.folders ?: emptyList()).distinctBy { it.folder_uuid }
+                }
+                folders.map { folder ->
+                    MediaItem.Builder()
+                        .setMediaId(BROWSE_FOLDER_PREFIX + folder.folder_uuid)
+                        .setMediaMetadata(
+                            MediaMetadata.Builder()
+                                .setIsBrowsable(true)
+                                .setIsPlayable(false)
+                                .setTitle(folder.folder_name)
+                                .setArtworkUri(folder.cover.toUri())
+                                .setMediaType(MediaMetadata.MEDIA_TYPE_ALBUM)
+                                .build()
+                        )
+                        .build()
+                }
             }
 
             COUNTRIES_ID -> {
@@ -309,6 +357,55 @@ object MediaItemFactory {
 
             else -> {
                 when {
+                    parentId.startsWith(BROWSE_FOLDER_PREFIX) -> {
+                        val uuid = parentId.removePrefix(BROWSE_FOLDER_PREFIX)
+                        var resp = runCatching { foldersCache ?: devotionalRepo.getFolders(false).also { foldersCache = it } }.getOrNull()
+                        var folder = resp?.folders?.firstOrNull { it.folder_uuid == uuid }
+                        if (folder == null) {
+                            resp = runCatching { devotionalRepo.getFolders(true).also { foldersCache = it } }.getOrNull()
+                            folder = resp?.folders?.firstOrNull { it.folder_uuid == uuid }
+                        }
+                        if (folder == null) emptyList() else {
+                            folder.items.mapNotNull { song ->
+                                val title = song.title ?: song.name ?: return@mapNotNull null
+                                val streamUrl = song.url ?: song.url_resolved ?: return@mapNotNull null
+                                val artist = song.artist ?: folder.folder_name
+                                val art = (song.favurl ?: folder.cover)
+                                val detectedMime = run {
+                                    val u = streamUrl.lowercase()
+                                    when {
+                                        u.contains(".m3u8") -> MimeTypes.APPLICATION_M3U8
+                                        u.endsWith(".mp3") -> MimeTypes.AUDIO_MPEG
+                                        u.endsWith(".aac") || u.contains("/aac") -> MimeTypes.AUDIO_AAC
+                                        u.endsWith(".ogg") || u.contains("/ogg") -> MimeTypes.AUDIO_OGG
+                                        u.endsWith(".opus") -> MimeTypes.AUDIO_OPUS
+                                        u.endsWith(".flac") -> MimeTypes.AUDIO_FLAC
+                                        else -> null
+                                    }
+                                }
+                                val builder = MediaItem.Builder()
+                                    .setMediaId("BROWSE:" + folder.folder_uuid + ":" + title)
+                                    .setUri(streamUrl)
+                                if (detectedMime != null) builder.setMimeType(detectedMime)
+                                builder.setMediaMetadata(
+                                    MediaMetadata.Builder()
+                                        .setTitle(title)
+                                        .setArtist(artist)
+                                        .setAlbumTitle(song.album ?: folder.folder_name)
+                                        .setArtworkUri(art.toUri())
+                                        .setIsBrowsable(false)
+                                        .setIsPlayable(true)
+                                        .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                                        .build()
+                                ).build()
+                            }
+                        }
+                    }
+                    parentId == MORE_ID -> {
+                        listOf(
+                            getDiscoverBrowsable()
+                        )
+                    }
                     parentId == OFFLINE_ID -> {
                         dbRepository.getDownloadedItems().map { di ->
                             MediaItem.Builder()

@@ -10,6 +10,7 @@ enum class Screen(val routeName:String) {
     QUEUE("Queue"),
     MANAGE_COUNTRIES("Manage Countries"),
     OFFLINE("Offline"),
+    BROWSE("Browse"),
 }
 
 sealed class NavigationItem(val route: String, val icon: Int, val iconFilled: Int, val routeName:String) {

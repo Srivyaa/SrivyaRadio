@@ -50,6 +50,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import com.app.srivyaradio.data.models.Favorite
+import com.app.srivyaradio.utils.Constants.BROWSE_FOLDER_PREFIX
 
 @SuppressLint("UnnecessaryComposedModifier")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -59,6 +61,13 @@ fun FavoriteScreen(
 ) {
     var refreshing by remember { mutableStateOf(false) }
     LaunchedEffect(mainViewModel.favoritesStations) { if (refreshing) refreshing = false }
+    var favEntries by remember { mutableStateOf<List<Favorite>>(emptyList()) }
+    LaunchedEffect(Unit) {
+        favEntries = mainViewModel.getFavoriteEntries()
+    }
+    LaunchedEffect(mainViewModel.favoritesStations, mainViewModel.favoriteFolderCodes) {
+        favEntries = mainViewModel.getFavoriteEntries()
+    }
     var showSleepSheet by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var optionsStation by remember {
@@ -137,6 +146,65 @@ fun FavoriteScreen(
                     modifier = listModifier,
                     state = dragDropListState.lazyListState
                 ) {
+                    // Browse favorites: folders
+                    val browseFolderFavs = favEntries.filter { it.id.startsWith(BROWSE_FOLDER_PREFIX) }
+                    if (browseFolderFavs.isNotEmpty()) {
+                        item {
+                            Text(
+                                text = "Browse folders",
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        itemsIndexed(browseFolderFavs) { _, fav ->
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = "Folder • " + fav.id.removePrefix(BROWSE_FOLDER_PREFIX)
+                                )
+                                IconButton(onClick = {
+                                    scope.launch { mainViewModel.addOrRemoveFromFavorites(fav.id) }
+                                }) {
+                                    Icon(Icons.Filled.Favorite, contentDescription = null)
+                                }
+                            }
+                        }
+                    }
+
+                    // Browse favorites: songs
+                    val browseSongFavs = favEntries.filter { it.id.startsWith("BROWSE:") }
+                    if (browseSongFavs.isNotEmpty()) {
+                        item {
+                            Text(
+                                text = "Browse songs",
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        itemsIndexed(browseSongFavs) { _, fav ->
+                            val title = fav.id.removePrefix("BROWSE:").substringAfter(":", "")
+                            Row(
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = if (title.isNotBlank()) title else fav.id
+                                )
+                                IconButton(onClick = {
+                                    scope.launch { mainViewModel.addOrRemoveFromFavorites(fav.id) }
+                                }) {
+                                    Icon(Icons.Filled.Favorite, contentDescription = null)
+                                }
+                            }
+                        }
+                    }
+
                     // Favorite country folders
                     itemsIndexed(mainViewModel.favoriteFolderCodes) { _, code ->
                         val isExpanded = expandedFolders.contains(code)
