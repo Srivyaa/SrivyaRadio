@@ -78,7 +78,6 @@ kotlin {
         implementation("androidx.compose.ui:ui-tooling-preview")
         implementation("androidx.compose.material3:material3")
         implementation("com.google.android.gms:play-services-ads:24.5.0")
-        implementation("com.google.android.gms:play-services-wearable:18.1.0")
         implementation("com.google.firebase:firebase-crashlytics:20.0.0")
         implementation("com.google.firebase:firebase-analytics:23.0.0")
         implementation("androidx.compose.ui:ui-text:1.9.4")
