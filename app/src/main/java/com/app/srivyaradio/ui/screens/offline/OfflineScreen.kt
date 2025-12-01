@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,6 +60,12 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
     
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) mainViewModel.loadDownloads()
+    }
+
+    val folderLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) {
+            mainViewModel.scanSelectedFolder(uri)
+        }
     }
     
     LaunchedEffect(Unit) {
@@ -115,6 +122,11 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
                             if (granted) mainViewModel.scanDeviceForAudio() else launcher.launch(permission)
                         }) {
                             Icon(Icons.Filled.Search, contentDescription = "Scan Device")
+                        }
+                        IconButton(onClick = {
+                            folderLauncher.launch(null)
+                        }) {
+                            Icon(Icons.Filled.FolderOpen, contentDescription = "Select Folder")
                         }
                         IconButton(onClick = {
                             val granted = ContextCompat.checkSelfPermission(context, permission) == android.content.pm.PackageManager.PERMISSION_GRANTED
