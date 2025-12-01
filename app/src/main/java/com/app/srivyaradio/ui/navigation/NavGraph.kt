@@ -14,6 +14,7 @@ import com.app.srivyaradio.ui.screens.recents.RecentsScreen
 import com.app.srivyaradio.ui.screens.queue.QueueScreen
 import com.app.srivyaradio.ui.screens.countries.ManageCountriesScreen
 import com.app.srivyaradio.ui.screens.offline.OfflineScreen
+import com.app.srivyaradio.ui.screens.about.AboutScreen
 
 @Composable
 fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
@@ -41,6 +42,11 @@ fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
         }
         composable(Screen.OFFLINE.name) {
             OfflineScreen(mainViewModel)
+        }
+        composable(Screen.ABOUT.name) {
+            AboutScreen(
+                onBackClick = { navHostController.navigateUp() }
+            )
         }
     }
 }
