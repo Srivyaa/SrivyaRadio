@@ -119,10 +119,10 @@ fun OfflineScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit)? = nul
 
     Scaffold(
         topBar = {
-            if (onBackClick != null) {
-                TopAppBar(
-                    title = { Text("Offline Library") },
-                    navigationIcon = {
+            TopAppBar(
+                title = { Text("Offline Library") },
+                navigationIcon = {
+                    if (onBackClick != null) {
                         IconButton(onClick = onBackClick) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -130,8 +130,8 @@ fun OfflineScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit)? = nul
                             )
                         }
                     }
-                )
-            }
+                }
+            )
         }
     ) { innerPadding ->
         PullToRefreshBox(

@@ -63,10 +63,10 @@ fun ManageCountriesScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit
 
     Scaffold(
         topBar = {
-            if (onBackClick != null) {
-                TopAppBar(
-                    title = { Text("Manage Countries") },
-                    navigationIcon = {
+            TopAppBar(
+                title = { Text("Manage Countries") },
+                navigationIcon = {
+                    if (onBackClick != null) {
                         IconButton(onClick = onBackClick) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -74,8 +74,8 @@ fun ManageCountriesScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit
                             )
                         }
                     }
-                )
-            }
+                }
+            )
         }
     ) { innerPadding ->
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding).padding(12.dp)) {

@@ -8,14 +8,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,13 +37,10 @@ import com.app.srivyaradio.ui.components.RadioLogoSmall
 import com.app.srivyaradio.ui.components.rememberDragDropListState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QueueScreen(mainViewModel: MainViewModel) {
+fun QueueScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit)? = null) {
     val scope = rememberCoroutineScope()
     var overscrollJob by remember { mutableStateOf<Job?>(null) }
     var refreshing by remember { mutableStateOf(false) }
@@ -51,13 +54,31 @@ fun QueueScreen(mainViewModel: MainViewModel) {
         mainViewModel.refreshQueue()
     })
 
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Manage Queue") },
+                navigationIcon = {
+                    if (onBackClick != null) {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
     PullToRefreshBox(
         state = rememberPullToRefreshState(),
         isRefreshing = refreshing,
         onRefresh = {
             refreshing = true
             mainViewModel.refreshQueue()
-        }
+        },
+        modifier = Modifier.fillMaxSize().padding(innerPadding)
     ) {
     LazyColumn(
         modifier = Modifier
@@ -101,6 +122,7 @@ fun QueueScreen(mainViewModel: MainViewModel) {
                 }
             }
         }
+    }
     }
     }
 }

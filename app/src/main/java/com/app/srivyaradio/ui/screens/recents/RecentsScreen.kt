@@ -5,8 +5,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,26 +34,41 @@ import com.app.srivyaradio.ui.components.OptionsBottomSheet
 import com.app.srivyaradio.ui.components.Station
 import com.app.srivyaradio.utils.Constants
 import kotlinx.coroutines.launch
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RecentsScreen(mainViewModel: MainViewModel) {
+fun RecentsScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit)? = null) {
     val recents = mainViewModel.recentStations
     val scope = rememberCoroutineScope()
     var optionsStation by remember { mutableStateOf<Station?>(null) }
     var refreshing by remember { mutableStateOf(false) }
     LaunchedEffect(mainViewModel.recentStations) { if (refreshing) refreshing = false }
 
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Recently Played") },
+                navigationIcon = {
+                    if (onBackClick != null) {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
     PullToRefreshBox(
         state = rememberPullToRefreshState(),
         isRefreshing = refreshing,
         onRefresh = {
             refreshing = true
             mainViewModel.loadRecents()
-        }
+        },
+        modifier = Modifier.fillMaxSize().padding(innerPadding)
     ) {
         if (recents.isEmpty()) {
             androidx.compose.foundation.layout.Box(
@@ -82,6 +106,7 @@ fun RecentsScreen(mainViewModel: MainViewModel) {
             mainViewModel = mainViewModel,
             onSleepTimer = { optionsStation = null }
         )
+    }
     }
 }
 

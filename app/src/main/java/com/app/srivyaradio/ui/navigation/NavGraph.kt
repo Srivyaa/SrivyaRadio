@@ -32,13 +32,22 @@ fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
             MoreScreen(mainViewModel = mainViewModel, navController = navHostController)
         }
         composable(Screen.RECENTS.name) {
-            RecentsScreen(mainViewModel)
+            RecentsScreen(
+                mainViewModel = mainViewModel,
+                onBackClick = { navHostController.navigateUp() }
+            )
         }
         composable(Screen.QUEUE.name) {
-            QueueScreen(mainViewModel)
+            QueueScreen(
+                mainViewModel = mainViewModel,
+                onBackClick = { navHostController.navigateUp() }
+            )
         }
         composable(Screen.MANAGE_COUNTRIES.name) {
-            ManageCountriesScreen(mainViewModel)
+            ManageCountriesScreen(
+                mainViewModel = mainViewModel,
+                onBackClick = { navHostController.navigateUp() }
+            )
         }
         composable(Screen.OFFLINE.name) {
             OfflineScreen(
