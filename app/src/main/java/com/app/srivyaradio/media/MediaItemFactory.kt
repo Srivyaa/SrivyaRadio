@@ -225,7 +225,7 @@ object MediaItemFactory {
     private fun getCountriesBrowsable(): MediaItem {
         return MediaItem.Builder().setMediaId(COUNTRIES_ID).setMediaMetadata(
                 MediaMetadata.Builder().setIsBrowsable(true).setIsPlayable(false)
-                    .setTitle("Countries").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
+                    .setTitle("Music/Radio").setMediaType(MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
                     .build()
             ).build()
     }

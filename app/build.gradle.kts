@@ -15,8 +15,8 @@ android {
         applicationId = "com.srivyaradio.app"
         minSdk = 24
         targetSdk = 36
-        versionCode = 53
-        versionName = "3.0-prod"
+        versionCode = 1
+        versionName = "1.0.0.0-Test"
 
         resValue("string", "app_id", "ca-app-pub-3940256099942544~3347511713")
         resValue ("string", "interstitial_ad_id", "ca-app-pub-3940256099942544/1033173712")
@@ -78,7 +78,6 @@ kotlin {
         implementation("androidx.compose.ui:ui-tooling-preview")
         implementation("androidx.compose.material3:material3")
         implementation("com.google.android.gms:play-services-ads:24.5.0")
-        implementation("com.google.android.gms:play-services-wearable:18.1.0")
         implementation("com.google.firebase:firebase-crashlytics:20.0.0")
         implementation("com.google.firebase:firebase-analytics:23.0.0")
         implementation("androidx.compose.ui:ui-text:1.9.4")

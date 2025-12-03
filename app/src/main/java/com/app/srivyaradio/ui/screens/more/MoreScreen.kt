@@ -17,6 +17,7 @@ import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedButton
@@ -94,6 +95,12 @@ fun MoreScreen(
             }, leadingContent = {
                 Icon(Icons.Outlined.FileDownload, contentDescription = null)
             }, modifier = Modifier.clickable { navController.navigate(Screen.OFFLINE.name) })
+            
+            ListItem(headlineContent = {
+                Text(text = "About")
+            }, leadingContent = {
+                Icon(Icons.Outlined.Info, contentDescription = null)
+            }, modifier = Modifier.clickable { navController.navigate(Screen.ABOUT.name) })
 
             OutlinedButton(
                 onClick = {
