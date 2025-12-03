@@ -41,7 +41,10 @@ fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
             ManageCountriesScreen(mainViewModel)
         }
         composable(Screen.OFFLINE.name) {
-            OfflineScreen(mainViewModel)
+            OfflineScreen(
+                mainViewModel = mainViewModel,
+                onBackClick = { navHostController.navigateUp() }
+            )
         }
         composable(Screen.ABOUT.name) {
             AboutScreen(

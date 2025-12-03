@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -25,7 +26,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -50,7 +53,7 @@ import com.app.srivyaradio.ui.components.Station
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OfflineScreen(mainViewModel: MainViewModel) {
+fun OfflineScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit)? = null) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val permission = remember {
@@ -114,12 +117,30 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
     
     val displayStations = filteredItems.map { it.toStation() }
 
-    PullToRefreshBox(
-        state = rememberPullToRefreshState(),
-        isRefreshing = refreshing,
-        onRefresh = { refreshing = true }
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+    Scaffold(
+        topBar = {
+            if (onBackClick != null) {
+                TopAppBar(
+                    title = { Text("Offline Library") },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    ) { innerPadding ->
+        PullToRefreshBox(
+            state = rememberPullToRefreshState(),
+            isRefreshing = refreshing,
+            onRefresh = { refreshing = true },
+            modifier = Modifier.fillMaxSize()
+        ) {
+        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             AppSearchBar(
                 searchStations = displayStations, // Use filtered list for search results too
                 onSearch = { searchQuery = it },
@@ -222,6 +243,7 @@ fun OfflineScreen(mainViewModel: MainViewModel) {
             }
         }
     }
+}
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

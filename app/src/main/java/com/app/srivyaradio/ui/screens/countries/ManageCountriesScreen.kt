@@ -10,13 +10,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -28,8 +32,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.app.srivyaradio.ui.MainViewModel
 import com.app.srivyaradio.utils.countryList
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ManageCountriesScreen(mainViewModel: MainViewModel) {
+fun ManageCountriesScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit)? = null) {
     val (name, setName) = remember { mutableStateOf("") }
     val (code, setCode) = remember { mutableStateOf("") }
     val userCountries = mainViewModel.getCountryListForUI().filter { it !in countryList }
@@ -56,7 +61,24 @@ fun ManageCountriesScreen(mainViewModel: MainViewModel) {
         onResult = { uri -> if (uri != null) mainViewModel.saveTemplateToUri(uri) }
     )
 
-    Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
+    Scaffold(
+        topBar = {
+            if (onBackClick != null) {
+                TopAppBar(
+                    title = { Text("Manage Countries") },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.fillMaxSize().padding(innerPadding).padding(12.dp)) {
         // Import/Export controls
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
             Button(onClick = {
@@ -109,5 +131,6 @@ fun ManageCountriesScreen(mainViewModel: MainViewModel) {
                 }
             }
         }
+    }
     }
 }
