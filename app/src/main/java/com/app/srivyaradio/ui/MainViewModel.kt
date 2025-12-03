@@ -790,6 +790,22 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
 
     fun playOfflineItems(items: List<DownloadedItem>, startIndex: Int) {
         try {
+            // Convert the starting item to a Station object so the mini player UI appears
+            val startItem = items.getOrNull(startIndex) ?: items.firstOrNull()
+            if (startItem != null) {
+                selectedStation = Station(
+                    id = startItem.id?.toString() ?: startItem.sourceUrl,
+                    favicon = startItem.image,
+                    name = startItem.name,
+                    country = startItem.countrycode, // Artist
+                    tags = "",
+                    countrycode = "",
+                    url_resolved = startItem.fileUri,
+                    state = "",
+                    homepage = "",
+                    rank = 0
+                )
+            }
             val mediaItems = items.map { item ->
                 val mediaItemBuilder = androidx.media3.common.MediaItem.Builder()
                     .setMediaId(com.app.srivyaradio.utils.Constants.OFFLINE_ID + ":" + (item.id?.toString() ?: item.sourceUrl))
