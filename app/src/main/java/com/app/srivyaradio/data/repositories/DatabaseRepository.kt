@@ -5,6 +5,7 @@ import com.app.srivyaradio.data.database.AppDatabase
 import com.app.srivyaradio.data.database.EntityDao
 import com.app.srivyaradio.data.models.Favorite
 import com.app.srivyaradio.data.models.Station
+import com.app.srivyaradio.data.models.UnifiedStation
 import com.app.srivyaradio.data.models.DownloadedItem
 
 class DatabaseRepository(application: Application) {
@@ -182,4 +183,33 @@ class DatabaseRepository(application: Application) {
     suspend fun getDownloadedItemsByCountry(code: String): List<DownloadedItem> = entityDao.getDownloadedItemsByCountry(code)
     suspend fun getDownloadedItemBySourceUrl(url: String): DownloadedItem? = entityDao.getDownloadedItemBySourceUrl(url)
     suspend fun deleteDownloadedItem(item: DownloadedItem) = entityDao.deleteDownloadedItem(item)
+
+    // ----- Unified Station methods -----
+    suspend fun getAllUnifiedStations(): List<UnifiedStation> {
+        return entityDao.getUnifiedStations()
+    }
+
+    suspend fun getUnifiedStationsByType(sourceType: String): List<UnifiedStation> {
+        return entityDao.getUnifiedStationsByType(sourceType)
+    }
+
+    suspend fun getUnifiedStationById(id: String): UnifiedStation? {
+        return entityDao.getUnifiedStationById(id)
+    }
+
+    suspend fun deleteAllUnifiedStations() {
+        entityDao.deleteAllUnifiedStations()
+    }
+
+    suspend fun deleteUnifiedStationsByType(sourceType: String) {
+        entityDao.deleteUnifiedStationsByType(sourceType)
+    }
+
+    suspend fun insertUnifiedStation(unifiedStation: UnifiedStation) {
+        entityDao.insertUnifiedStation(unifiedStation)
+    }
+
+    suspend fun insertUnifiedStations(unifiedStations: List<UnifiedStation>) {
+        entityDao.insertUnifiedStations(unifiedStations)
+    }
 }

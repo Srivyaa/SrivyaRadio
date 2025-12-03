@@ -17,6 +17,7 @@ import androidx.work.WorkRequest
 import com.app.srivyaradio.data.api.stations.StationsClient
 import com.app.srivyaradio.data.api.stations.StationsInterface
 import com.app.srivyaradio.data.models.Station
+import com.app.srivyaradio.data.models.UnifiedStation
 import com.app.srivyaradio.data.repositories.DatabaseRepository
 import com.app.srivyaradio.data.repositories.SharedPreferencesRepository
 import com.app.srivyaradio.utils.Constants
@@ -34,6 +35,7 @@ import com.app.srivyaradio.utils.countryList
 object MediaItemFactory {
     var discoverList: List<Station> = listOf()
     private var favoriteList: List<Station> = listOf()
+    var devotionalList: List<UnifiedStation> = listOf()
 
     var onFinishedLoading: (() -> Unit)? = null
     var onFinishedReadingDiscover: (() -> Unit)? = null
@@ -46,6 +48,14 @@ object MediaItemFactory {
     private fun getStationLogoURL(station: Station): String {
         var url = station.favicon.replaceFirst("http://", "https://")
         if (station.favicon.isEmpty()) {
+            url = Constants.RADIO_LOGO
+        }
+        return url
+    }
+    
+    private fun getUnifiedStationLogoURL(station: UnifiedStation): String {
+        var url = station.favicon.ifEmpty { station.favurl }.replaceFirst("http://", "https://")
+        if (url.isEmpty()) {
             url = Constants.RADIO_LOGO
         }
         return url
@@ -148,6 +158,70 @@ object MediaItemFactory {
         ).build()
     }
 
+    fun unifiedStationToMediaItem(it: UnifiedStation, tag: String): MediaItem {
+        return unifiedStationToMediaItemWithExtras(it, tag, null)
+    }
+
+    fun unifiedStationToMediaItemWithExtras(it: UnifiedStation, tag: String, additionalExtras: Bundle?): MediaItem {
+        val baseExtras = Bundle().apply {
+            putString("STREAMING_URL_RESOLVED", it.url_resolved)
+            putString("COUNTRY_CODE", it.countrycode)
+            putString("COUNTRY", it.country)
+            putString("STATE", it.state)
+            putString("GENRE", it.tags)
+            putString("NAME", it.name)
+            putString("ARTWORK", it.favicon)
+            putString("SOURCE_TYPE", it.sourceType)
+            
+            // Add devotional-specific extras if available
+            if (it.title.isNotEmpty()) putString("TITLE", it.title)
+            if (it.album.isNotEmpty()) putString("ALBUM", it.album)
+            if (it.artist.isNotEmpty()) putString("ARTIST", it.artist)
+            if (it.year > 0) putInt("YEAR", it.year)
+            if (it.url.isNotEmpty()) putString("URL", it.url)
+            if (it.favurl.isNotEmpty()) putString("FAVURL", it.favurl)
+            if (it.language.isNotEmpty()) putString("LANGUAGE", it.language)
+            if (it.bitrate > 0) putInt("BITRATE", it.bitrate)
+            if (it.codec.isNotEmpty()) putString("CODEC", it.codec)
+            if (it.votes > 0) putInt("VOTES", it.votes)
+            if (it.clickCount > 0) putInt("CLICK_COUNT", it.clickCount)
+        }
+        if (additionalExtras != null) baseExtras.putAll(additionalExtras)
+
+        val streamingUrl = if (it.url_resolved.isNotEmpty()) it.url_resolved else it.url
+        
+        val detectedMime = run {
+            val u = streamingUrl.lowercase()
+            when {
+                u.contains(".m3u8") -> MimeTypes.APPLICATION_M3U8
+                u.endsWith(".mp3") -> MimeTypes.AUDIO_MPEG
+                u.endsWith(".aac") || u.contains("/aac") -> MimeTypes.AUDIO_AAC
+                u.endsWith(".ogg") || u.contains("/ogg") -> MimeTypes.AUDIO_OGG
+                u.endsWith(".opus") -> MimeTypes.AUDIO_OPUS
+                u.endsWith(".flac") -> MimeTypes.AUDIO_FLAC
+                else -> null
+            }
+        }
+
+        val builder = MediaItem.Builder()
+            .setMediaId(tag + it.id)
+            .setUri(streamingUrl)
+        if (detectedMime != null) builder.setMimeType(detectedMime)
+
+        return builder.setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(it.title.ifEmpty { it.name })
+                .setAlbumTitle(it.album.ifEmpty { it.name })
+                .setArtist(it.artist.ifEmpty { it.name })
+                .setDescription(it.country)
+                .setSubtitle(it.state)
+                .setWriter(it.countrycode)
+                .setIsBrowsable(false).setIsPlayable(true)
+                .setArtworkUri(getUnifiedStationLogoURL(it).toUri())
+                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).setExtras(baseExtras).build()
+        ).build()
+    }
+
 
     fun getDiscover(): List<MediaItem> {
         return discoverList.map {
@@ -158,6 +232,12 @@ object MediaItemFactory {
     fun getFavorite(): List<MediaItem> {
         return favoriteList.map {
             stationToMediaItem(it, FAVORITES_ID)
+        }
+    }
+    
+    fun getDevotional(): List<MediaItem> {
+        return devotionalList.map {
+            unifiedStationToMediaItem(it, Constants.DEVOTIONAL_ID)
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.app.srivyaradio.data.models.Favorite
 import com.app.srivyaradio.data.models.Station
+import com.app.srivyaradio.data.models.UnifiedStation
 import com.app.srivyaradio.data.models.DownloadedItem
 
 @Dao
@@ -79,6 +80,28 @@ interface EntityDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStation(radioStations: List<Station>)
+
+    // Unified Station DAO methods
+    @Query("SELECT * FROM unified_stations ORDER BY name COLLATE NOCASE ASC")
+    suspend fun getUnifiedStations(): List<UnifiedStation>
+
+    @Query("SELECT * FROM unified_stations WHERE sourceType = :sourceType ORDER BY name COLLATE NOCASE ASC")
+    suspend fun getUnifiedStationsByType(sourceType: String): List<UnifiedStation>
+
+    @Query("SELECT * FROM unified_stations WHERE id = (:id)")
+    suspend fun getUnifiedStationById(id: String): UnifiedStation?
+
+    @Query("DELETE FROM unified_stations")
+    suspend fun deleteAllUnifiedStations()
+
+    @Query("DELETE FROM unified_stations WHERE sourceType = :sourceType")
+    suspend fun deleteUnifiedStationsByType(sourceType: String)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUnifiedStation(unifiedStation: UnifiedStation)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUnifiedStations(unifiedStations: List<UnifiedStation>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavoriteItem(favoriteStation: Favorite)

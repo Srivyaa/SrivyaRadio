@@ -15,8 +15,8 @@ android {
         applicationId = "com.srivyaradio.app"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0.0-Test"
+        versionCode = 2
+        versionName = "1.1.0.0-Devotional"
 
         resValue("string", "app_id", "ca-app-pub-3940256099942544~3347511713")
         resValue ("string", "interstitial_ad_id", "ca-app-pub-3940256099942544/1033173712")
