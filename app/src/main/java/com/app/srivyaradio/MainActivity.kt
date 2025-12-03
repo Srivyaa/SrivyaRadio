@@ -58,6 +58,7 @@ import com.app.srivyaradio.ui.components.MiniPlayerController
 import com.app.srivyaradio.ui.navigation.BottomNavigationBar
 import com.app.srivyaradio.ui.navigation.NavGraph
 import com.app.srivyaradio.ui.navigation.NavigationItem
+import com.app.srivyaradio.ui.navigation.Screen
 import com.app.srivyaradio.ui.screens.player.PlayerScreen
 import com.app.srivyaradio.ui.theme.RadioTimeV3Theme
 import com.app.srivyaradio.utils.ThemeMode
@@ -99,6 +100,11 @@ class MainActivity : ComponentActivity() {
 
             showAppBar = when (navBackStackEntry?.destination?.route) {
                 NavigationItem.Discover.route -> false
+                Screen.RECENTS.name -> false
+                Screen.QUEUE.name -> false
+                Screen.MANAGE_COUNTRIES.name -> false
+                Screen.OFFLINE.name -> false
+                Screen.ABOUT.name -> false
                 else -> true
             }
 
