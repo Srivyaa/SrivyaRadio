@@ -788,48 +788,50 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
-    fun playDownloaded(item: DownloadedItem) {
+    fun playOfflineItems(items: List<DownloadedItem>, startIndex: Int) {
         try {
-            val lower = item.fileUri.lowercase()
-            val mime = when {
-                lower.endsWith(".mp3") -> androidx.media3.common.MimeTypes.AUDIO_MPEG
-                lower.endsWith(".aac") -> androidx.media3.common.MimeTypes.AUDIO_AAC
-                lower.endsWith(".m4a") -> "audio/mp4"
-                lower.endsWith(".wav") -> "audio/wav"
-                lower.endsWith(".flac") -> androidx.media3.common.MimeTypes.AUDIO_FLAC
-                else -> null
+            val mediaItems = items.map { item ->
+                val mediaItemBuilder = androidx.media3.common.MediaItem.Builder()
+                    .setMediaId(com.app.srivyaradio.utils.Constants.OFFLINE_ID + ":" + (item.id?.toString() ?: item.sourceUrl))
+                    .setUri(item.fileUri)
+
+                val lower = item.fileUri.lowercase()
+                val mime = when {
+                    lower.endsWith(".mp3") -> androidx.media3.common.MimeTypes.AUDIO_MPEG
+                    lower.endsWith(".aac") -> androidx.media3.common.MimeTypes.AUDIO_AAC
+                    lower.endsWith(".m4a") -> "audio/mp4"
+                    lower.endsWith(".wav") -> "audio/wav"
+                    lower.endsWith(".flac") -> androidx.media3.common.MimeTypes.AUDIO_FLAC
+                    else -> null
+                }
+                if (mime != null) mediaItemBuilder.setMimeType(mime)
+
+                val metaBuilder = androidx.media3.common.MediaMetadata.Builder()
+                    .setTitle(item.name)
+                    .setArtist(item.countrycode)
+                    .setIsPlayable(true)
+                if (item.image.isNotBlank()) metaBuilder.setArtworkUri(item.image.toUri())
+
+                mediaItemBuilder.setMediaMetadata(metaBuilder.build()).build()
             }
 
-            val mediaItemBuilder = androidx.media3.common.MediaItem.Builder()
-                .setMediaId(com.app.srivyaradio.utils.Constants.OFFLINE_ID + ":" + (item.id?.toString() ?: item.sourceUrl))
-                .setUri(item.fileUri)
-            if (mime != null) mediaItemBuilder.setMimeType(mime)
-
-            val metaBuilder = androidx.media3.common.MediaMetadata.Builder()
-                .setTitle(item.name)
-                .setArtist(item.countrycode)
-                .setIsPlayable(true)
-            if (item.image.isNotBlank()) metaBuilder.setArtworkUri(item.image.toUri())
-
-            val mediaItem = mediaItemBuilder
-                .setMediaMetadata(metaBuilder.build())
-                .build()
-            // Prevent fallback to an existing queue item if loading fails
             player.stop()
             player.clearMediaItems()
-            // Disable shuffle and repeat for single offline item
-            player.shuffleModeEnabled = false
-            player.repeatMode = Player.REPEAT_MODE_OFF
-            // Use a single-item playlist to avoid implicit next
-            player.setMediaItems(listOf(mediaItem), /* resetPosition= */ true)
+            // Enable shuffle/repeat for list
+            player.shuffleModeEnabled = shuffleEnabled
+            player.repeatMode = repeatMode
+            
+            player.setMediaItems(mediaItems, startIndex, 0)
             player.prepare()
             player.play()
+            
+            // Update queue state
+            refreshQueue()
         } catch (_: Exception) {
-            Toast.makeText(application, "Unable to play file", Toast.LENGTH_SHORT).show()
+            Toast.makeText(application, "Unable to play files", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Recents
     fun loadRecents() {
         viewModelScope.launch {
             try {
