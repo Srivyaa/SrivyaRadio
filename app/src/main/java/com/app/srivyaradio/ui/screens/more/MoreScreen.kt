@@ -79,10 +79,10 @@ fun MoreScreen(
                 Icon(painterResource(id = R.drawable.ic_radio_filled), contentDescription = null)
             },modifier = Modifier.clickable { navController.navigate(Screen.QUEUE.name) })
             ListItem(headlineContent = {
-                Text(text = "Manage countries")
+                Text(text = "Manage Categories")
             }, leadingContent = {
                 Icon(Icons.Outlined.Settings, contentDescription = null)
-            },modifier = Modifier.clickable { navController.navigate(Screen.MANAGE_COUNTRIES.name) })
+            }, modifier = Modifier.clickable { navController.navigate(Screen.MANAGE_CATEGORIES.name) })
 
             ListItem(headlineContent = {
                 Text(text = "Refresh all stations")

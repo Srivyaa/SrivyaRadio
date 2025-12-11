@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
                 NavigationItem.Discover.route -> false
                 Screen.RECENTS.name -> false
                 Screen.QUEUE.name -> false
-                Screen.MANAGE_COUNTRIES.name -> false
+                Screen.MANAGE_CATEGORIES.name -> false
                 Screen.OFFLINE.name -> false
                 Screen.ABOUT.name -> false
                 else -> true

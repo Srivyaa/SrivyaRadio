@@ -64,7 +64,7 @@ fun ManageCountriesScreen(mainViewModel: MainViewModel, onBackClick: (() -> Unit
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Manage Countries") },
+                title = { Text("Manage Categories") },
                 navigationIcon = {
                     if (onBackClick != null) {
                         IconButton(onClick = onBackClick) {

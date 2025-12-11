@@ -43,7 +43,7 @@ fun NavGraph(navHostController: NavHostController, modifier: Modifier) {
                 onBackClick = { navHostController.navigateUp() }
             )
         }
-        composable(Screen.MANAGE_COUNTRIES.name) {
+        composable(Screen.MANAGE_CATEGORIES.name) {
             ManageCountriesScreen(
                 mainViewModel = mainViewModel,
                 onBackClick = { navHostController.navigateUp() }
