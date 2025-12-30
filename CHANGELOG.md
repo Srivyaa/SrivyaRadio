@@ -5,17 +5,21 @@ All notable changes to the SrivyaRadio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0.0-Stable] - 2025-12-30
 ### Added
 - Enhanced station discovery with improved search functionality
 - Added support for more radio station formats
 - Implemented better error handling for network connectivity issues
+- **Devotional Content**: Added support for devotional content alongside radio stations
+- **Unified Station Model**: New model supporting both regular radio stations and devotional items
+- **Database Migration**: Added automatic migration from v2 to v3 database schema
 
 ### Changed
 - Updated UI/UX for better user experience
 - Improved performance and reduced app size
 - Updated dependencies to their latest stable versions
 - **App Launch Flow**: Updated the app to launch directly into the main activity
+- **Version Bump**: Updated to version 1.2.0.0-Stable (versionCode 4)
 
 ### Fixed
 - Fixed issue with playback stuttering on some devices
