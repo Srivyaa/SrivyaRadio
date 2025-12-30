@@ -1,6 +1,23 @@
-# SrivyaRadio – Global FM, AM & Internet Radio
+# 📻 SrivyaRadio – Global FM, AM & Internet Radio
 
-SrivyaRadio streams more than **35,000** live radio stations covering music, news, talk and sports around the world. The project showcases a modern Android audio experience built entirely with Compose and Media3, extended with Android Auto, custom playlists, RevenueCat subscriptions, and robust offline handling.
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-blue.svg?logo=kotlin)](https://kotlinlang.org/)
+[![Android](https://img.shields.io/badge/Android-13%2B-brightgreen.svg?logo=android)](https://www.android.com/)
+
+SrivyaRadio is a feature-rich, open-source radio streaming application that brings you access to over **35,000+** live radio stations worldwide. Built with modern Android development practices, it offers a seamless audio experience with support for background playback, Android Auto, and offline functionality.
+
+## 🌟 About
+
+SrivyaRadio is designed to be the most comprehensive and user-friendly radio app on the Android platform. Whether you're looking for music, news, sports, or talk shows, SrivyaRadio connects you to thousands of stations across the globe with crystal-clear audio quality.
+
+### Key Features:
+- **Massive Library**: Access to 35,000+ radio stations worldwide
+- **Modern UI**: Built with Jetpack Compose for a beautiful, responsive interface
+- **Android Auto Support**: Full integration with Android Auto for safe listening while driving
+- **Offline Mode**: Save your favorite stations for offline listening
+- **Sleep Timer**: Fall asleep to your favorite station
+- **No Ads**: Completely free with no annoying advertisements
+- **Open Source**: Transparent development and community-driven improvements
 
 ---
 
@@ -83,7 +100,23 @@ Special thanks to the open-source community and original RadioTime inspiration. 
 
 ---
 
+## 🤝 Contributing
+
+We welcome contributions from the community! Whether you're a developer, designer, or just have ideas, feel free to open an issue or submit a pull request. Please read our [contribution guidelines](CONTRIBUTING.md) before getting started.
+
 ## 📄 License
+
+SrivyaRadio is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Contact
+
+Have questions or feedback? Feel free to reach out to us at [your-email@example.com](mailto:your-email@example.com) or open an issue on our GitHub repository.
+
+---
+
+<div align="center">
+  Made with ❤️ for radio lovers around the world
+</div>
 
 This repository inherits the license specified in `LICENSE`. Review before redistribution or commercial use.
 
