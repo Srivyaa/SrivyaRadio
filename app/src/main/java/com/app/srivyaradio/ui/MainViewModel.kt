@@ -1630,6 +1630,30 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
         }
     }
 
+    // Get countries where a station is available
+    fun getStationCountries(stationId: String): List<String> {
+        return try {
+            // Get all countries that have this station
+            val allCountries = getCountryListForUI().map { it.second }
+            val countriesWithStation = mutableListOf<String>()
+            
+            allCountries.forEach { countryCode ->
+                try {
+                    val stations = dbRepository.getAllStations(countryCode)
+                    if (stations.any { it.id == stationId }) {
+                        countriesWithStation.add(countryCode)
+                    }
+                } catch (_: Exception) {
+                    // Skip countries with errors
+                }
+            }
+            
+            countriesWithStation
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
     fun getTheme() {
         appTheme = when (repository.getThemeMode()) {
             ThemeMode.DARK.id -> ThemeMode.DARK

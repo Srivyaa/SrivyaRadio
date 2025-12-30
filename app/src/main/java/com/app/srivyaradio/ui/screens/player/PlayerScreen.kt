@@ -121,6 +121,60 @@ fun PlayerScreen(
                     )
                 }
                 Spacer(Modifier.padding(15.dp))
+                
+                // Country availability section
+                if (mainViewModel.selectedStation != null) {
+                    val stationCountries = mainViewModel.getStationCountries(mainViewModel.selectedStation!!.id)
+                    if (stationCountries.isNotEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Text(
+                                text = "Available in ${stationCountries.size} country${if (stationCountries.size > 1) "s" else ""}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                            Spacer(Modifier.padding(4.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                stationCountries.take(5).forEachIndexed { index, countryCode ->
+                                    val countryName = mainViewModel.getCountryNameByCode(countryCode)
+                                    Text(
+                                        text = countryName,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        modifier = Modifier
+                                            .padding(end = 8.dp)
+                                            .background(
+                                                MaterialTheme.colorScheme.secondaryContainer,
+                                                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                                            )
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                    )
+                                    if (index < stationCountries.size - 1 && index < 4) {
+                                        Text(
+                                            text = "•",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            modifier = Modifier.padding(horizontal = 4.dp)
+                                        )
+                                    }
+                                }
+                                if (stationCountries.size > 5) {
+                                    Text(
+                                        text = "+${stationCountries.size - 5} more",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.secondary
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(Modifier.padding(10.dp))
+                    }
+                }
+                
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
