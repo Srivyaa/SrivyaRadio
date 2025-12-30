@@ -16,8 +16,13 @@ object Constants {
     const val ROOT_ID = "root"
     const val COUNTRIES_ID = "countries"
     const val OFFLINE_ID = "offline"
+    const val DEVOTIONAL_ID = "devotional"
     const val ALPHABET_PREFIX = "alpha:"
     const val COUNTRY_PREFIX = "country:"
+    
+    // Devotional data constants
+    const val DEVOTIONAL_BASE_URL = "devotionalBaseUrl"
+    const val DEVOTIONAL_DATA_PATH = "devotionalDataPath"
     const val CHANGE_COUNTRY_KEY = "KEY_CHANGE_COUNTRY"
     const val CHANGE_COUNTRY_COMMAND = "COMMAND_CHANGE_COUNTRY"
     const val UPDATE_FAVORITE_COMMAND = "COMMAND_UPDATE_FAVORITE"

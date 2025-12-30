@@ -1631,8 +1631,8 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
     }
 
     // Get countries where a station is available
-    fun getStationCountries(stationId: String): List<String> {
-        return try {
+    suspend fun getStationCountries(stationId: String): List<String> = withContext(Dispatchers.IO) {
+        try {
             // Get all countries that have this station
             val allCountries = getCountryListForUI().map { it.second }
             val countriesWithStation = mutableListOf<String>()

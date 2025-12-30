@@ -1,6 +1,7 @@
 package com.app.srivyaradio.ui.screens.player
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -120,58 +121,25 @@ fun PlayerScreen(
                         modifier = Modifier.padding(horizontal = 10.dp)
                     )
                 }
-                Spacer(Modifier.padding(15.dp))
-                
-                // Country availability section
-                if (mainViewModel.selectedStation != null) {
-                    val stationCountries = mainViewModel.getStationCountries(mainViewModel.selectedStation!!.id)
-                    if (stationCountries.isNotEmpty()) {
-                        Column(
+                // Display station country
+                val countryCode = it.countrycode.ifEmpty { it.country }
+                countryCode?.let { code ->
+                    val countryName = mainViewModel.getCountryNameByCode(code.uppercase())
+                    if (countryName.isNotBlank() && countryName != code.uppercase()) {
+                        Text(
+                            text = countryName,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                        ) {
-                            Text(
-                                text = "Available in ${stationCountries.size} country${if (stationCountries.size > 1) "s" else ""}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
-                            Spacer(Modifier.padding(4.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                stationCountries.take(5).forEachIndexed { index, countryCode ->
-                                    val countryName = mainViewModel.getCountryNameByCode(countryCode)
-                                    Text(
-                                        text = countryName,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        modifier = Modifier
-                                            .padding(end = 8.dp)
-                                            .background(
-                                                MaterialTheme.colorScheme.secondaryContainer,
-                                                shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
-                                            )
-                                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                                    )
-                                    if (index < stationCountries.size - 1 && index < 4) {
-                                        Text(
-                                            text = "•",
-                                            style = MaterialTheme.typography.bodySmall,
-                                            modifier = Modifier.padding(horizontal = 4.dp)
-                                        )
-                                    }
-                                }
-                                if (stationCountries.size > 5) {
-                                    Text(
-                                        text = "+${stationCountries.size - 5} more",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.secondary
-                                    )
-                                }
-                            }
-                        }
-                        Spacer(Modifier.padding(10.dp))
+                                .padding(horizontal = 12.dp, vertical = 4.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                    shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+                                )
+                                .padding(horizontal = 12.dp, vertical = 4.dp)
+                        )
+                        Spacer(Modifier.padding(8.dp))
                     }
                 }
                 
