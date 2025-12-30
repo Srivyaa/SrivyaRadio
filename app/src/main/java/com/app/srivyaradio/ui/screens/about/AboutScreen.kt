@@ -237,54 +237,11 @@ fun AboutScreen(
                         FeatureBullet("Simplified interface for safe driving")
                     }
 
-                    // Screenshot Placeholder
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Android Auto Preview",
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    
-                    // Placeholder for Android Auto screenshots
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .clip(RoundedCornerShape(8.dp)),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        // Placeholder for Android Auto UI screenshots
-                        PlaceholderImage("Android Auto Home")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        PlaceholderImage("Now Playing")
-                        Spacer(modifier = Modifier.width(8.dp))
-                        PlaceholderImage("Station List")
-                    }
+                    // Removed screenshot placeholders
                 }
             }
 
-            // App Screenshots Section
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "App Screenshots",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
-            
-            // Placeholder for app screenshots
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                // Placeholder for app screenshots
-                PlaceholderImage("Discover Screen", aspectRatio = 0.5f)
-                Spacer(modifier = Modifier.height(8.dp))
-                PlaceholderImage("Now Playing Screen", aspectRatio = 0.5f)
-            }
+            // App Screenshots Section Removed
             
             // Footer
             Spacer(modifier = Modifier.height(24.dp))
@@ -309,37 +266,6 @@ private fun FeatureBullet(text: String) {
             modifier = Modifier.padding(horizontal = 8.dp)
         )
         Text(text = text, style = MaterialTheme.typography.bodyMedium)
-    }
-}
-
-@Composable
-private fun PlaceholderImage(label: String, aspectRatio: Float = 1f) {
-    Card(
-        modifier = Modifier
-            //.weight(1f)
-            .aspectRatio(aspectRatio)
-            .clip(RoundedCornerShape(8.dp)),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = "Screenshot",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-            )
-        }
     }
 }
 

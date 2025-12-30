@@ -8,7 +8,7 @@ enum class Screen(val routeName:String) {
     MORE("More"),
     RECENTS("Recents"),
     QUEUE("Queue"),
-    MANAGE_COUNTRIES("Manage Countries"),
+    MANAGE_CATEGORIES("Manage Categories"),
     OFFLINE("Offline"),
     ABOUT("About"),
 }
